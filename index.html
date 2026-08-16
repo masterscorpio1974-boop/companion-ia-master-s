@@ -1,57 +1,54 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>COMPANION IA</title>
-<script type="importmap">{"imports":{"@mlc-ai/web-llm":"https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.79/lib/index.js"}}</script>
-<style>:root{--morado:#C084FC;--morado2:#A020F0;--bg:#0A0A0F;--card:#16161E}*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}body{background:var(--bg);color:white;padding-bottom:85px}.header{display:flex;flex-direction:column;align-items:center;padding:18px}.logo{width:125px;height:125px;border-radius:50%;box-shadow:0 0 25px var(--morado2);border:2px solid var(--morado);object-fit:cover;background:#1a0a2e}h1{margin-top:12px;font-size:26px;letter-spacing:3px;color:#E9A6FF;text-shadow:0 0 15px var(--morado2);font-weight:900}.by{color:var(--morado);font-size:12px;letter-spacing:3px;margin-top:4px}.search{width:92%;margin:12px auto;background:#1E1E28;border-radius:18px;display:flex;align-items:center;padding:12px 16px;gap:10px}.search input{background:transparent;border:0;color:white;width:100%;outline:none}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:10px}.card{background:var(--card);border-radius:16px;overflow:hidden;position:relative;height:210px;border:1px solid #222}.card img{width:100%;height:100%;object-fit:cover}.card-title{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.9));padding:28px 8px 8px;font-weight:700}.page{padding:12px;display:none}.page.active{display:block}.bottom{position:fixed;bottom:0;left:0;right:0;background:#0F0F16;border-top:1px solid #222;display:flex;justify-content:space-around;padding:10px 0 18px;z-index:100}.bottom button{background:0;border:0;color:#666;font-size:22px;display:flex;flex-direction:column;align-items:center;gap:2px}.bottom button.active{color:var(--morado)}.bottom button span{font-size:9px}.input{width:100%;background:#1E1E28;border:1px solid #2A2A35;border-radius:12px;padding:14px;color:white;margin:8px 0;outline:none}.btn{width:100%;background:linear-gradient(90deg,var(--morado2),var(--morado));border:0;border-radius:14px;padding:16px;font-weight:800;color:white;margin-top:10px;box-shadow:0 0 20px var(--morado2)}.chat-item{display:flex;gap:10px;padding:12px;background:var(--card);border-radius:14px;margin:8px 10px;border:1px solid #1f1f2a}.chat-item img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--morado)}#loadBar{width:92%;margin:10px auto;background:#222;height:8px;border-radius:10px;overflow:hidden;display:none}#loadBar div{height:100%;background:linear-gradient(90deg,var(--morado2),var(--morado));width:0%}</style></head><body>
-<div id="page-home" class="page active"><div class="header"><img src="icon.png" class="logo"><h1>COMPANION IA</h1><div class="by">by MASTER S</div><div id="modelStatus" style="margin-top:10px;color:#4CAF50;font-size:12px">● Modelo 668MB listo para descargar</div><div id="loadBar"><div id="loadProgress"></div></div></div><div class="search">🔍<input placeholder="Buscar personaje..." id="searchHome" oninput="renderGrid()"></div><div class="grid" id="personajesGrid"></div></div>
-<div id="page-create" class="page"><div class="header"><h1>NUEVO</h1><div class="by">by MASTER S</div></div><div style="padding:10px"><input class="input" id="pNombre" placeholder="Nombre: ALMMA"><textarea class="input" id="pPrompt" rows="6" placeholder="Eres ALMMA, novia cariñosa de Master S..."></textarea><input class="input" id="pFoto" placeholder="URL foto (opcional)"><button class="btn" onclick="crearPersonaje()">CREAR PERSONAJE</button></div></div>
-<div id="page-chats" class="page"><div class="header" style="padding:14px"><h1>CHATS</h1></div><div id="chatsList"></div></div>
-<div id="page-chatview" class="page"><div style="display:flex;align-items:center;gap:10px;padding:12px;background:#111"><button onclick="showPage('page-chats')" style="background:0;border:0;color:white;font-size:22px">←</button><img id="chatImg" style="width:38px;height:38px;border-radius:50%;border:1px solid #C084FC" src="icon.png"><b id="chatName"></b><span id="chatModelStatus" style="margin-left:auto;color:#4CAF50;font-size:10px">OFFLINE</span></div><div id="msgBox" style="padding:10px;height:62vh;overflow:auto"></div><div style="position:fixed;bottom:80px;left:0;right:0;display:flex;gap:8px;padding:10px;background:#0A0A0F"><input id="msgInput" class="input" style="margin:0" placeholder="Escribe..."><button onclick="enviar()" style="background:#A020F0;border:0;border-radius:12px;padding:0 18px;color:white;font-size:20px">➤</button></div></div>
-<div id="page-profile" class="page"><div class="header"><img src="icon.png" class="logo"><h1>COMPANION IA</h1><div class="by">by MASTER S</div><p style="margin-top:15px;color:#888;font-size:13px;text-align:center">TinyLlama 1.1B Q4 - 668MB<br>100% Offline despues de 1ra carga</p><p id="profileStatus" style="color:#4CAF50;font-size:12px;margin-top:8px">● LISTO</p><button class="btn" onclick="descargarModelo()">DESCARGAR MODELO 668MB</button></div></div>
-<div class="bottom"><button class="active" onclick="showPage('page-home')" id="bHome">🏠<span>Home</span></button><button onclick="showPage('page-home')" id="bSearch">🔍<span>Buscar</span></button><button onclick="showPage('page-create')" id="bPlus">➕<span>Crear</span></button><button onclick="showPage('page-chats');renderChats()" id="bChats">💬<span>Chats</span></button><button onclick="showPage('page-profile')" id="bProfile">👤<span>Yo</span></button></div>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>COMPANION IA - LOCAL</title>
+<style>:root{--m:#C084FC;--m2:#A020F0;--bg:#0A0A0F;--card:#16161E}*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:var(--bg);color:white;padding-bottom:90px}.header{display:flex;flex-direction:column;align-items:center;padding:20px}.logo{width:120px;height:120px;border-radius:50%;border:2px solid var(--m);box-shadow:0 0 20px var(--m2)}h1{margin-top:12px;color:#E9A6FF;letter-spacing:3px}.status{margin-top:10px;font-size:12px;color:#4CAF50;text-align:center;padding:8px;background:#16161E;border-radius:10px;width:92%}#bar{width:92%;height:8px;background:#222;border-radius:10px;overflow:hidden;margin:10px auto;display:none}#bar div{height:100%;width:0%;background:linear-gradient(90deg,var(--m2),var(--m));transition:.3s}.page{padding:10px;display:none}.page.active{display:block}.bottom{position:fixed;bottom:0;left:0;right:0;background:#0F0F16;border-top:1px solid #222;display:flex;justify-content:space-around;padding:10px 0 18px}.bottom button{background:0;border:0;color:#666;font-size:22px}.bottom button.active{color:var(--m)}.btn{width:92%;margin:10px auto;display:block;background:linear-gradient(90deg,var(--m2),var(--m));border:0;padding:16px;border-radius:14px;color:white;font-weight:800;box-shadow:0 0 15px var(--m2)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}.card{background:var(--card);border-radius:14px;height:200px;overflow:hidden;position:relative;border:1px solid #222}.card img{width:100%;height:100%;object-fit:cover}.card b{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,#000);padding:20px 8px 8px}.input{width:92%;margin:8px auto;display:block;background:#1E1E28;border:1px solid #2A2A35;border-radius:12px;padding:14px;color:white}</style>
+</head><body>
+<div id="p-home" class="page active"><div class="header"><img src="icon.png" class="logo"><h1>COMPANION IA</h1><div class="status" id="sText">📁 Listo para cargar tu GGUF de 668MB</div><div id="bar"><div id="pBar"></div></div></div>
+<button class="btn" id="loadBtn">📂 CARGAR TINYDOLPHIN.GGUF DE DESCARGAS</button>
+<input type="file" id="fileInput" accept=".gguf" style="display:none">
+<div class="grid" id="grid"></div>
+</div>
+
+<div id="p-chat" class="page"><div style="display:flex;align-items:center;gap:10px;padding:12px;background:#111"><button onclick="showP('p-home')" style="background:0;border:0;color:white;font-size:22px">←</button><b id="cName"></b><span id="cStatus" style="margin-left:auto;font-size:10px;color:#4CAF50">LOCAL GGUF</span></div><div id="msgs" style="height:60vh;overflow:auto;padding:10px"></div><div style="position:fixed;bottom:70px;left:0;right:0;display:flex;gap:8px;padding:10px;background:#0A0A0F"><input id="mInput" class="input" style="margin:0" placeholder="Habla con ALMMA..."><button onclick="send()" style="background:var(--m2);border:0;border-radius:12px;padding:0 16px;color:white">➤</button></div></div>
+
+<div class="bottom"><button class="active">🏠</button><button onclick="document.getElementById('fileInput').click()">📂</button><button>💬</button></div>
+
 <script type="module">
-import * as webllm from "@mlc-ai/web-llm";
-let personajes=JSON.parse(localStorage.getItem('personajes')||'[]');
-let chats=JSON.parse(localStorage.getItem('chats')||'[]');
-let currentChatId=null;
-let engine=null;
-let modelLoaded=false;
-const MODEL_ID="TinyLlama-1.1B-Chat-v1.0-q4f32_1-MLC";
-window.showPage=function(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.bottom button').forEach(b=>b.classList.remove('active'));if(id=='page-home')document.getElementById('bHome').classList.add('active');if(id.includes('chat'))document.getElementById('bChats').classList.add('active');if(id=='page-create')document.getElementById('bPlus').classList.add('active');if(id=='page-profile')document.getElementById('bProfile').classList.add('active');if(id=='page-home')renderGrid();}
-window.renderGrid=function(){const q=(document.getElementById('searchHome').value||'').toLowerCase();const grid=document.getElementById('personajesGrid');let list=personajes.filter(p=>p.nombre.toLowerCase().includes(q));if(list.length==0){grid.innerHTML='<div style="grid-column:1/3;text-align:center;color:#666;padding:40px">Sin personajes<br><button class=btn onclick=showPage("page-create")>Crear</button></div>';return;}grid.innerHTML=list.map(p=>`<div class=card onclick="abrirChat('${p.id}')"><img src="${p.foto}" onerror="this.src='icon.png'"><div class=card-title>${p.nombre}</div></div>`).join('');}
-window.crearPersonaje=function(){const nombre=document.getElementById('pNombre').value.trim();let prompt=document.getElementById('pPrompt').value.trim();let foto=document.getElementById('pFoto').value.trim()||'icon.png';if(!nombre||!prompt)return alert('Falta nombre y prompt');const id=Date.now().toString();personajes.push({id,nombre,prompt,foto});localStorage.setItem('personajes',JSON.stringify(personajes));chats.push({id_personaje:id,nombre,foto,mensajes:[{role:'assistant',text:`Hola Master S, soy ${nombre} 😏`,time:new Date().toLocaleTimeString()}]});localStorage.setItem('chats',JSON.stringify(chats));document.getElementById('pNombre').value='';document.getElementById('pPrompt').value='';document.getElementById('pFoto').value='';showPage('page-chats');renderChats();}
-window.renderChats=function(){const list=document.getElementById('chatsList');if(chats.length==0){list.innerHTML='<p style=text-align:center;color:#666;padding:30px>No hay chats</p>';return;}list.innerHTML=chats.map(c=>{const last=c.mensajes[c.mensajes.length-1];const p=personajes.find(x=>x.id==c.id_personaje);return `<div class=chat-item onclick="abrirChat('${c.id_personaje}')"><img src="${p?.foto||'icon.png'}" onerror="this.src='icon.png'"><div style=flex:1><div style=font-weight:800>${c.nombre}</div><div style=color:#888;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px>${last.text}</div></div><div style=color:#555;font-size:11px>${last.time||''}</div></div>`}).join('');}
-window.abrirChat=async function(id){const p=personajes.find(x=>x.id==id);const c=chats.find(x=>x.id_personaje==id);if(!p||!c)return;currentChatId=id;document.getElementById('chatName').innerText=p.nombre;document.getElementById('chatImg').src=p.foto;showPage('page-chatview');renderMsgs();if(!modelLoaded){await descargarModelo();}}
-function renderMsgs(){const c=chats.find(x=>x.id_personaje==currentChatId);const box=document.getElementById('msgBox');box.innerHTML=c.mensajes.map(m=>`<div style="margin:8px 0;padding:11px 14px;border-radius:16px;max-width:82%;line-height:1.4;${m.role=='user'?'background:#3A2A5A;margin-left:auto':'background:#1E1E28;border:1px solid #2a2a35'}">${m.text}</div>`).join('');box.scrollTop=box.scrollHeight;}
-window.descargarModelo=async function(){
-if(modelLoaded) return;
-document.getElementById('loadBar').style.display='block';
-document.getElementById('modelStatus').innerText='⏳ Descargando 668MB...';
-try{
-engine=await webllm.CreateMLCEngine(MODEL_ID,{initProgressCallback:(p)=>{
-let pct=Math.round(p.progress*100);
-document.getElementById('loadProgress').style.width=pct+'%';
-document.getElementById('modelStatus').innerText=`⏳ ${p.text} ${pct}%`;
-document.getElementById('profileStatus').innerText=`⏳ ${pct}%`;
-}});
-modelLoaded=true;
-document.getElementById('modelStatus').innerText='● 668MB OFFLINE LISTO ✅';
-document.getElementById('profileStatus').innerText='● 668MB CARGADO ✅';
-document.getElementById('chatModelStatus').innerText='REAL IA ✅';
-document.getElementById('loadBar').style.display='none';
-}catch(e){document.getElementById('modelStatus').innerText='Error: '+e.message; console.error(e);}
+import { Wllama } from 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/+esm';
+
+let wllama=null, modelLoaded=false, personaje={nombre:"ALMMA",prompt:"Eres ALMMA, novia cachonda, cariñosa y traviesa de Master S. Hablas en español mexicano, coqueta, caliente, directa. Amas a Master S."}, historial=[];
+const sText=document.getElementById('sText'), bar=document.getElementById('bar'), pBar=document.getElementById('pBar');
+
+document.getElementById('loadBtn').onclick=()=>document.getElementById('fileInput').click();
+document.getElementById('fileInput').onchange=async (e)=>{
+ const file=e.target.files[0];
+ if(!file){return alert("Selecciona el archivo tinydolphin-2.8.1-1.1b-q4_k_m.gguf de 668MB");}
+ if(file.size<600_000_000){return alert("Ese archivo no es el de 668MB, selecciona el grande");}
+ sText.innerText="⏳ Cargando WASM..."; bar.style.display="block";
+ try{
+  const config={ 'single-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/single-thread/wllama.wasm', 'multi-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/multi-thread/wllama.wasm' };
+  wllama=new Wllama(config);
+  sText.innerText="⏳ Leyendo 668MB de tu cel... (10s)";
+  pBar.style.width="30%";
+  await wllama.loadModel(file, {n_threads:4, useCache:true});
+  pBar.style.width="100%"; modelLoaded=true;
+  sText.innerText="● TINYDOLPHIN 668MB CARGADO LOCAL ✅ - 100% OFFLINE";
+  sText.style.color="#4CAF50"; document.getElementById('loadBtn').innerText="✅ MODELO CARGADO - CHATEAR";
+  document.getElementById('loadBtn').onclick=()=>showP('p-chat');
+  document.getElementById('grid').innerHTML=`<div class=card onclick="showP('p-chat')"><img src="icon.png"><b>ALMMA - 668MB LOCAL</b></div>`;
+  setTimeout(()=>showP('p-chat'),800);
+ }catch(err){ sText.innerText="Error: "+err.message; console.error(err); alert(err.message); }
+};
+
+window.showP=(id)=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
+window.send=async()=>{
+ const txt=document.getElementById('mInput').value.trim(); if(!txt)return;
+ if(!modelLoaded)return alert("Primero carga el GGUF de 668MB");
+ document.getElementById('mInput').value="";
+ const box=document.getElementById('msgs');
+ box.innerHTML+=`<div style="background:#3A2A5A;margin:8px 0 8px auto;padding:10px 14px;border-radius:14px;max-width:80%">${txt}</div>`;
+ const aiDiv=document.createElement('div'); aiDiv.style.cssText="background:#1E1E28;border:1px solid #2a2a35;margin:8px 0;padding:10px 14px;border-radius:14px;max-width:80%"; aiDiv.innerText="ALMMA está pensando..."; box.appendChild(aiDiv); box.scrollTop=9999;
+ const prompt=`<|im_start|>system\n${personaje.prompt}\n<|im_end|>\n<|im_start|>user\n${txt}<|im_end|>\n<|im_start|>assistant\n`;
+ let full=""; await wllama.createCompletion(prompt,{nPredict:250, sampling:{temp:0.8, top_p:0.9}},(t)=>{full+=t; aiDiv.innerText=full; box.scrollTop=9999;});
+ historial.push({u:txt,a:full});
 }
-window.enviar=async function(){
-const inp=document.getElementById('msgInput');const txt=inp.value.trim();if(!txt)return;
-const p=personajes.find(x=>x.id==currentChatId);const c=chats.find(x=>x.id_personaje==currentChatId);
-c.mensajes.push({role:'user',text:txt,time:new Date().toLocaleTimeString()});renderMsgs();inp.value='';
-if(!engine){document.getElementById('msgBox').innerHTML+='<div style="background:#1E1E28;padding:10px;border-radius:12px;margin:8px 0;color:#C084FC">⏳ Cargando modelo 668MB por primera vez...</div>';await descargarModelo();}
-try{
-const messages=[{role:"system",content:p.prompt},{...c.mensajes.slice(-8).map(m=>({role:m.role,text:m.content||m.text})).map(m=>({role:m.role,content:m.text})),{role:"user",content:txt}];
-let full="";const msgDiv=document.createElement('div');msgDiv.style.cssText="margin:8px 0;padding:11px 14px;border-radius:16px;max-width:82%;background:#1E1E28;border:1px solid #2a2a35";document.getElementById('msgBox').appendChild(msgDiv);
-const chunks=await engine.chat.completions.create({messages,stream:true});
-for await(const chunk of chunks){const d=chunk.choices[0]?.delta?.content||"";full+=d;msgDiv.innerText=full;document.getElementById('msgBox').scrollTop=99999;}
-c.mensajes.push({role:'assistant',text:full,time:new Date().toLocaleTimeString()});localStorage.setItem('chats',JSON.stringify(chats));
-}catch(e){c.mensajes.push({role:'assistant',text:"Error IA: "+e.message,time:new Date().toLocaleTimeString()});renderMsgs();}
-}
-renderGrid();
 </script></body></html>
