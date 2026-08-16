@@ -31,7 +31,7 @@ jobs:
       - name: 📁 Copiar archivos a carpeta www
         run: |
           mkdir -p www
-          cp index.html logic.js style.css icon.png www/
+          cp index.html logic.js style.css icon.png -t www/
 
       - name: 📲 Agregar plataforma Android
         run: |
@@ -47,8 +47,8 @@ jobs:
       - name: 🎨 Inyectar TU Logo Morado
         run: |
           for d in android/app/src/main/res/mipmap-*; do
-            cp icon.png $d/ic_launcher.png
-            cp icon.png $d/ic_launcher_round.png
+            cp icon.png ${d}/ic_launcher.png
+            cp icon.png ${d}/ic_launcher_round.png
           done
 
       - name: 🔨 Compilar APK
@@ -62,3 +62,5 @@ jobs:
         with:
           name: Companion-IA-Master-S-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
+  
