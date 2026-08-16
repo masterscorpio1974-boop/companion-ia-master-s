@@ -14,10 +14,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - uses: android-actions/setup-android@v3
-      - run: npm install && npm install @capacitor/android @capacitor/filesystem capacitor-llama-cpp --save
+      - run: npm install && npm install @capacitor/android --save
       - run: mkdir -p www && cp index.html logic.js style.css icon.png www/
       - run: rm -rf android && npx cap add android
-      - run: npx cap sync android
       - name: Borrar iconos default
         run: |
           rm -rf android/app/src/main/res/mipmap-anydpi-v26
