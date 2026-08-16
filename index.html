@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Companion IA By Master S</title><link rel="stylesheet" href="style.css"></head>
-<body>
-<div id="app"><header><h1>COMPANION IA</h1><span>By Master S - OFFGRID MORADA</span></header>
-<div id="view-list"><div class="top-bar"><h2>Tus Personajes</h2><button id="btnNew" class="btn-primary">+ Crear</button></div><div id="charGrid" class="grid"></div></div>
-<div id="view-create" class="hidden"><h2>Crear Personaje</h2><input id="cName" placeholder="Nombre"><textarea id="cPersona" placeholder="Personalidad: Ej: Eres Luna, gamer, cariñosa, hablas mexicano..."></textarea><input id="cFirst" placeholder="Primer mensaje"><input id="cAvatar" type="file" accept="image/*"><div class="row"><button id="btnCancel" class="btn-sec">Cancelar</button><button id="btnSave" class="btn-primary">Guardar</button></div></div>
-<div id="view-chat" class="hidden"><div id="chatHeader"><button id="btnBack">←</button><img id="chatAvatar"><span id="chatName"></span><button id="btnDelChat" class="small">🗑️</button></div><div id="chatBox"></div><div id="inputBar"><input id="msgInput" placeholder="Escribe..."><button id="btnSend">➤</button></div></div>
-</div><script src="logic.js"></script></body></html>
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Companion IA</title><link rel="stylesheet" href="style.css"></head><body>
+<header><h1>COMPANION IA</h1><p>By Master S - OFFGRID MORADA</p></header>
+<main><div class="top"><h2>Tus Personajes</h2><button id="btnCrear">+ Crear</button></div><div id="lista"></div></main>
+<div id="modal" class="hidden"><div class="box"><h3>Nuevo Personaje</h3><input id="cNombre" placeholder="Nombre"><textarea id="cDesc" placeholder="Personalidad, como habla..."></textarea><textarea id="cSaludo" placeholder="Primer mensaje"></textarea><div class="row"><button id="cCancel">Cancelar</button><button id="cSave">Guardar</button></div></div></div>
+<div id="chat" class="hidden"><div class="chead"><button id="bVolver">←</button><span id="chatNombre"></span></div><div id="msgs"></div><div class="cfoot"><input id="inp" placeholder="Escribe..."><button id="btnSend">Enviar</button></div></div>
+<script src="logic.js"></script>
+</body></html>
