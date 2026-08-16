@@ -1,11 +1,93 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Companion IA</title><style>body{margin:0;background:#0a0a0f;color:#fff;font-family:sans-serif}header{background:#120a1f;padding:16px;border-bottom:2px solid #9d00ff;text-align:center}h1{margin:0;color:#d88cff}button{cursor:pointer}.card{background:#1a132a;border:1px solid #2e1a5a;border-radius:12px;padding:14px;margin:10px 16px}</style></head><body>
-<header><h1>COMPANION IA</h1><small>OFFGRID MORADA - HOST LOCAL</small><br><button id="btnModelos" style="margin-top:8px;padding:6px 12px;background:#222;border:1px solid #9d00ff;color:#d88cff;border-radius:8px">🧠 Mis Modelos</button></header>
-<main><div style="display:flex;justify-content:space-between;padding:16px"><h2>Tus Personajes</h2><button id="btnCrear" onclick="document.getElementById('modal').style.display='flex'" style="background:#9d00ff;border:0;color:#fff;padding:10px 14px;border-radius:10px;font-weight:700">+ Crear</button></div><div id="lista"></div></main>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COMPANION IA by MASTER S</title>
+<style>
+:root{--morado:#C084FC;--morado2:#A020F0;--bg:#0A0A0F;--card:#16161E}
+*{margin:0;padding:0;box-sizing:border-box;font-family: 'Segoe UI',sans-serif}
+body{background:var(--bg);color:white;min-height:100vh;padding-bottom:85px}
+.header{display:flex;flex-direction:column;align-items:center;padding:22px 10px 10px}
+.logo{width:135px;height:135px;border-radius:50%;box-shadow:0 0 25px var(--morado2),0 0 55px var(--morado2);border:2px solid var(--morado);background:#000}
+h1{margin-top:14px;font-size:27px;letter-spacing:4px;color:#E9A6FF;text-shadow:0 0 15px var(--morado2),0 0 35px var(--morado2);font-weight:900}
+.by{color:var(--morado);font-size:13px;letter-spacing:3.5px;margin-top:5px}
+.search{width:92%;margin:18px auto 10px;background:#1E1E28;border-radius:18px;display:flex;align-items:center;padding:13px 16px;gap:10px}
+.search input{background:transparent;border:0;color:white;width:100%;outline:none;font-size:15px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:10px}
+.card{background:var(--card);border-radius:16px;overflow:hidden;position:relative;height:210px;border:1px solid #222}
+.card img{width:100%;height:100%;object-fit:cover}
+.card-title{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.92));padding:32px 9px 9px;font-size:13px;font-weight:700}
+.page{padding:12px;display:none}.page.active{display:block}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#0F0F16;border-top:1px solid #242433;display:flex;justify-content:space-around;padding:10px 0 18px;z-index:100}
+.bottom button{background:transparent;border:0;color:#666;font-size:23px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bottom button.active{color:var(--morado);text-shadow:0 0 12px var(--morado2)}
+.bottom button span{font-size:9px;letter-spacing:0.5px}
+.input{width:100%;background:#1E1E28;border:1px solid #2A2A35;border-radius:12px;padding:14px;color:white;margin:8px 0;outline:none}
+.input:focus{border-color:var(--morado);box-shadow:0 0 12px var(--morado2)}
+.btn{width:100%;background:linear-gradient(90deg,var(--morado2),var(--morado));border:0;border-radius:14px;padding:16px;font-weight:800;color:white;letter-spacing:1px;margin-top:10px;box-shadow:0 0 22px var(--morado2)}
+.chat-item{display:flex;gap:12px;padding:14px;background:var(--card);border-radius:14px;margin:8px 10px;border:1px solid #1f1f2a}
+.chat-item img{width:50px;height:50px;border-radius:50%;object-fit:cover;border:1px solid var(--morado)}
+</style>
+</head>
+<body>
 
-<div id="modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);align-items:center;justify-content:center;z-index:99"><div style="background:#1a132a;width:90%;max-width:380px;padding:20px;border-radius:16px;border:2px solid #9d00ff"><h3 style="color:#d88cff">Nuevo Personaje +18</h3><input id="cNombre" placeholder="Nombre" style="width:100%;padding:12px;margin:6px 0;border-radius:8px;background:#0f0a1a;border:1px solid #333;color:#fff"><textarea id="cDesc" placeholder="Personalidad ej: coqueta, dominante, timida... ADULTO" style="width:100%;height:80px;padding:12px;margin:6px 0;border-radius:8px;background:#0f0a1a;border:1px solid #333;color:#fff"></textarea><textarea id="cSaludo" placeholder="Saludo inicial" style="width:100%;height:60px;padding:12px;margin:6px 0;border-radius:8px;background:#0f0a1a;border:1px solid #333;color:#fff"></textarea><div style="display:flex;gap:10px"><button onclick="document.getElementById('modal').style.display='none'" style="flex:1;padding:12px;background:#333;border:0;border-radius:8px;color:#fff">Cancelar</button><button id="cSave" style="flex:1;padding:12px;background:#9d00ff;border:0;border-radius:8px;color:#fff;font-weight:700">Guardar</button></div></div></div>
+<div id="page-home" class="page active">
+  <div class="header">
+    <img src="logo.png" class="logo">
+    <h1>COMPANION IA</h1>
+    <div class="by">by MASTER S</div>
+  </div>
+  <div class="search"><span>🔍</span><input placeholder="Buscar personaje..." id="searchHome" oninput="renderGrid()"></div>
+  <div class="grid" id="personajesGrid"></div>
+</div>
 
-<div id="modelos" style="display:none;position:fixed;inset:0;background:#0a0a0f;z-index:101;padding:16px;overflow:auto"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="color:#d88cff">🧠 Cerebros IA</h2><button onclick="document.getElementById('modelos').style.display='none'" style="background:#333;border:0;color:#fff;padding:8px 12px;border-radius:8px">X</button></div><div class="card"><b>TinyDolphin 1.1B Q4 - 600MB</b><br><small>Roleplay sin censura, rápido, ideal para tu cel. Recomendado.</small><br><br><div style="background:#000;height:10px;border-radius:10px;overflow:hidden"><div id="bar" style="height:100%;width:0%;background:#9d00ff"></div></div><small id="prog">No descargado</small><br><br><button id="btnDown" style="width:100%;padding:12px;background:#9d00ff;border:0;border-radius:8px;color:#fff;font-weight:700">Descargar Modelo</button></div><div class="card" style="opacity:.7"><b>Base Local (actual)</b><br><small>Plantillas offgrid, 0MB, sin internet. Ya lo tienes.</small><br><small style="color:#0f0">✓ Activo</small></div><p style="padding:16px;opacity:.6;font-size:12px">Nota: Los modelos se descargan de HuggingFace. Solo para personajes adultos +18, uso consensuado. Todo queda en tu cel.</p></div>
+<div id="page-create" class="page">
+  <div class="header"><h1>NUEVO PERSONAJE</h1><div class="by">by MASTER S</div></div>
+  <div style="padding:12px">
+    <input class="input" id="pNombre" placeholder="Nombre (ej: Luna)">
+    <textarea class="input" id="pPrompt" rows="6" placeholder="Escribe el prompt del personaje: Ej: Eres una asistente coqueta, atrevida, celosa, hablas en español, eres mi novia virtual... Este texto se carga como personalidad al modelo de 668MB"></textarea>
+    <input class="input" id="pFoto" placeholder="URL de foto (opcional)">
+    <button class="btn" onclick="crearPersonaje()">CREAR PERSONAJE</button>
+  </div>
+</div>
 
-<div id="chat" style="display:none;position:fixed;inset:0;background:#0a0a0f;flex-direction:column;z-index:100"><div style="background:#120a1f;padding:14px;display:flex;gap:10px;border-bottom:2px solid #9d00ff"><button id="bVolver" style="background:#333;border:0;color:#fff;padding:8px 12px;border-radius:8px">←</button><b id="chatNombre" style="color:#d88cff"></b><small id="modelBadge" style="margin-left:auto;opacity:.6">base local</small></div><div id="msgs" style="flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:8px"></div><div style="display:flex;gap:8px;padding:12px;border-top:1px solid #222"><input id="inp" placeholder="Escribe..." style="flex:1;padding:12px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"><button id="btnSend" style="padding:12px 16px;background:#9d00ff;border:0;border-radius:8px;color:#fff">Enviar</button></div></div>
-<script src="logic.js"></script>
-</body></html>
+<div id="page-chats" class="page">
+  <div class="header" style="padding:14px"><h1>CHATS</h1><div class="by">historial por personaje</div></div>
+  <div id="chatsList"></div>
+</div>
+
+<div id="page-chatview" class="page">
+  <div style="display:flex;align-items:center;gap:10px;padding:12px;background:#111"><button onclick="showPage('page-chats')" style="background:0;border:0;color:white;font-size:22px">←</button><img id="chatImg" style="width:38px;height:38px;border-radius:50%;border:1px solid #C084FC"><b id="chatName"></b><span style="margin-left:auto;color:#666;font-size:11px">TinyDolphin 668MB</span></div>
+  <div id="msgBox" style="padding:10px;height:62vh;overflow:auto"></div>
+  <div style="position:fixed;bottom:80px;left:0;right:0;display:flex;gap:8px;padding:10px;background:#0A0A0F"><input id="msgInput" class="input" style="margin:0" placeholder="Escribe..."><button onclick="enviar()" style="background:#A020F0;border:0;border-radius:12px;padding:0 18px;color:white;font-size:20px">➤</button></div>
+</div>
+
+<div id="page-profile" class="page">
+  <div class="header"><img src="logo.png" class="logo"><h1>COMPANION IA</h1><div class="by">by MASTER S</div><p style="margin-top:18px;color:#888;font-size:13px;text-align:center">Modelo offline:<br>/sdcard/Download/tinydolphin-2.8.1-1.1b-q4_k_m.gguf</p><p style="color:#4CAF50;font-size:12px;margin-top:8px">● 668 MB LISTO</p></div>
+</div>
+
+<div class="bottom">
+  <button class="active" onclick="showPage('page-home')" id="bHome">🏠<span>Home</span></button>
+  <button onclick="showPage('page-home');document.getElementById('searchHome').focus()" id="bSearch">🔍<span>Buscar</span></button>
+  <button onclick="showPage('page-create')" id="bPlus">➕<span>Crear</span></button>
+  <button onclick="showPage('page-chats');renderChats()" id="bChats">💬<span>Chats</span></button>
+  <button onclick="showPage('page-profile')" id="bProfile">👤<span>Yo</span></button>
+</div>
+
+<script>
+let personajes=JSON.parse(localStorage.getItem('personajes')||'[]');
+let chats=JSON.parse(localStorage.getItem('chats')||'[]');
+let currentChatId=null;
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.bottom button').forEach(b=>b.classList.remove('active'));if(id=='page-home')document.getElementById('bHome').classList.add('active');if(id=='page-chats'||id=='page-chatview')document.getElementById('bChats').classList.add('active');if(id=='page-create')document.getElementById('bPlus').classList.add('active');if(id=='page-profile')document.getElementById('bProfile').classList.add('active');if(id=='page-home')renderGrid();}
+function renderGrid(){const q=document.getElementById('searchHome').value.toLowerCase();const grid=document.getElementById('personajesGrid');let list=personajes.filter(p=>p.nombre.toLowerCase().includes(q));if(list.length==0){grid.innerHTML='<div style="grid-column:1/3;text-align:center;color:#666;padding:40px">Sin personajes<br><button class=btn onclick=showPage(\'page-create\')>Crear</button></div>';return;}grid.innerHTML=list.map(p=>`<div class=card onclick="abrirChat('${p.id}')"><img src="${p.foto||'logo.png'}"><div class=card-title>${p.nombre}</div></div>`).join('');}
+function crearPersonaje(){const nombre=document.getElementById('pNombre').value.trim();const prompt=document.getElementById('pPrompt').value.trim();const foto=document.getElementById('pFoto').value.trim()||'logo.png';if(!nombre||!prompt)return alert('Falta nombre y prompt');const id=Date.now().toString();personajes.push({id,nombre,prompt,foto});localStorage.setItem('personajes',JSON.stringify(personajes));chats.push({id_personaje:id,nombre,foto,mensajes:[{role:'assistant',text:`Hola soy ${nombre} 😏`,time:new Date().toLocaleTimeString()}]});localStorage.setItem('chats',JSON.stringify(chats));document.getElementById('pNombre').value='';document.getElementById('pPrompt').value='';document.getElementById('pFoto').value='';showPage('page-chats');renderChats();}
+function renderChats(){const list=document.getElementById('chatsList');if(chats.length==0){list.innerHTML='<p style=text-align:center;color:#666;padding:30px>No hay chats. Crea un personaje en +</p>';return;}list.innerHTML=chats.map(c=>{const last=c.mensajes[c.mensajes.length-1];const p=personajes.find(x=>x.id==c.id_personaje);return `<div class=chat-item onclick="abrirChat('${c.id_personaje}')"><img src="${p?.foto||'logo.png'}"><div style=flex:1><div style=font-weight:800>${c.nombre}</div><div style=color:#888;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px>${last.text}</div></div><div style=color:#555;font-size:11px>${last.time||''}</div></div>`}).join('');}
+function abrirChat(id){const p=personajes.find(x=>x.id==id);const c=chats.find(x=>x.id_personaje==id);if(!p||!c)return;currentChatId=id;document.getElementById('chatName').innerText=p.nombre;document.getElementById('chatImg').src=p.foto;showPage('page-chatview');renderMsgs();}
+function renderMsgs(){const c=chats.find(x=>x.id_personaje==currentChatId);const box=document.getElementById('msgBox');box.innerHTML=c.mensajes.map(m=>`<div style="margin:8px 0;padding:11px 14px;border-radius:16px;max-width:82%;line-height:1.4;${m.role=='user'?'background:#3A2A5A;margin-left:auto':'background:#1E1E28;border:1px solid #2a2a35'}">${m.text}</div>`).join('');box.scrollTop=box.scrollHeight;}
+function enviar(){const inp=document.getElementById('msgInput');const txt=inp.value.trim();if(!txt)return;const p=personajes.find(x=>x.id==currentChatId);const c=chats.find(x=>x.id_personaje==currentChatId);c.mensajes.push({role:'user',text:txt,time:new Date().toLocaleTimeString()});const resp=generar(promptP=p.prompt,userMsg=txt,nombre=p.nombre);c.mensajes.push({role:'assistant',text:resp,time:new Date().toLocaleTimeString()});localStorage.setItem('chats',JSON.stringify(chats));inp.value='';renderMsgs();}
+function generar(promptBase,userMsg,nombre){let est='';const l=promptBase.toLowerCase();if(l.includes('coqueta')||l.includes('cachonda'))est='Mmm Master me prendes... ';else if(l.includes('dominante'))est='Obedece Master... ';else if(l.includes('timida'))est='A-ay Master... ';return est+`"${userMsg}" - [${nombre} | Prompt: ${promptBase.slice(0,70)}...] Respuesta offline TinyDolphin 668MB by MASTER S`;}
+renderGrid();
+</script>
+</body>
+</html>
