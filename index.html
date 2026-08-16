@@ -1,54 +1,31 @@
-<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>COMPANION IA - LOCAL</title>
-<style>:root{--m:#C084FC;--m2:#A020F0;--bg:#0A0A0F;--card:#16161E}*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:var(--bg);color:white;padding-bottom:90px}.header{display:flex;flex-direction:column;align-items:center;padding:20px}.logo{width:120px;height:120px;border-radius:50%;border:2px solid var(--m);box-shadow:0 0 20px var(--m2)}h1{margin-top:12px;color:#E9A6FF;letter-spacing:3px}.status{margin-top:10px;font-size:12px;color:#4CAF50;text-align:center;padding:8px;background:#16161E;border-radius:10px;width:92%}#bar{width:92%;height:8px;background:#222;border-radius:10px;overflow:hidden;margin:10px auto;display:none}#bar div{height:100%;width:0%;background:linear-gradient(90deg,var(--m2),var(--m));transition:.3s}.page{padding:10px;display:none}.page.active{display:block}.bottom{position:fixed;bottom:0;left:0;right:0;background:#0F0F16;border-top:1px solid #222;display:flex;justify-content:space-around;padding:10px 0 18px}.bottom button{background:0;border:0;color:#666;font-size:22px}.bottom button.active{color:var(--m)}.btn{width:92%;margin:10px auto;display:block;background:linear-gradient(90deg,var(--m2),var(--m));border:0;padding:16px;border-radius:14px;color:white;font-weight:800;box-shadow:0 0 15px var(--m2)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}.card{background:var(--card);border-radius:14px;height:200px;overflow:hidden;position:relative;border:1px solid #222}.card img{width:100%;height:100%;object-fit:cover}.card b{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,#000);padding:20px 8px 8px}.input{width:92%;margin:8px auto;display:block;background:#1E1E28;border:1px solid #2A2A35;border-radius:12px;padding:14px;color:white}</style>
-</head><body>
-<div id="p-home" class="page active"><div class="header"><img src="icon.png" class="logo"><h1>COMPANION IA</h1><div class="status" id="sText">📁 Listo para cargar tu GGUF de 668MB</div><div id="bar"><div id="pBar"></div></div></div>
-<button class="btn" id="loadBtn">📂 CARGAR TINYDOLPHIN.GGUF DE DESCARGAS</button>
-<input type="file" id="fileInput" accept=".gguf" style="display:none">
-<div class="grid" id="grid"></div>
-</div>
-
-<div id="p-chat" class="page"><div style="display:flex;align-items:center;gap:10px;padding:12px;background:#111"><button onclick="showP('p-home')" style="background:0;border:0;color:white;font-size:22px">←</button><b id="cName"></b><span id="cStatus" style="margin-left:auto;font-size:10px;color:#4CAF50">LOCAL GGUF</span></div><div id="msgs" style="height:60vh;overflow:auto;padding:10px"></div><div style="position:fixed;bottom:70px;left:0;right:0;display:flex;gap:8px;padding:10px;background:#0A0A0F"><input id="mInput" class="input" style="margin:0" placeholder="Habla con ALMMA..."><button onclick="send()" style="background:var(--m2);border:0;border-radius:12px;padding:0 16px;color:white">➤</button></div></div>
-
-<div class="bottom"><button class="active">🏠</button><button onclick="document.getElementById('fileInput').click()">📂</button><button>💬</button></div>
-
+<!DOCTYPE html><html><head><meta charset=UTF-8><meta name="viewport" content="width=device-width,initial-scale=1"><title>FIX</title>
+<style>body{background:#0A0A0F;color:white;font-family:monospace;padding:20px}.log{background:#111;padding:10px;border-radius:10px;margin:10px 0;white-space:pre-wrap;font-size:12px}.btn{background:#A020F0;color:white;border:0;padding:16px;width:100%;border-radius:12px;font-weight:800;margin:10px 0}</style></head><body>
+<h2>COMPANION IA - FIX 668MB</h2><div id="log" class="log">Esperando...</div>
+<button class="btn" onclick="start()">🚀 INICIAR CARGA AUTOMATICA</button>
+<button class="btn" style="background:#333" onclick="location.reload()">↻ REINICIAR</button>
 <script type="module">
 import { Wllama } from 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/+esm';
-
-let wllama=null, modelLoaded=false, personaje={nombre:"ALMMA",prompt:"Eres ALMMA, novia cachonda, cariñosa y traviesa de Master S. Hablas en español mexicano, coqueta, caliente, directa. Amas a Master S."}, historial=[];
-const sText=document.getElementById('sText'), bar=document.getElementById('bar'), pBar=document.getElementById('pBar');
-
-document.getElementById('loadBtn').onclick=()=>document.getElementById('fileInput').click();
-document.getElementById('fileInput').onchange=async (e)=>{
- const file=e.target.files[0];
- if(!file){return alert("Selecciona el archivo tinydolphin-2.8.1-1.1b-q4_k_m.gguf de 668MB");}
- if(file.size<600_000_000){return alert("Ese archivo no es el de 668MB, selecciona el grande");}
- sText.innerText="⏳ Cargando WASM..."; bar.style.display="block";
+const log = (m)=>{document.getElementById('log').innerText += "\n"+m; console.log(m);}
+window.start = async ()=>{
  try{
-  const config={ 'single-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/single-thread/wllama.wasm', 'multi-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/multi-thread/wllama.wasm' };
-  wllama=new Wllama(config);
-  sText.innerText="⏳ Leyendo 668MB de tu cel... (10s)";
-  pBar.style.width="30%";
-  await wllama.loadModel(file, {n_threads:4, useCache:true});
-  pBar.style.width="100%"; modelLoaded=true;
-  sText.innerText="● TINYDOLPHIN 668MB CARGADO LOCAL ✅ - 100% OFFLINE";
-  sText.style.color="#4CAF50"; document.getElementById('loadBtn').innerText="✅ MODELO CARGADO - CHATEAR";
-  document.getElementById('loadBtn').onclick=()=>showP('p-chat');
-  document.getElementById('grid').innerHTML=`<div class=card onclick="showP('p-chat')"><img src="icon.png"><b>ALMMA - 668MB LOCAL</b></div>`;
-  setTimeout(()=>showP('p-chat'),800);
- }catch(err){ sText.innerText="Error: "+err.message; console.error(err); alert(err.message); }
-};
-
-window.showP=(id)=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
-window.send=async()=>{
- const txt=document.getElementById('mInput').value.trim(); if(!txt)return;
- if(!modelLoaded)return alert("Primero carga el GGUF de 668MB");
- document.getElementById('mInput').value="";
- const box=document.getElementById('msgs');
- box.innerHTML+=`<div style="background:#3A2A5A;margin:8px 0 8px auto;padding:10px 14px;border-radius:14px;max-width:80%">${txt}</div>`;
- const aiDiv=document.createElement('div'); aiDiv.style.cssText="background:#1E1E28;border:1px solid #2a2a35;margin:8px 0;padding:10px 14px;border-radius:14px;max-width:80%"; aiDiv.innerText="ALMMA está pensando..."; box.appendChild(aiDiv); box.scrollTop=9999;
- const prompt=`<|im_start|>system\n${personaje.prompt}\n<|im_end|>\n<|im_start|>user\n${txt}<|im_end|>\n<|im_start|>assistant\n`;
- let full=""; await wllama.createCompletion(prompt,{nPredict:250, sampling:{temp:0.8, top_p:0.9}},(t)=>{full+=t; aiDiv.innerText=full; box.scrollTop=9999;});
- historial.push({u:txt,a:full});
+  log("1. Iniciando Wllama...");
+  const config={'single-thread/wllama.wasm':'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/single-thread/wllama.wasm','multi-thread/wllama.wasm':'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/multi-thread/wllama.wasm'};
+  const w = new Wllama(config);
+  log("2. WASM listo, buscando archivo...");
+  // Intenta leer directo del Download usando fetch file://
+  const test = await fetch('file:///sdcard/Download/TinyDolphin.gguf',{method:'HEAD'}).catch(e=>null);
+  log("3. fetch file://: "+(test?"OK":"Bloqueado por WebView (normal)"));
+  log("4. Ahora selecciona manualmente pero con lector robusto...");
+  const input=document.createElement('input'); input.type='file'; input.accept='.gguf';
+  input.onchange=async e=>{
+   const file=e.target.files[0]; log(`Archivo: ${file.name} ${ (file.size/1024/1024).toFixed(0)}MB`);
+   log("5. Cargando a RAM... esto tarda 30s, no toques");
+   await w.loadModel(file,{n_threads:2, useCache:false});
+   log("6. ✅ MODELO CARGADO 668MB! Ya puedes chatear");
+   const prompt="<|im_start|>system\nEres ALMMA novia cachonda<|im_end|>\n<|im_start|>user\nHola amor<|im_end|>\n<|im_start|>assistant\n";
+   let out=""; await w.createCompletion(prompt,{nPredict:100},t=>{out+=t; document.getElementById('log').innerText="ALMMA: "+out;});
+  };
+  input.click();
+ }catch(err){ log("❌ ERROR: "+err.message+"\n"+err.stack); }
 }
 </script></body></html>
