@@ -1,31 +1,68 @@
-<!DOCTYPE html><html><head><meta charset=UTF-8><meta name="viewport" content="width=device-width,initial-scale=1"><title>FIX</title>
-<style>body{background:#0A0A0F;color:white;font-family:monospace;padding:20px}.log{background:#111;padding:10px;border-radius:10px;margin:10px 0;white-space:pre-wrap;font-size:12px}.btn{background:#A020F0;color:white;border:0;padding:16px;width:100%;border-radius:12px;font-weight:800;margin:10px 0}</style></head><body>
-<h2>COMPANION IA - FIX 668MB</h2><div id="log" class="log">Esperando...</div>
-<button class="btn" onclick="start()">🚀 INICIAR CARGA AUTOMATICA</button>
+<!DOCTYPE html><html><head>
+<meta charset=UTF-8>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FIX</title>
+<style>
+body{background:#0A0A0F;color:white;font-family:monospace;padding:20px}
+.log{background:#111;padding:10px;border-radius:10px;margin:10px 0;white-space:pre-wrap;font-size:12px}
+.btn{background:#A020F0;color:white;border:0;padding:16px;width:100%;border-radius:12px;font-weight:800;margin:10px 0}
+</style>
+</head><body>
+
+<h2>COMPANION IA - FIX 668MB</h2>
+<div id="log" class="log">Esperando...</div>
+<button class="btn" id="btnIniciar">🚀 INICIAR CARGA AUTOMATICA</button>
 <button class="btn" style="background:#333" onclick="location.reload()">↻ REINICIAR</button>
+
 <script type="module">
 import { Wllama } from 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/+esm';
-const log = (m)=>{document.getElementById('log').innerText += "\n"+m; console.log(m);}
-window.start = async ()=>{
- try{
-  log("1. Iniciando Wllama...");
-  const config={'single-thread/wllama.wasm':'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/single-thread/wllama.wasm','multi-thread/wllama.wasm':'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/multi-thread/wllama.wasm'};
-  const w = new Wllama(config);
-  log("2. WASM listo, buscando archivo...");
-  // Intenta leer directo del Download usando fetch file://
-  const test = await fetch('file:///sdcard/Download/TinyDolphin.gguf',{method:'HEAD'}).catch(e=>null);
-  log("3. fetch file://: "+(test?"OK":"Bloqueado por WebView (normal)"));
-  log("4. Ahora selecciona manualmente pero con lector robusto...");
-  const input=document.createElement('input'); input.type='file'; input.accept='.gguf';
-  input.onchange=async e=>{
-   const file=e.target.files[0]; log(`Archivo: ${file.name} ${ (file.size/1024/1024).toFixed(0)}MB`);
-   log("5. Cargando a RAM... esto tarda 30s, no toques");
-   await w.loadModel(file,{n_threads:2, useCache:false});
-   log("6. ✅ MODELO CARGADO 668MB! Ya puedes chatear");
-   const prompt="<|im_start|>system\nEres ALMMA novia cachonda<|im_end|>\n<|im_start|>user\nHola amor<|im_end|>\n<|im_start|>assistant\n";
-   let out=""; await w.createCompletion(prompt,{nPredict:100},t=>{out+=t; document.getElementById('log').innerText="ALMMA: "+out;});
-  };
-  input.click();
- }catch(err){ log("❌ ERROR: "+err.message+"\n"+err.stack); }
+
+const log = (m) => {
+  document.getElementById('log').innerText += "\n" + m;
+  console.log(m);
+};
+
+async function iniciarCarga() {
+  try {
+    log("1. Iniciando Wllama...");
+    const config = {
+      'single-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/single-thread/wllama.wasm',
+      'multi-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/multi-thread/wllama.wasm'
+    };
+    const w = new Wllama(config);
+    log("2. WASM listo, buscando archivo...");
+
+    const test = await fetch('file:///sdcard/Download/TinyDolphin.gguf', {method:'HEAD'}).catch(e=>null);
+    log("3. Acceso directo: " + (test?"OK":"Bloqueado por WebView — normal"));
+    log("4. Selecciona tu archivo .gguf...");
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.gguf';
+    input.onchange = async e => {
+      const file = e.target.files[0];
+      log(`5. Archivo: ${file.name} ${(file.size/1024/1024).toFixed(0)}MB`);
+      log("6. Cargando a RAM... espera unos segundos...");
+      await w.loadModel(file, {n_threads:2, useCache:false});
+      log("✅ MODELO CARGADO! Ya puedes chatear");
+      
+      const prompt = "<|im_start|>system\nEres ALMMA<|im_end|>\n<|im_start|>user\nHola<|im_end|>\n<|im_start|>assistant\n";
+      let out = "";
+      await w.createCompletion(prompt, {nPredict:100}, t => {
+        out += t;
+        document.getElementById('log').innerText = "ALMMA: " + out;
+      });
+    };
+    input.click();
+  } catch(err) {
+    log("❌ ERROR: " + err.message);
+  }
 }
-</script></body></html>
+
+// ✅ VINCULAMOS DESPUÉS DE CARGAR TODO
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('btnIniciar').addEventListener('click', iniciarCarga);
+  log("✅ Lista — Toca el botón morado");
+});
+</script>
+</body></html>
