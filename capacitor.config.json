@@ -1,1 +1,9 @@
-{"appId":"com.masters.companionia","appName":"Companion IA By Master S","webDir":"www","bundledWebRuntime":false}
+{
+  "name": "companion-ia-master-s",
+  "version": "1.0.0",
+  "dependencies": {
+    "@capacitor/android": "^6.1.0",
+    "@capacitor/core": "^6.1.0",
+    "@capacitor/cli": "^6.1.0"
+  }
+}
