@@ -1,32 +1,64 @@
 name: Build Companion IA APK
 on:
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: 📥 Obtener código
+        uses: actions/checkout@v4
+
+      - name: 🟢 Configurar Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - uses: actions/setup-java@v4
+
+      - name: ☕ Configurar Java
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-      - uses: android-actions/setup-android@v3
-      - run: npm install && npm install @capacitor/android --save
-      - run: mkdir -p www && cp index.html logic.js style.css icon.png www/
-      - run: rm -rf android && npx cap add android
-      - name: Borrar iconos default
+
+      - name: 📱 Configurar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: 📦 Instalar dependencias
         run: |
-          rm -rf android/app/src/main/res/mipmap-anydpi-v26
-          rm -f android/app/src/main/res/mipmap-*/ic_launcher.xml
-          rm -f android/app/src/main/res/mipmap-*/ic_launcher_round.xml
-      - name: Inyectar Logo Morado
+          npm install
+          npm install @capacitor/cli @capacitor/android --save
+
+      - name: 📁 Copiar archivos a carpeta www
         run: |
-          for d in android/app/src/main/res/mipmap-*; do cp icon.png $d/ic_launcher.png; cp icon.png $d/ic_launcher_round.png; done
-      - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
-      - uses: actions/upload-artifact@v4
+          mkdir -p www
+          cp index.html logic.js style.css icon.png www/
+
+      - name: 📲 Agregar plataforma Android
+        run: |
+          rm -rf android
+          npx cap add android
+
+      - name: 🗑️ Borrar iconos por defecto
+        run: |
+          rm -rf android/app/src/main/res/mipmap-anydpi-v26 || true
+          rm -f android/app/src/main/res/mipmap-*/ic_launcher.xml || true
+          rm -f android/app/src/main/res/mipmap-*/ic_launcher_round.xml || true
+
+      - name: 🎨 Inyectar TU Logo Morado
+        run: |
+          for d in android/app/src/main/res/mipmap-*; do
+            cp icon.png $d/ic_launcher.png
+            cp icon.png $d/ic_launcher_round.png
+          done
+
+      - name: 🔨 Compilar APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: 📤 Subir APK listo
+        uses: actions/upload-artifact@v4
         with:
           name: Companion-IA-Master-S-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
