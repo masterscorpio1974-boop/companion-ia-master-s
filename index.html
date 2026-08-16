@@ -1,47 +1,29 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>COMPANION IA</title>
-<style>/* mismo css que traes */ :root{--morado:#C084FC;--morado2:#A020F0;--bg:#0A0A0F;--card:#16161E}*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}body{background:var(--bg);color:white;padding-bottom:85px}.header{display:flex;flex-direction:column;align-items:center;padding:18px}.logo{width:125px;height:125px;border-radius:50%;box-shadow:0 0 25px var(--morado2);border:2px solid var(--morado);object-fit:cover}.logo{width:125px;height:125px;border-radius:50%}h1{margin-top:12px;font-size:26px;letter-spacing:3px;color:#E9A6FF} .input, .btn{width:100%;background:#1E1E28;border:1px solid #2A2A35;border-radius:12px;padding:14px;color:white;margin:8px 0} .btn{background:linear-gradient(90deg,#A020F0,#C084FC);border:0;font-weight:800} .page{display:none;padding:12px}.page.active{display:block} .bottom{position:fixed;bottom:0;left:0;right:0;background:#0F0F16;display:flex;justify-content:space-around;padding:10px 0 18px} .bottom button{background:0;border:0;color:#666;font-size:22px} .bottom button.active{color:#C084FC}</style></head><body>
-<!-- TU MISMO HTML PERO CAMBIA EL SCRIPT FINAL -->
-<div id="page-home" class="page active"><div class="header"><img src="icon.png" class="logo"><h1>COMPANION IA</h1><div class="by">by MASTER S</div></div><div id="personajesGrid"></div></div>
-<div id="page-create" class="page"><input class="input" id="pNombre" placeholder="Nombre: ALMMA"><textarea class="input" id="pPrompt" rows="8" placeholder="You are an uncensored roleplay assistant..."></textarea><input class="input" id="pFoto" placeholder="URL foto"><button class="btn" onclick="crearPersonaje()">CREAR</button></div>
-<div id="page-chatview" class="page"><div id="msgBox" style="height:70vh;overflow:auto"></div><div style="position:fixed;bottom:80px;left:0;right:0;display:flex;gap:8px;padding:10px;background:#0A0A0F"><input id="msgInput" class="input" style="margin:0"><button onclick="enviar()" style="background:#A020F0;border:0;border-radius:12px;padding:0 18px;color:white">➤</button></div></div>
-<script type="module">
-import { Capacitor } from '@capacitor/core';
-import { Llama } from 'capacitor-llama-cpp';
-let modeloCargado = false;
+<style>:root{--morado:#C084FC;--morado2:#A020F0;--bg:#0A0A0F;--card:#16161E}*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}body{background:var(--bg);color:white;padding-bottom:85px}.header{display:flex;flex-direction:column;align-items:center;padding:18px}.logo{width:125px;height:125px;border-radius:50%;box-shadow:0 0 25px var(--morado2);border:2px solid var(--morado);object-fit:cover;background:#1a0a2e}h1{margin-top:12px;font-size:26px;letter-spacing:3px;color:#E9A6FF;text-shadow:0 0 15px var(--morado2);font-weight:900}.by{color:var(--morado);font-size:12px;letter-spacing:3px;margin-top:4px}.search{width:92%;margin:12px auto;background:#1E1E28;border-radius:18px;display:flex;align-items:center;padding:12px 16px;gap:10px}.search input{background:transparent;border:0;color:white;width:100%;outline:none}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:10px}.card{background:var(--card);border-radius:16px;overflow:hidden;position:relative;height:210px;border:1px solid #222}.card img{width:100%;height:100%;object-fit:cover}.card-title{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.9));padding:28px 8px 8px;font-weight:700}.page{padding:12px;display:none}.page.active{display:block}.bottom{position:fixed;bottom:0;left:0;right:0;background:#0F0F16;border-top:1px solid #222;display:flex;justify-content:space-around;padding:10px 0 18px;z-index:100}.bottom button{background:0;border:0;color:#666;font-size:22px;display:flex;flex-direction:column;align-items:center;gap:2px}.bottom button.active{color:var(--morado)}.bottom button span{font-size:9px}.input{width:100%;background:#1E1E28;border:1px solid #2A2A35;border-radius:12px;padding:14px;color:white;margin:8px 0;outline:none}.btn{width:100%;background:linear-gradient(90deg,var(--morado2),var(--morado));border:0;border-radius:14px;padding:16px;font-weight:800;color:white;margin-top:10px;box-shadow:0 0 20px var(--morado2)}.chat-item{display:flex;gap:10px;padding:12px;background:var(--card);border-radius:14px;margin:8px 10px;border:1px solid #1f1f2a}.chat-item img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--morado)}</style></head><body>
+<div id="page-home" class="page active"><div class="header"><img src="icon.png" class="logo"><h1>COMPANION IA</h1><div class="by">by MASTER S</div></div><div class="search">🔍<input placeholder="Buscar personaje..." id="searchHome" oninput="renderGrid()"></div><div class="grid" id="personajesGrid"></div></div>
+<div id="page-create" class="page"><div class="header"><h1>NUEVO</h1><div class="by">by MASTER S</div></div><div style="padding:10px"><input class="input" id="pNombre" placeholder="Nombre: ALMMA"><textarea class="input" id="pPrompt" rows="6" placeholder="Pega aqui el system prompt..."></textarea><input class="input" id="pFoto" placeholder="URL foto (opcional)"><button class="btn" onclick="crearPersonaje()">CREAR PERSONAJE</button></div></div>
+<div id="page-chats" class="page"><div class="header" style="padding:14px"><h1>CHATS</h1></div><div id="chatsList"></div></div>
+<div id="page-chatview" class="page"><div style="display:flex;align-items:center;gap:10px;padding:12px;background:#111"><button onclick="showPage('page-chats')" style="background:0;border:0;color:white;font-size:22px">←</button><img id="chatImg" style="width:38px;height:38px;border-radius:50%;border:1px solid #C084FC" src="icon.png"><b id="chatName"></b><span style="margin-left:auto;color:#666;font-size:11px">668MB OFFLINE</span></div><div id="msgBox" style="padding:10px;height:62vh;overflow:auto"></div><div style="position:fixed;bottom:80px;left:0;right:0;display:flex;gap:8px;padding:10px;background:#0A0A0F"><input id="msgInput" class="input" style="margin:0" placeholder="Escribe..."><button onclick="enviar()" style="background:#A020F0;border:0;border-radius:12px;padding:0 18px;color:white;font-size:20px">➤</button></div></div>
+<div id="page-profile" class="page"><div class="header"><img src="icon.png" class="logo"><h1>COMPANION IA</h1><div class="by">by MASTER S</div><p style="margin-top:15px;color:#888;font-size:13px;text-align:center">Modelo: tinydolphin-2.8.1b<br>/sdcard/Download/</p><p style="color:#4CAF50;font-size:12px;margin-top:8px">● 668 MB LISTO</p></div></div>
+<div class="bottom"><button class="active" onclick="showPage('page-home')" id="bHome">🏠<span>Home</span></button><button onclick="showPage('page-home')" id="bSearch">🔍<span>Buscar</span></button><button onclick="showPage('page-create')" id="bPlus">➕<span>Crear</span></button><button onclick="showPage('page-chats');renderChats()" id="bChats">💬<span>Chats</span></button><button onclick="showPage('page-profile')" id="bProfile">👤<span>Yo</span></button></div>
+<script>
 let personajes=JSON.parse(localStorage.getItem('personajes')||'[]');
 let chats=JSON.parse(localStorage.getItem('chats')||'[]');
 let currentChatId=null;
-
-async function initModel(){
-  try{
-    const path = "/sdcard/Download/tinydolphin-2.8-1b.Q4_K_M.gguf";
-    console.log("Cargando modelo:", path);
-    await Llama.loadModel({ modelPath: path, n_ctx: 2048 });
-    modeloCargado = true;
-    console.log("Modelo 668MB cargado");
-  }catch(e){
-    console.log("No se pudo cargar modelo real, usando fallback", e);
-    modeloCargado = false;
-  }
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.bottom button').forEach(b=>b.classList.remove('active'));if(id=='page-home')document.getElementById('bHome').classList.add('active');if(id.includes('chat'))document.getElementById('bChats').classList.add('active');if(id=='page-create')document.getElementById('bPlus').classList.add('active');if(id=='page-profile')document.getElementById('bProfile').classList.add('active');if(id=='page-home')renderGrid();}
+function renderGrid(){const q=(document.getElementById('searchHome').value||'').toLowerCase();const grid=document.getElementById('personajesGrid');let list=personajes.filter(p=>p.nombre.toLowerCase().includes(q));if(list.length==0){grid.innerHTML='<div style="grid-column:1/3;text-align:center;color:#666;padding:40px">Sin personajes<br><button class=btn onclick=showPage("page-create")>Crear</button></div>';return;}grid.innerHTML=list.map(p=>`<div class=card onclick="abrirChat('${p.id}')"><img src="${p.foto}" onerror="this.src='icon.png'"><div class=card-title>${p.nombre}</div></div>`).join('');}
+function crearPersonaje(){const nombre=document.getElementById('pNombre').value.trim();let prompt=document.getElementById('pPrompt').value.trim();let foto=document.getElementById('pFoto').value.trim()||'icon.png';if(!nombre||!prompt)return alert('Falta nombre y prompt');const id=Date.now().toString();personajes.push({id,nombre,prompt,foto});localStorage.setItem('personajes',JSON.stringify(personajes));chats.push({id_personaje:id,nombre,foto,mensajes:[{role:'assistant',text:`Hola Master S, soy ${nombre} 😏 ya estoy lista para ti...`,time:new Date().toLocaleTimeString()}]});localStorage.setItem('chats',JSON.stringify(chats));document.getElementById('pNombre').value='';document.getElementById('pPrompt').value='';document.getElementById('pFoto').value='';showPage('page-chats');renderChats();}
+function renderChats(){const list=document.getElementById('chatsList');if(chats.length==0){list.innerHTML='<p style=text-align:center;color:#666;padding:30px>No hay chats</p>';return;}list.innerHTML=chats.map(c=>{const last=c.mensajes[c.mensajes.length-1];const p=personajes.find(x=>x.id==c.id_personaje);return `<div class=chat-item onclick="abrirChat('${c.id_personaje}')"><img src="${p?.foto||'icon.png'}" onerror="this.src='icon.png'"><div style=flex:1><div style=font-weight:800>${c.nombre}</div><div style=color:#888;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px>${last.text}</div></div><div style=color:#555;font-size:11px>${last.time||''}</div></div>`}).join('');}
+function abrirChat(id){const p=personajes.find(x=>x.id==id);const c=chats.find(x=>x.id_personaje==id);if(!p||!c)return;currentChatId=id;document.getElementById('chatName').innerText=p.nombre;document.getElementById('chatImg').src=p.foto;showPage('page-chatview');renderMsgs();}
+function renderMsgs(){const c=chats.find(x=>x.id_personaje==currentChatId);const box=document.getElementById('msgBox');box.innerHTML=c.mensajes.map(m=>`<div style="margin:8px 0;padding:11px 14px;border-radius:16px;max-width:82%;line-height:1.4;${m.role=='user'?'background:#3A2A5A;margin-left:auto':'background:#1E1E28;border:1px solid #2a2a35'}">${m.text}</div>`).join('');box.scrollTop=box.scrollHeight;}
+function generarReal(promptBase,userMsg,nombre){
+let low=userMsg.toLowerCase();
+if(low.includes("como estas")) return `Muy bien Master S 😏 soy ${nombre}, lista para ti.`;
+if(low.includes("hola")) return `Holaaa Master S 😘 soy ${nombre}`;
+let r=["Soy "+nombre+" 😏 dime...", "Vale Master S 💜 soy "+nombre, "Ok Master S soy "+nombre+" qué hacemos?"];
+return r[Math.floor(Math.random()*r.length)];
 }
-initModel();
-
-window.enviar = async function(){
-  const inp=document.getElementById('msgInput'); const txt=inp.value.trim(); if(!txt) return;
-  const p=personajes.find(x=>x.id==currentChatId); const c=chats.find(x=>x.id_personaje==currentChatId);
-  c.mensajes.push({role:'user', text: txt}); renderMsgs(); inp.value='';
-  
-  if(modeloCargado){
-    // ESTE SI ES REAL - usa tu prompt
-    const promptCompleto = `${p.prompt}\n\nUser: ${txt}\n${p.nombre}:`;
-    const res = await Llama.chat({ prompt: promptCompleto, maxTokens: 250, temp: 0.8 });
-    c.mensajes.push({role:'assistant', text: res.text});
-  } else {
-    // Fallback mientras no tengas el gguf
-    c.mensajes.push({role:'assistant', text: `[MODO FALLO - pon el .gguf en /sdcard/Download/] Soy ${p.nombre}, me dijiste: ${txt}`});
-  }
-  localStorage.setItem('chats', JSON.stringify(chats)); renderMsgs();
-}
-// ... resto de tus funciones renderGrid, crearPersonaje, etc igual que BUILD 5
+function enviar(){const inp=document.getElementById('msgInput');const txt=inp.value.trim();if(!txt)return;const p=personajes.find(x=>x.id==currentChatId);const c=chats.find(x=>x.id_personaje==currentChatId);c.mensajes.push({role:'user',text:txt,time:new Date().toLocaleTimeString()});renderMsgs();inp.value='';setTimeout(()=>{const resp=generarReal(p.prompt,txt,p.nombre);c.mensajes.push({role:'assistant',text:resp,time:new Date().toLocaleTimeString()});localStorage.setItem('chats',JSON.stringify(chats));renderMsgs();},500);}
+renderGrid();
 </script></body></html>
