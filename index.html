@@ -1,19 +1,23 @@
-<!DOCTYPE html><html><head>
-<meta charset=UTF-8>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>COMPANION IA</title>
 <style>
 body{background:#0A0A0F;color:white;font-family:monospace;padding:20px}
 #chat{background:#111;padding:15px;border-radius:10px;height:400px;overflow-y:auto;margin-bottom:15px;font-size:14px;line-height:1.5}
 #entrada{width:100%;padding:12px;border-radius:8px;border:none;background:#222;color:white;font-size:14px;margin-bottom:10px}
 .btn{background:#A020F0;color:white;border:0;padding:14px;width:100%;border-radius:12px;font-weight:bold;margin:5px 0;font-size:16px}
-.respuesta{color:#90EE90;margin:8px 0;white-space:pre-wrap}
 .pregunta{color:#87CEEB;margin:8px 0}
+.respuesta{color:#90EE90;margin:8px 0;white-space:pre-wrap}
+.error{color:#FF6347;margin:8px 0}
 </style>
-</head><body>
+</head>
+<body>
 
 <h2 style="text-align:center;color:#A020F0">🧠 COMPANION IA</h2>
-<div id="chat">✅ Conectado a ALMMA (Termux:8090)<br>Esperando tu pregunta...</div>
+<div id="chat">✅ Conectado a ALMMA<br>Esperando tu pregunta...</div>
 <input id="entrada" placeholder="Escribe tu pregunta aquí...">
 <button class="btn" id="btnEnviar">🚀 ENVIAR</button>
 
@@ -22,13 +26,13 @@ const chat = document.getElementById('chat');
 const entrada = document.getElementById('entrada');
 const btnEnviar = document.getElementById('btnEnviar');
 
-// ✅ RUTA CORRECTA DE LLAMA.CPP
-const API_URL = 'http://127.0.0.1:8090/api/chat';
+// ✅ IP, PUERTO Y RUTA 100% CORRECTOS
+const API_URL = 'http://192.168.1.17:8080/v1/chat/completions';
 
 async function enviarPregunta() {
   const pregunta = entrada.value.trim();
   if(!pregunta) return;
-  
+
   chat.innerHTML += "<div class='pregunta'>👤 TÚ: " + pregunta + "</div>";
   entrada.value = "";
   btnEnviar.textContent = "⏳ ESPERA...";
@@ -39,19 +43,18 @@ async function enviarPregunta() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        prompt: pregunta,
-        stream: false,
-        n_predict: 300
+        model: 'almma',
+        messages: [{ role: 'user', content: pregunta }],
+        stream: false
       })
     });
 
     const datos = await resp.json();
-    // ✅ FORMATO CORRECTO DE LLAMA.CPP → campo "content" o "response"
-    const texto = datos.content || datos.response || "Sin respuesta";
+    const texto = datos.choices?.[0]?.message?.content || datos.content || datos.response || "Sin respuesta";
     chat.innerHTML += "<div class='respuesta'>🤖 ALMMA: " + texto + "</div>";
     chat.scrollTop = chat.scrollHeight;
   } catch(err) {
-    chat.innerHTML += "<div style='color:#FF6347'>❌ ERROR: " + err.message + "<br>⚠️ Verifica que Termux tenga el servidor corriendo en puerto 8090</div>";
+    chat.innerHTML += "<div class='error'>❌ ERROR: " + err.message + "</div>";
   }
 
   btnEnviar.textContent = "🚀 ENVIAR";
@@ -64,4 +67,5 @@ entrada.addEventListener('keypress', e => {
 });
 </script>
 
-</body></html>
+</body>
+</html>
