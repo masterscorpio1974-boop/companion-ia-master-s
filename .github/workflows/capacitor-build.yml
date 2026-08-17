@@ -31,12 +31,16 @@ jobs:
       - name: 📁 Copiar archivos a carpeta www
         run: |
           mkdir -p www
-          cp index.html logic.js style.css icon.png -t www/
+          cp index.html app.js style.css icon.png -t www/
 
       - name: 📲 Agregar plataforma Android
         run: |
           rm -rf android
           npx cap add android
+
+      - name: 🔓 Permitir HTTP a Termux (cleartext)
+        run: |
+          sed -i 's/<application/<application android:usesCleartextTraffic="true"/' android/app/src/main/AndroidManifest.xml
 
       - name: 🗑️ Borrar iconos por defecto
         run: |
@@ -62,5 +66,3 @@ jobs:
         with:
           name: Companion-IA-Master-S-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
-
-  
