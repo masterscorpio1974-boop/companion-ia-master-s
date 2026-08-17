@@ -1,6 +1,14 @@
 {
-  "appId": "com.companion.masterS",
-  "appName": "COMPANION IA",
+  "appId": "com.masters.companionia",
+  "appName": "Companion IA",
   "webDir": "www",
-  "bundledWebRuntime": false
+  "server": {
+    "cleartext": true,
+    "allowNavigation": ["*"]
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
 }
