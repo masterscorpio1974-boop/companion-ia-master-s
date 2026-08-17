@@ -1,187 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>COMPANION IA</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif}
-body{background:#0A0A0F;color:white;min-height:100vh;display:flex;flex-direction:column;padding-bottom:80px}
-
-/* ===== LOGO CÍRCULO CON BRILLO — ÍCONO CENTRADO ===== */
-.logo-wrapper{text-align:center;padding:40px 20px 20px}
-.logo-circle{width:200px;height:200px;margin:0 auto;border-radius:50%;background:radial-gradient(circle,#3B0764 0%,#1E063D 50%,#0A0A0F 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px #A855F7, 0 0 100px #A855F740, inset 0 0 40px #A855F730}
-.logo-icon{font-size:90px;line-height:1;filter:drop-shadow(0 0 10px #E9D5FF)}
-
-/* ===== TÍTULOS ===== */
-h1{text-align:center;font-size:46px;color:#E9D5FF;letter-spacing:4px;text-shadow:0 0 25px #C084FC80;margin-top:30px;font-weight:600}
-.subtitulo{text-align:center;color:#C084FC;font-size:18px;letter-spacing:2px;margin-top:8px}
-
-/* ===== BUSCADOR ===== */
-.buscador{margin:35px 25px 20px}
-.buscador-box{display:flex;align-items:center;background:#1F1F2E;border-radius:50px;padding:16px 25px;gap:12px}
-.buscador-icon{color:#9CA3AF;font-size:20px}
-.buscador input{flex:1;background:transparent;border:none;color:white;font-size:17px;outline:none}
-.buscador input::placeholder{color:#6B7280}
-
-/* ===== SIN PERSONAJES ===== */
-.sin-personajes{text-align:center;color:#6B7280;font-size:24px;padding:50px 0}
-
-/* ===== BOTÓN CREAR ===== */
-.btn-crear{margin:0 25px;background:linear-gradient(90deg,#7C3AED,#A855F7,#C084FC);border:none;border-radius:16px;padding:18px;font-size:22px;font-weight:600;color:white;width:calc(100% - 50px);box-shadow:0 0 25px #A855F750;cursor:pointer;transition:transform 0.1s}
-.btn-crear:active{transform:scale(0.97)}
-
-/* ===== CHAT ===== */
-#pantalla-chat{display:none;padding:20px}
-.chat-header{display:flex;align-items:center;gap:15px;margin-bottom:20px}
-.btn-volver{background:transparent;border:none;color:#A855F7;font-size:28px;cursor:pointer}
-#chat{background:#12121F;padding:16px;border-radius:16px;height:450px;overflow-y:auto;margin-bottom:15px;font-size:15px;line-height:1.7;border:1px solid #2E2E40}
-#entrada{width:100%;padding:15px 18px;border-radius:12px;border:none;background:#1F1F2E;color:white;font-size:16px;margin-bottom:12px;outline:none}
-.btn-enviar{background:linear-gradient(90deg,#7C3AED,#A855F7);border:none;border-radius:12px;padding:14px;width:100%;font-size:17px;font-weight:600;color:white;cursor:pointer}
-.btn-enviar:disabled{opacity:0.6}
-.pregunta{color:#93C5FD;margin:10px 0;padding:12px;background:#1E293B;border-radius:10px;border-left:3px solid #3B82F6}
-.respuesta{color:#D8B4FE;margin:10px 0;padding:12px;background:#2E106540;border-radius:10px;border-left:3px solid #A855F7}
-.error{color:#FCA5A5;margin:10px 0;padding:12px;background:#450A0A;border-radius:10px}
-
-/* ===== BARRA NAV INFERIOR ===== */
-.nav-bar{position:fixed;bottom:0;left:0;right:0;background:#0F0F1A;border-top:1px solid #2A2A40;display:flex;justify-content:space-around;padding:10px 0 8px}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:#6B7280;font-size:12px;cursor:pointer}
-.nav-item.activo{color:#A855F7}
-.nav-icon{font-size:26px}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Companion IA</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<!-- PANTALLA PRINCIPAL -->
-<div id="pantalla-inicio">
-  <div class="logo-wrapper">
-    <div class="logo-circle">
-      <span class="logo-icon">👩‍💻</span>
+<div id="app">
+  <header id="mainHeader">
+    <div class="logo-wrap">
+      <div class="logo-ring"><div class="logo-inner">🧠</div></div>
+      <h1>COMPANION IA</h1>
+      <p class="byline">by MASTER S</p>
     </div>
-    <h1>COMPANION IA</h1>
-    <p class="subtitulo">by MASTER S</p>
-  </div>
-
-  <div class="buscador">
-    <div class="buscador-box">
-      <span class="buscador-icon">🔍</span>
-      <input type="text" placeholder="Buscar personaje...">
-    </div>
-  </div>
-
-  <p class="sin-personajes">Sin personajes</p>
-
-  <button class="btn-crear" id="btnCrear">Crear</button>
+  </header>
+  <main id="pageContent"></main>
+  <nav id="bottomNav">
+    <button class="nav-btn active" data-page="home"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-btn" data-page="buscar"><span class="nav-icon">🔍</span><span class="nav-label">Buscar</span></button>
+    <button class="nav-btn" data-page="crear"><span class="nav-icon">➕</span><span class="nav-label">Crear</span></button>
+    <button class="nav-btn" data-page="chats"><span class="nav-icon">💬</span><span class="nav-label">Chats</span></button>
+    <button class="nav-btn" data-page="yo"><span class="nav-icon">👤</span><span class="nav-label">Yo</span></button>
+  </nav>
 </div>
-
-<!-- PANTALLA CHAT -->
-<div id="pantalla-chat">
-  <div class="chat-header">
-    <button class="btn-volver" id="btnVolver">←</button>
-    <h2 style="color:#A855F7">💬 ALMMA</h2>
-  </div>
-  <div id="chat">✅ Conectado a ALMMA<br>Esperando tu pregunta...</div>
-  <input id="entrada" placeholder="Escribe tu mensaje...">
-  <button class="btn-enviar" id="btnEnviar">🚀 ENVIAR</button>
-</div>
-
-<!-- BARRA NAVEGACIÓN -->
-<div class="nav-bar">
-  <div class="nav-item activo" id="navHome">
-    <span class="nav-icon">🏠</span>
-    <span>Home</span>
-  </div>
-  <div class="nav-item">
-    <span class="nav-icon">🔍</span>
-    <span>Buscar</span>
-  </div>
-  <div class="nav-item" id="navCrear">
-    <span class="nav-icon">➕</span>
-    <span>Crear</span>
-  </div>
-  <div class="nav-item" id="navChats">
-    <span class="nav-icon">💬</span>
-    <span>Chats</span>
-  </div>
-  <div class="nav-item">
-    <span class="nav-icon">👤</span>
-    <span>Yo</span>
-  </div>
-</div>
-
-<script>
-// === NAVEGACIÓN ===
-const pantallaInicio = document.getElementById('pantalla-inicio');
-const pantallaChat = document.getElementById('pantalla-chat');
-const btnCrear = document.getElementById('btnCrear');
-const btnVolver = document.getElementById('btnVolver');
-const navChats = document.getElementById('navChats');
-const navHome = document.getElementById('navHome');
-const navCrear = document.getElementById('navCrear');
-
-function abrirChat() {
-  pantallaInicio.style.display = 'none';
-  pantallaChat.style.display = 'block';
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('activo'));
-  navChats.classList.add('activo');
-}
-function volverInicio() {
-  pantallaChat.style.display = 'none';
-  pantallaInicio.style.display = 'block';
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('activo'));
-  navHome.classList.add('activo');
-}
-btnCrear.addEventListener('click', abrirChat);
-navCrear.addEventListener('click', abrirChat);
-navChats.addEventListener('click', abrirChat);
-btnVolver.addEventListener('click', volverInicio);
-navHome.addEventListener('click', volverInicio);
-
-// === CONEXIÓN DIRECTA A ALMMA / LLAMA.CPP ===
-const chat = document.getElementById('chat');
-const entrada = document.getElementById('entrada');
-const btnEnviar = document.getElementById('btnEnviar');
-
-// ✅ TU IP, PUERTO Y RUTA CORRECTA
-const API_URL = 'http://192.168.1.17:8080/completion';
-
-async function enviarPregunta() {
-  const pregunta = entrada.value.trim();
-  if(!pregunta) return;
-
-  chat.innerHTML += "<div class='pregunta'>👤 TÚ: " + pregunta + "</div>";
-  entrada.value = "";
-  btnEnviar.textContent = "⏳ ESPERA...";
-  btnEnviar.disabled = true;
-
-  try {
-    const resp = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        prompt: pregunta,
-        stream: false,
-        n_predict: 300
-      })
-    });
-
-    const datos = await resp.json();
-    const texto = datos.content || datos.response || "Sin respuesta";
-    chat.innerHTML += "<div class='respuesta'>🤖 ALMMA: " + texto + "</div>";
-    chat.scrollTop = chat.scrollHeight;
-  } catch(err) {
-    chat.innerHTML += "<div class='error'>❌ ERROR: " + err.message + "<br>⚠️ Verifica que Termux tenga el servidor corriendo</div>";
-  }
-
-  btnEnviar.textContent = "🚀 ENVIAR";
-  btnEnviar.disabled = false;
-}
-
-btnEnviar.addEventListener('click', enviarPregunta);
-entrada.addEventListener('keypress', e => {
-  if(e.key === 'Enter') enviarPregunta();
-});
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
