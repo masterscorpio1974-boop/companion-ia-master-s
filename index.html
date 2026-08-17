@@ -1,333 +1,66 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Companion IA - Cargador GGUF</title>
+<!DOCTYPE html><html><head>
+<meta charset=UTF-8>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>COMPANION IA</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: #0A0A0F;
-  color: #e0e0e0;
-  font-family: 'Segoe UI', system-ui, monospace;
-  padding: 20px;
-  max-width: 900px;
-  margin: 0 auto;
-  min-height: 100vh;
-}
-h2 { color: #A020F0; margin-bottom: 10px; text-align: center; }
-.subtitle { text-align: center; color: #666; margin-bottom: 20px; font-size: 13px; }
-
-.log {
-  background: #111;
-  padding: 12px;
-  border-radius: 10px;
-  margin: 10px 0;
-  white-space: pre-wrap;
-  font-size: 12px;
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid #222;
-  color: #0f0;
-  font-family: monospace;
-}
-.log .error { color: #ff4444; }
-.log .success { color: #00ff88; }
-.log .info { color: #88ccff; }
-
-.btn {
-  background: #A020F0;
-  color: white;
-  border: 0;
-  padding: 14px;
-  width: 100%;
-  border-radius: 12px;
-  font-weight: 700;
-  margin: 8px 0;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 14px;
-}
-.btn:hover { background: #8010c0; transform: translateY(-1px); }
-.btn:disabled { background: #444; cursor: not-allowed; transform: none; }
-.btn-secondary { background: #333; }
-.btn-secondary:hover { background: #444; }
-
-.input-group {
-  display: flex;
-  gap: 8px;
-  margin: 10px 0;
-}
-.input-group input {
-  flex: 1;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  color: white;
-  padding: 12px;
-  border-radius: 10px;
-  font-family: monospace;
-  font-size: 13px;
-}
-.input-group input:focus { outline: none; border-color: #A020F0; }
-
-#chatContainer {
-  display: none;
-  margin-top: 20px;
-  border: 1px solid #222;
-  border-radius: 12px;
-  overflow: hidden;
-}
-#chatHistory {
-  height: 300px;
-  overflow-y: auto;
-  padding: 15px;
-  background: #0d0d12;
-}
-.message {
-  margin: 8px 0;
-  padding: 10px 14px;
-  border-radius: 12px;
-  max-width: 85%;
-  line-height: 1.5;
-  font-size: 14px;
-  animation: fadeIn 0.3s ease;
-}
-@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-.user-msg { background: #A020F0; margin-left: auto; color: white; }
-.ia-msg { background: #1a1a2e; margin-right: auto; border: 1px solid #333; }
-.ia-msg.loading::after {
-  content: '▋';
-  animation: blink 1s infinite;
-  margin-left: 4px;
-}
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-#chatInputArea {
-  display: flex;
-  gap: 8px;
-  padding: 12px;
-  background: #111;
-  border-top: 1px solid #222;
-}
-#chatInputArea input {
-  flex: 1;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  color: white;
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 14px;
-}
-#chatInputArea button {
-  background: #A020F0;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-}
-#chatInputArea button:disabled { background: #444; }
-
-.status-bar {
-  text-align: center;
-  padding: 8px;
-  font-size: 12px;
-  color: #666;
-  background: #0a0a0f;
-}
-
-.hidden { display: none !important; }
+body{background:#0A0A0F;color:white;font-family:monospace;padding:20px}
+#chat{background:#111;padding:15px;border-radius:10px;height:400px;overflow-y:auto;margin-bottom:15px;font-size:14px;line-height:1.5}
+#entrada{width:100%;padding:12px;border-radius:8px;border:none;background:#222;color:white;font-size:14px;margin-bottom:10px}
+.btn{background:#A020F0;color:white;border:0;padding:14px;width:100%;border-radius:12px;font-weight:bold;margin:5px 0;font-size:16px}
+.respuesta{color:#90EE90;margin:8px 0}
+.pregunta{color:#87CEEB;margin:8px 0}
 </style>
-</head>
-<body>
+</head><body>
 
-<h2>🧠 COMPANION IA</h2>
-<div class="subtitle">Cargador de modelos GGUF local con Wllama</div>
-
-<div id="log" class="log">Esperando...</div>
-
-<div id="setupArea">
-  <button class="btn" id="btnIniciar">🚀 CARGAR WLLAMA</button>
-  
-  <div class="input-group hidden" id="urlGroup">
-    <input type="text" id="urlInput" placeholder="URL del modelo .gguf (opcional)">
-    <button class="btn btn-secondary" id="btnUrl" style="width:auto; margin:0;">📥 Descargar</button>
-  </div>
-  
-  <button class="btn btn-secondary hidden" id="btnFile">📁 O seleccionar archivo local</button>
-  <button class="btn btn-secondary" onclick="location.reload()">↻ Reiniciar</button>
-</div>
-
-<div id="chatContainer">
-  <div class="status-bar">🟢 Modelo cargado - Listo para chatear</div>
-  <div id="chatHistory"></div>
-  <div id="chatInputArea">
-    <input type="text" id="msgInput" placeholder="Escribe tu mensaje..." autocomplete="off">
-    <button id="btnSend">Enviar</button>
-  </div>
-</div>
+<h2 style="text-align:center;color:#A020F0">🧠 COMPANION IA</h2>
+<div id="chat">✅ Conectado a ALMMA (Termux:8090)<br>Esperando tu pregunta...</div>
+<input id="entrada" placeholder="Escribe tu pregunta aquí...">
+<button class="btn" id="btnEnviar">🚀 ENVIAR</button>
 
 <script>
-const $ = id => document.getElementById(id);
-const logEl = $('log');
-let wllama = null;
-let isGenerating = false;
+const chat = document.getElementById('chat');
+const entrada = document.getElementById('entrada');
+const btnEnviar = document.getElementById('btnEnviar');
 
-const log = (msg, type = 'info') => {
-  const span = document.createElement('span');
-  span.className = type;
-  span.textContent = msg;
-  logEl.appendChild(document.createTextNode('\n'));
-  logEl.appendChild(span);
-  logEl.scrollTop = logEl.scrollHeight;
-  console.log(`[${type}]`, msg);
-};
+const API_URL = 'http://127.0.0.1:8090/v1/chat/completions';
 
-// Cargar Wllama desde CDN
-async function cargarWllama() {
-  return new Promise((resolve, reject) => {
-    if (window.Wllama) { resolve(); return; }
-    const s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/dist/wllama.iife.min.js';
-    s.onload = () => { log('Wllama cargado desde CDN', 'success'); resolve(); };
-    s.onerror = () => reject(new Error('No se pudo cargar Wllama. Verifica tu conexión.'));
-    document.head.appendChild(s);
-  });
-}
+async function enviarPregunta() {
+  const pregunta = entrada.value.trim();
+  if(!pregunta) return;
+  
+  chat.innerHTML += "<div class='pregunta'>👤 TÚ: " + pregunta + "</div>";
+  entrada.value = "";
+  btnEnviar.textContent = "⏳ ESPERA...";
+  btnEnviar.disabled = true;
 
-// Mostrar/ocultar elementos
-function toggleSetup(show) {
-  $('setupArea').style.display = show ? 'block' : 'none';
-  $('chatContainer').style.display = show ? 'none' : 'flex';
-  $('chatContainer').style.flexDirection = 'column';
-}
-
-// Cargar modelo
-async function loadModel(source, isUrl = false) {
   try {
-    $('btnIniciar').disabled = true;
-    
-    if (!window.Wllama) await cargarWllama();
-    
-    const config = {
-      'single-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/single-thread/wllama.wasm',
-      'multi-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/multi-thread/wllama.wasm'
-    };
-    
-    wllama = new Wllama(config);
-    log('Inicializando Wllama...', 'info');
-    
-    const loadConfig = { 
-      n_threads: navigator.hardwareConcurrency > 4 ? 4 : 2,
-      useCache: true 
-    };
-    
-    if (isUrl) {
-      log(`Descargando modelo desde URL...`, 'info');
-      await wllama.loadModelFromUrl(source, loadConfig);
-    } else {
-      log(`Cargando archivo: ${source.name} (${(source.size/1024/1024).toFixed(1)} MB)`, 'info');
-      await wllama.loadModel(source, loadConfig);
-    }
-    
-    log('✅ Modelo cargado correctamente', 'success');
-    toggleSetup(false);
-    
-  } catch (err) {
-    log(`❌ Error: ${err.message}`, 'error');
-    $('btnIniciar').disabled = false;
-  }
-}
-
-// Enviar mensaje
-async function sendMessage() {
-  const input = $('msgInput');
-  const text = input.value.trim();
-  if (!text || isGenerating || !wllama) return;
-  
-  // Mostrar mensaje usuario
-  addMessage(text, 'user');
-  input.value = '';
-  
-  // Mostrar indicador de IA
-  isGenerating = true;
-  $('btnSend').disabled = true;
-  const iaMsg = addMessage('', 'ia');
-  iaMsg.classList.add('loading');
-  
-  try {
-    // Prompt simple - ajusta según el modelo que uses
-    const prompt = `<|user|>\n${text}\n<|assistant|>\n`;
-    
-    const result = await wllama.createCompletion(prompt, {
-      nPredict: 512,
-      sampling: { temp: 0.7 },
-      onNewToken: (token, piece, currentText) => {
-        iaMsg.textContent = currentText.replace(/<\|.*?\|>/g, '').trim();
-      }
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'almma',
+        messages: [{ role: 'user', content: pregunta }],
+        stream: false,
+        n_predict: 300
+      })
     });
-    
-    iaMsg.classList.remove('loading');
-    
-  } catch (err) {
-    iaMsg.textContent = `Error: ${err.message}`;
-    iaMsg.style.color = '#ff4444';
-    log(`Error en generación: ${err.message}`, 'error');
-  } finally {
-    isGenerating = false;
-    $('btnSend').disabled = false;
-    $('msgInput').focus();
+
+    const datos = await resp.json();
+    const texto = datos.choices?.[0]?.message?.content || datos.content || "Sin respuesta";
+    chat.innerHTML += "<div class='respuesta'>🤖 ALMMA: " + texto + "</div>";
+    chat.scrollTop = chat.scrollHeight;
+  } catch(err) {
+    chat.innerHTML += "<div style='color:#FF6347'>❌ ERROR: " + err.message + "<br>⚠️ Asegúrate de que Termux siga corriendo el servidor en puerto 8090</div>";
   }
+
+  btnEnviar.textContent = "🚀 ENVIAR";
+  btnEnviar.disabled = false;
 }
 
-function addMessage(text, sender) {
-  const div = document.createElement('div');
-  div.className = `message ${sender}-msg`;
-  div.textContent = text;
-  $('chatHistory').appendChild(div);
-  $('chatHistory').scrollTop = $('chatHistory').scrollHeight;
-  return div;
-}
-
-// Event Listeners
-$('btnIniciar').addEventListener('click', async () => {
-  try {
-    await cargarWllama();
-    $('btnIniciar').classList.add('hidden');
-    $('urlGroup').classList.remove('hidden');
-    $('btnFile').classList.remove('hidden');
-    log('Wllama listo. Selecciona un modelo o ingresa una URL.', 'success');
-  } catch (err) {
-    log(err.message, 'error');
-  }
+btnEnviar.addEventListener('click', enviarPregunta);
+entrada.addEventListener('keypress', e => {
+  if(e.key === 'Enter') enviarPregunta();
 });
-
-$('btnFile').addEventListener('click', () => {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.gguf';
-  input.onchange = e => {
-    if (e.target.files[0]) loadModel(e.target.files[0], false);
-  };
-  input.click();
-});
-
-$('btnUrl').addEventListener('click', () => {
-  const url = $('urlInput').value.trim();
-  if (!url) { log('Ingresa una URL válida', 'error'); return; }
-  if (!url.endsWith('.gguf')) { log('La URL debe terminar en .gguf', 'error'); return; }
-  loadModel(url, true);
-});
-
-$('btnSend').addEventListener('click', sendMessage);
-$('msgInput').addEventListener('keypress', e => {
-  if (e.key === 'Enter') sendMessage();
-});
-
-// Inicializar
-log('✅ App lista. Toca "CARGAR WLLAMA" para comenzar.', 'success');
 </script>
 
-</body>
-</html>
+</body></html>
