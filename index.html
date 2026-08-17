@@ -7,7 +7,7 @@ body{background:#0A0A0F;color:white;font-family:monospace;padding:20px}
 #chat{background:#111;padding:15px;border-radius:10px;height:400px;overflow-y:auto;margin-bottom:15px;font-size:14px;line-height:1.5}
 #entrada{width:100%;padding:12px;border-radius:8px;border:none;background:#222;color:white;font-size:14px;margin-bottom:10px}
 .btn{background:#A020F0;color:white;border:0;padding:14px;width:100%;border-radius:12px;font-weight:bold;margin:5px 0;font-size:16px}
-.respuesta{color:#90EE90;margin:8px 0}
+.respuesta{color:#90EE90;margin:8px 0;white-space:pre-wrap}
 .pregunta{color:#87CEEB;margin:8px 0}
 </style>
 </head><body>
@@ -22,7 +22,8 @@ const chat = document.getElementById('chat');
 const entrada = document.getElementById('entrada');
 const btnEnviar = document.getElementById('btnEnviar');
 
-const API_URL = 'http://127.0.0.1:8090/v1/chat/completions';
+// ✅ RUTA CORRECTA DE LLAMA.CPP
+const API_URL = 'http://127.0.0.1:8090/api/chat';
 
 async function enviarPregunta() {
   const pregunta = entrada.value.trim();
@@ -38,19 +39,19 @@ async function enviarPregunta() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'almma',
-        messages: [{ role: 'user', content: pregunta }],
+        prompt: pregunta,
         stream: false,
         n_predict: 300
       })
     });
 
     const datos = await resp.json();
-    const texto = datos.choices?.[0]?.message?.content || datos.content || "Sin respuesta";
+    // ✅ FORMATO CORRECTO DE LLAMA.CPP → campo "content" o "response"
+    const texto = datos.content || datos.response || "Sin respuesta";
     chat.innerHTML += "<div class='respuesta'>🤖 ALMMA: " + texto + "</div>";
     chat.scrollTop = chat.scrollHeight;
   } catch(err) {
-    chat.innerHTML += "<div style='color:#FF6347'>❌ ERROR: " + err.message + "<br>⚠️ Asegúrate de que Termux siga corriendo el servidor en puerto 8090</div>";
+    chat.innerHTML += "<div style='color:#FF6347'>❌ ERROR: " + err.message + "<br>⚠️ Verifica que Termux tenga el servidor corriendo en puerto 8090</div>";
   }
 
   btnEnviar.textContent = "🚀 ENVIAR";
