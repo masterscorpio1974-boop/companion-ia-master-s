@@ -11,12 +11,12 @@ body{background:#0A0A0F;color:white;font-family:monospace;padding:20px}
 
 <h2>COMPANION IA - FIX 668MB</h2>
 <div id="log" class="log">Esperando...</div>
+
+<!-- ✅ BOTÓN CON ID CORRECTO -->
 <button class="btn" id="btnIniciar">🚀 INICIAR CARGA AUTOMATICA</button>
 <button class="btn" style="background:#333" onclick="location.reload()">↻ REINICIAR</button>
 
-<script type="module">
-import { Wllama } from 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/+esm';
-
+<script>
 const log = (m) => {
   document.getElementById('log').innerText += "\n" + m;
   console.log(m);
@@ -24,34 +24,26 @@ const log = (m) => {
 
 async function iniciarCarga() {
   try {
-    log("1. Iniciando Wllama...");
+    log("1. Cargando Wllama...");
+    const { Wllama } = await import('https://cdn.jsdelivr.net/npm/wllama@2.3.4/+esm');
+    
     const config = {
       'single-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/single-thread/wllama.wasm',
       'multi-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/wllama@2.3.4/esm/multi-thread/wllama.wasm'
     };
+    
     const w = new Wllama(config);
-    log("2. WASM listo, buscando archivo...");
-
-    const test = await fetch('file:///sdcard/Download/TinyDolphin.gguf', {method:'HEAD'}).catch(e=>null);
-    log("3. Acceso directo: " + (test?"OK":"Bloqueado por WebView — normal"));
-    log("4. Selecciona tu archivo .gguf...");
+    log("2. Listo → selecciona tu modelo .gguf");
 
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.gguf';
     input.onchange = async e => {
       const file = e.target.files[0];
-      log(`5. Archivo: ${file.name} ${(file.size/1024/1024).toFixed(0)}MB`);
-      log("6. Cargando a RAM... espera unos segundos...");
+      log("3. Archivo: " + file.name + " (" + (file.size/1024/1024).toFixed(0) + " MB)");
+      log("4. Cargando a RAM... espera...");
       await w.loadModel(file, {n_threads:2, useCache:false});
-      log("✅ MODELO CARGADO! Ya puedes chatear");
-      
-      const prompt = "<|im_start|>system\nEres ALMMA<|im_end|>\n<|im_start|>user\nHola<|im_end|>\n<|im_start|>assistant\n";
-      let out = "";
-      await w.createCompletion(prompt, {nPredict:100}, t => {
-        out += t;
-        document.getElementById('log').innerText = "ALMMA: " + out;
-      });
+      log("✅ MODELO CARGADO!");
     };
     input.click();
   } catch(err) {
@@ -59,10 +51,11 @@ async function iniciarCarga() {
   }
 }
 
-// ✅ VINCULAMOS DESPUÉS DE CARGAR TODO
+// ✅ VINCULACIÓN CORRECTA AL CARGAR LA PÁGINA
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('btnIniciar').addEventListener('click', iniciarCarga);
-  log("✅ Lista — Toca el botón morado");
+  log("✅ APP LISTA → Toca el botón morado");
+  document.getElementById('btnIniciar').onclick = iniciarCarga;
 });
 </script>
+
 </body></html>
