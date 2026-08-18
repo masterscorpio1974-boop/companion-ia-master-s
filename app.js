@@ -126,7 +126,7 @@ const cajaTexto = document.getElementById("globo-almma-text");
 cajaTexto.innerHTML = "Pensando... ▎";
 
 try {
-    const response = await fetch('http://127.0.0.1:11434/api/generate', {
+  const response = await fetch('http://127.0.0.1:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
