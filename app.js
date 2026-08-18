@@ -161,6 +161,8 @@ try {
         console.error("Error de comunicación local:", error);
         cajaTexto.innerHTML = "Error al conectar con Ollama. Verifica que Termux esté activo.";
     }
+}); // <-- ESTA ES LA QUE CIERRA EL SUBMIT DE LA LÍNEA 112
+
 // Activar los eventos táctiles para los botones del menú nuevo
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -169,28 +171,14 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         targetBtn.classList.add('active');
         
         const page = targetBtn.getAttribute('data-page');
-        // Usamos tu función original del Build #22 para cambiar de pestaña
+        
+        // Mapeamos los nombres nuevos a los IDs reales de tus funciones (línea 8)
         if (typeof mostrarPantallaId === 'function') {
-            mostrarPantallaId('pantalla-' + page);
-        }
-    });
-});
-// Activar navegación amarrando tus IDs originales de la app
-document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        const targetBtn = e.currentTarget;
-        targetBtn.classList.add('active');
-        
-        const page = targetBtn.getAttribute('data-page');
-        
-        // Traducimos el menú nuevo a tus contenedores exactos del Build #22
-        if (typeof mostrarPantalla === 'function') {
-            if (page === 'home') mostrarPantalla('inicio');
-            else if (page === 'buscar') mostrarPantalla('buscar');
-            else if (page === 'crear') mostrarPantalla('crear');
-            else if (page === 'chats') mostrarPantalla('chats');
-            else if (page === 'yo') mostrarPantalla('configuracion');
+            if (page === 'home') mostrarPantallaId('inicio');
+            else if (page === 'buscar') mostrarPantallaId('buscar');
+            else if (page === 'crear') mostrarPantallaId('crear');
+            else if (page === 'chats') mostrarPantallaId('chats');
+            else if (page === 'yo') mostrarPantallaId('configuracion');
         }
     });
 });
