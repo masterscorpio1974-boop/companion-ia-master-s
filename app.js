@@ -4,25 +4,11 @@ let chatActivo = null;
 let mensajes = [];
 window._tempAvatar = null;
 
-// ==================== NAVEGACIÓN — BOTONES PRIMERO ====================
+// ==================== NAVEGACIÓN ====================
 function mostrarPantalla(id) {
   document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
   document.getElementById(id).classList.add('activa');
 }
-
-// 🟢 BOTONES DEL MENÚ — REGISTRADOS PRIMERO, SIEMPRE FUNCIONEN
-document.querySelectorAll('.nav-btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    e.currentTarget.classList.add('active');
-    const pagina = e.currentTarget.getAttribute('data-pagina');
-    if (pagina === 'home') mostrarPantalla('inicio');
-    else if (pagina === 'buscar') mostrarPantalla('buscar');
-    else if (pagina === 'crear') mostrarPantalla('crear');
-    else if (pagina === 'chats') mostrarPantalla('chats');
-    else if (pagina === 'yo') mostrarPantalla('configuracion');
-  });
-});
 
 // ==================== AVATAR ====================
 function avatarHtml(p) {
@@ -72,14 +58,17 @@ document.addEventListener('change', e => {
   }
 });
 
-// Guardar personaje
+// Guardar nuevo personaje
 document.addEventListener('submit', e => {
   if (e.target.id === 'form-crear') {
     e.preventDefault();
+
+    // ✅ Validación de tamaño: máximo ~500KB en Base64
     if (window._tempAvatar && window._tempAvatar.length > 600000) {
       alert('⚠️ La imagen es muy pesada. Elige una más ligera (menos de 500KB).');
       return;
     }
+
     const nuevo = {
       id: Date.now().toString(),
       nombre: document.getElementById('nombre').value.trim(),
@@ -118,8 +107,8 @@ function renderMensajes() {
   caja.scrollTop = caja.scrollHeight;
 }
 
-// 🟢 ENVIAR MENSAJE Y CONECTAR CON OLLAMA
-document.addEventListener('submit', async e => {
+// Enviar mensaje
+document.addEventListener('submit', e => {
   if (e.target.id === 'form-enviar') {
     e.preventDefault();
     const entrada = document.getElementById('entrada-mensaje');
@@ -131,49 +120,47 @@ document.addEventListener('submit', async e => {
     renderMensajes();
     entrada.value = '';
 
-    // === LÓGICA DE OLLAMA ===
-    const cajaTexto = document.getElementById('globo-almma-text');
-    cajaTexto.innerHTML = "Pensando... ✍️";
-
-    try {
-      const respuesta = await fetch('http://127.0.0.1:11434/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'almma-companion',
-          prompt: texto,
-          stream: true
-        })
+    // === Respuesta simple del personaje (lógica original) ===
+    setTimeout(() => {
+      const respuestas = [
+        `Hola, soy ${chatActivo.nombre}. ¡Qué gusto hablar contigo!`,
+        `Entiendo lo que dices. ${chatActivo.personalidad ? 'Soy ' + chatActivo.personalidad.toLowerCase() : ''} ¿En qué más puedo ayudarte?`,
+        'Sigue hablando, me encanta charlar contigo 😊'
+      ];
+      mensajes.push({
+        tipo: 'personaje',
+        texto: respuestas[Math.floor(Math.random() * respuestas.length)],
+        fecha: new Date().toISOString()
       });
-
-      cajaTexto.innerHTML = "";
-      const lector = respuesta.body.getReader();
-      const decodificador = new TextDecoder();
-
-      while (true) {
-        const { hecho, valor } = await lector.read();
-        if (hecho) break;
-        const trozo = decodificador.decode(valor, { stream: true });
-        const lineas = trozo.split('\n');
-        for (const linea of lineas) {
-          if (linea.trim() !== "") {
-            const datos = JSON.parse(linea);
-            cajaTexto.innerHTML += datos.response;
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Error de conexión:", error);
-      cajaTexto.innerHTML = "❌ Error al conectar. Verifica que Ollama esté encendido.";
-    }
+      guardarChat();
+      renderMensajes();
+    }, 800);
   }
 });
 
-function guardarChat() {
-  if (!chatActivo) return;
-  localStorage.setItem(`chat-${chatActivo.id}`, JSON.stringify(mensajes));
-}
-
+// ==================== GUARDADO ====================
 function guardarPersonajes() {
   localStorage.setItem('personajes', JSON.stringify(personajes));
 }
+
+function guardarChat() {
+  localStorage.setItem(`chat-${chatActivo.id}`, JSON.stringify(mensajes));
+}
+
+// ==================== INICIO ====================
+document.addEventListener('DOMContentLoaded', () => {
+  renderInicio();
+});
+
+// ==================== BOTONES DEL MENÚ ====================
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    const targetBtn = e.currentTarget;
+    targetBtn.classList.add('active');
+    const page = targetBtn.getAttribute('data-page');
+    if (typeof mostrarPantalla === 'function') {
+      mostrarPantalla('pantalla-' + page);
+    }
+  });
+});
