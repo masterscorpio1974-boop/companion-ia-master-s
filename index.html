@@ -1,11 +1,61 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Companion IA</title><style>body{margin:0;background:#0a0a0f;color:#fff;font-family:sans-serif}header{background:#120a1f;padding:16px;border-bottom:2px solid #9d00ff;text-align:center}h1{margin:0;color:#d88cff}button{cursor:pointer}.card{background:#1a132a;border:1px solid #2e1a5a;border-radius:12px;padding:14px;margin:10px 16px}</style></head><body>
-<header><h1>COMPANION IA</h1><small>OFFGRID MORADA - HOST LOCAL</small><br><button id="btnModelos" style="margin-top:8px;padding:6px 12px;background:#222;border:1px solid #9d00ff;color:#d88cff;border-radius:8px">🧠 Mis Modelos</button></header>
-<main><div style="display:flex;justify-content:space-between;padding:16px"><h2>Tus Personajes</h2><button id="btnCrear" onclick="document.getElementById('modal').style.display='flex'" style="background:#9d00ff;border:0;color:#fff;padding:10px 14px;border-radius:10px;font-weight:700">+ Crear</button></div><div id="lista"></div></main>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="color-scheme" content="dark">
+    <title>Companion IA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header id="mainHeader">
+            <div class="logo-wrap">
+                <div class="logo-ring">
+                    <div class="logo-inner">
+                        <!-- Tu logo androide neón original -->
+                        <img src="icon.png" alt="Companion IA">
+                    </div>
+                </div>
+            </div>
+            <h1>COMPANION IA</h1>
+            <p class="caps="byline">by MASTER S</p>
+        </header>
 
-<div id="modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);align-items:center;justify-content:center;z-index:99"><div style="background:#1a132a;width:90%;max-width:380px;padding:20px;border-radius:16px;border:2px solid #9d00ff"><h3 style="color:#d88cff">Nuevo Personaje +18</h3><input id="cNombre" placeholder="Nombre" style="width:100%;padding:12px;margin:6px 0;border-radius:8px;background:#0f0a1a;border:1px solid #333;color:#fff"><textarea id="cDesc" placeholder="Personalidad ej: coqueta, dominante, timida... ADULTO" style="width:100%;height:80px;padding:12px;margin:6px 0;border-radius:8px;background:#0f0a1a;border:1px solid #333;color:#fff"></textarea><textarea id="cSaludo" placeholder="Saludo inicial" style="width:100%;height:60px;padding:12px;margin:6px 0;border-radius:8px;background:#0f0a1a;border:1px solid #333;color:#fff"></textarea><div style="display:flex;gap:10px"><button onclick="document.getElementById('modal').style.display='none'" style="flex:1;padding:12px;background:#333;border:0;border-radius:8px;color:#fff">Cancelar</button><button id="cSave" style="flex:1;padding:12px;background:#9d00ff;border:0;border-radius:8px;color:#fff;font-weight:700">Guardar</button></div></div></div>
+        <!-- Espacio central donde se muestran los personajes o el chat -->
+        <main id="pageContent">
+            <div id="chat-display-area" style="text-align: center; padding: 20px; color: #9ca3af; font-size: 16px;">
+                <!-- Aquí se pintará el texto de Ollama palabra por palabra -->
+                <p id="globo-almma-text">Servidor local listo en Termux. Esperando prompt...</p>
+            </div>
+        </main>
 
-<div id="modelos" style="display:none;position:fixed;inset:0;background:#0a0a0f;z-index:101;padding:16px;overflow:auto"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="color:#d88cff">🧠 Cerebros IA</h2><button onclick="document.getElementById('modelos').style.display='none'" style="background:#333;border:0;color:#fff;padding:8px 12px;border-radius:8px">X</button></div><div class="card"><b>TinyDolphin 1.1B Q4 - 600MB</b><br><small>Roleplay sin censura, rápido, ideal para tu cel. Recomendado.</small><br><br><div style="background:#000;height:10px;border-radius:10px;overflow:hidden"><div id="bar" style="height:100%;width:0%;background:#9d00ff"></div></div><small id="prog">No descargado</small><br><br><button id="btnDown" style="width:100%;padding:12px;background:#9d00ff;border:0;border-radius:8px;color:#fff;font-weight:700">Descargar Modelo</button></div><div class="card" style="opacity:.7"><b>Base Local (actual)</b><br><small>Plantillas offgrid, 0MB, sin internet. Ya lo tienes.</small><br><small style="color:#0f0">✓ Activo</small></div><p style="padding:16px;opacity:.6;font-size:12px">Nota: Los modelos se descargan de HuggingFace. Solo para personajes adultos +18, uso consensuado. Todo queda en tu cel.</p></div>
+        <!-- Tu barra de navegación de 5 botones original -->
+        <nav id="bottomNav">
+            <button class="nav-btn active" data-page="home">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </button>
+            <button class="nav-btn" data-page="buscar">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Buscar</span>
+            </button>
+            <button class="nav-btn" data-page="crear">
+                <span class="nav-icon">＋</span>
+                <span class="nav-label">Crear</span>
+            </button>
+            <button class="nav-btn" data-page="chats">
+                <span class="nav-icon">💬</span>
+                <span class="nav-label">Chats</span>
+            </button>
+            <button class="nav-btn" data-page="yo">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Yo</span>
+            </button>
+        </nav>
+    </div>
 
-<div id="chat" style="display:none;position:fixed;inset:0;background:#0a0a0f;flex-direction:column;z-index:100"><div style="background:#120a1f;padding:14px;display:flex;gap:10px;border-bottom:2px solid #9d00ff"><button id="bVolver" style="background:#333;border:0;color:#fff;padding:8px 12px;border-radius:8px">←</button><b id="chatNombre" style="color:#d88cff"></b><small id="modelBadge" style="margin-left:auto;opacity:.6">base local</small></div><div id="msgs" style="flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:8px"></div><div style="display:flex;gap:8px;padding:12px;border-top:1px solid #222"><input id="inp" placeholder="Escribe..." style="flex:1;padding:12px;border-radius:8px;border:1px solid #333;background:#111;color:#fff"><button id="btnSend" style="padding:12px 16px;background:#9d00ff;border:0;border-radius:8px;color:#fff">Enviar</button></div></div>
-<script src="logic.js"></script>
-</body></html>
+    <!-- ENLAZADO DIRECTO A TU ARCHIVO APP.JS ORIGINAL -->
+    <script src="app.js"></script>
+</body>
+</html>
