@@ -121,20 +121,21 @@ document.addEventListener('submit', e => {
     renderMensajes();
     entrada.value = '';
     
-      // De la línea 124 en adelante (Lógica de Ollama Stream limpia)
-    const cajaTexto = document.getElementById("globo-almma-text");
-    cajaTexto.innerHTML = "Pensando... ▎";
+// De la línea 124 en adelante (Lógica de Ollama)
+const cajaTexto = document.getElementById("globo-almma-text");
+cajaTexto.innerHTML = "Pensando... ▎";
 
-    try {
-        const response = await fetch('http://127.0.0', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: 'almma-companion', 
-                prompt: texto, // Aquí toma el mensaje limpio de tu variable 'texto' (línea 116)
-                stream: true 
-            })
-        });
+try {
+    const response = await fetch('http://127.0.0.1:11434/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            model: 'almma-companion',
+            prompt: texto,
+            stream: true
+        })
+    });
+      
 
         cajaTexto.innerHTML = ""; 
 
