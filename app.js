@@ -1,28 +1,42 @@
 // ==================== ESTADO GLOBAL ====================
-let personajes = JSON.parse(localStorage.getItem('personajes') || '[]');
+let personajes = JSON.parse(localStorage.getItem('personajes')) || [];
 let chatActivo = null;
 let mensajes = [];
-window._tempAvatar = null; // Para guardar la imagen seleccionada antes de crear
+window._tempAvatar = null;
 
-// ==================== NAVEGACIÓN ====================
+// ==================== NAVEGACIÓN — BOTONES PRIMERO ====================
 function mostrarPantalla(id) {
   document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
   document.getElementById(id).classList.add('activa');
 }
 
-// ==================== AVATAR: RENDERIZADO ====================
+// 🟢 BOTONES DEL MENÚ — REGISTRADOS PRIMERO, SIEMPRE FUNCIONEN
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    e.currentTarget.classList.add('active');
+    const pagina = e.currentTarget.getAttribute('data-pagina');
+    if (pagina === 'home') mostrarPantalla('inicio');
+    else if (pagina === 'buscar') mostrarPantalla('buscar');
+    else if (pagina === 'crear') mostrarPantalla('crear');
+    else if (pagina === 'chats') mostrarPantalla('chats');
+    else if (pagina === 'yo') mostrarPantalla('configuracion');
+  });
+});
+
+// ==================== AVATAR ====================
 function avatarHtml(p) {
   if (p.avatarImg) {
     return `<img src="${p.avatarImg}" class="avatar-img" alt="${p.nombre}">`;
   }
-  return `<span class="avatar-emoji">${p.avatar || '🤖'}</span>`;
+  return `<span class="avatar-emoji">${p.avatar || '👤'}</span>`;
 }
 
 // ==================== PANTALLA INICIO ====================
 function renderInicio() {
   const contenedor = document.getElementById('lista-personajes');
   if (personajes.length === 0) {
-    contenedor.innerHTML = `<p class="vacio">Aún no tienes personajes. Crea el primero ✨</p>`;
+    contenedor.innerHTML = '<p class="vacio">Aún no tienes personajes. Crea el primero ✨</p>';
     return;
   }
   contenedor.innerHTML = personajes.map(p => `
@@ -52,30 +66,26 @@ document.addEventListener('change', e => {
     const lector = new FileReader();
     lector.onload = evt => {
       window._tempAvatar = evt.target.result;
-      document.getElementById('avatar-preview').innerHTML = 
-        `<img src="${window._tempAvatar}" class="preview-img">`;
+      document.getElementById('avatar-preview').innerHTML = `<img src="${window._tempAvatar}" class="preview-img">`;
     };
     lector.readAsDataURL(archivo);
   }
 });
 
-// Guardar nuevo personaje
+// Guardar personaje
 document.addEventListener('submit', e => {
   if (e.target.id === 'form-crear') {
     e.preventDefault();
-
-    // ✅ Validación de tamaño: máximo ~500KB en Base64
     if (window._tempAvatar && window._tempAvatar.length > 600000) {
       alert('⚠️ La imagen es muy pesada. Elige una más ligera (menos de 500KB).');
       return;
     }
-
     const nuevo = {
       id: Date.now().toString(),
       nombre: document.getElementById('nombre').value.trim(),
       descripcion: document.getElementById('descripcion').value.trim(),
       personalidad: document.getElementById('personalidad').value.trim(),
-      avatar: document.getElementById('avatar').value.trim() || '🤖',
+      avatar: document.getElementById('avatar').value.trim() || '👤',
       avatarImg: window._tempAvatar || null,
       fechaCreacion: new Date().toISOString()
     };
@@ -108,77 +118,62 @@ function renderMensajes() {
   caja.scrollTop = caja.scrollHeight;
 }
 
-// Enviar mensaje
-document.addEventListener('submit', e => {
+// 🟢 ENVIAR MENSAJE Y CONECTAR CON OLLAMA
+document.addEventListener('submit', async e => {
   if (e.target.id === 'form-enviar') {
     e.preventDefault();
     const entrada = document.getElementById('entrada-mensaje');
     const texto = entrada.value.trim();
     if (!texto) return;
-    
+
     mensajes.push({ tipo: 'usuario', texto, fecha: new Date().toISOString() });
     guardarChat();
     renderMensajes();
     entrada.value = '';
-    
-// De la línea 124 en adelante (Lógica de Ollama)
-const cajaTexto = document.getElementById("globo-almma-text");
-cajaTexto.innerHTML = "Pensando... ▎";
 
-try {
-  const response = await fetch('http://127.0.0.1:11434/api/generate', {
+    // === LÓGICA DE OLLAMA ===
+    const cajaTexto = document.getElementById('globo-almma-text');
+    cajaTexto.innerHTML = "Pensando... ✍️";
+
+    try {
+      const respuesta = await fetch('http://127.0.0.1:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            model: 'almma-companion',
-            prompt: texto,
-            stream: true
+          model: 'almma-companion',
+          prompt: texto,
+          stream: true
         })
-    });
-      
+      });
 
-        cajaTexto.innerHTML = ""; 
+      cajaTexto.innerHTML = "";
+      const lector = respuesta.body.getReader();
+      const decodificador = new TextDecoder();
 
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break; 
-
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split('\n');
-
-            for (const line of lines) {
-                if (line.trim() !== "") {
-                    const parsed = JSON.parse(line);
-                    cajaTexto.innerHTML += parsed.response;
-                }
-            }
+      while (true) {
+        const { hecho, valor } = await lector.read();
+        if (hecho) break;
+        const trozo = decodificador.decode(valor, { stream: true });
+        const lineas = trozo.split('\n');
+        for (const linea of lineas) {
+          if (linea.trim() !== "") {
+            const datos = JSON.parse(linea);
+            cajaTexto.innerHTML += datos.response;
+          }
         }
-
+      }
     } catch (error) {
-        console.error("Error de comunicación local:", error);
-        cajaTexto.innerHTML = "Error al conectar con Ollama. Verifica que Termux esté activo.";
+      console.error("Error de conexión:", error);
+      cajaTexto.innerHTML = "❌ Error al conectar. Verifica que Ollama esté encendido.";
     }
-}); // <-- ESTA ES LA QUE CIERRA EL SUBMIT DE LA LÍNEA 112
-
-// Activar los eventos táctiles para los botones del menú nuevo
-document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        const targetBtn = e.currentTarget;
-        targetBtn.classList.add('active');
-        
-        const page = targetBtn.getAttribute('data-page');
-        
-        // Mapeamos los nombres nuevos a los IDs reales de tus funciones (línea 8)
-        if (typeof mostrarPantallaId === 'function') {
-            if (page === 'home') mostrarPantallaId('inicio');
-            else if (page === 'buscar') mostrarPantallaId('buscar');
-            else if (page === 'crear') mostrarPantallaId('crear');
-            else if (page === 'chats') mostrarPantallaId('chats');
-            else if (page === 'yo') mostrarPantallaId('configuracion');
-        }
-    });
+  }
 });
+
+function guardarChat() {
+  if (!chatActivo) return;
+  localStorage.setItem(`chat-${chatActivo.id}`, JSON.stringify(mensajes));
+}
+
+function guardarPersonajes() {
+  localStorage.setItem('personajes', JSON.stringify(personajes));
+}
