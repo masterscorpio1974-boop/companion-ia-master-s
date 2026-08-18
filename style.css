@@ -1,132 +1,127 @@
-*{box-sizing:border-box;font-family:system-ui}
-body{margin:0;background:#0a0a0f;color:#fff}
-header{background:#120a1f;padding:16px;text-align:center;border-bottom:2px solid #9d00ff}
-header h1{margin:0;color:#d88cff;text-shadow:0 0 10px #9d00ff}
-header p{opacity:.6;font-size:13px}
-.top{display:flex;justify-content:space-between;align-items:center;padding:16px}
-#btnCrear{background:#9d00ff;border:0;color:#fff;padding:12px 18px;border-radius:12px;font-weight:700}
-#lista{padding:0 16px}
-.card{background:#1a132a;border:1px solid #2e1a5a;border-radius:12px;padding:14px;margin-bottom:10px}
-.hidden{display:none!important}
-#modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center}
-.box{background:#1a132a;width:90%;max-width:400px;padding:18px;border-radius:14px;border:1px solid #9d00ff}
-input,textarea{width:100%;background:#0f0a1a;border:1px solid #333;color:#fff;padding:10px;border-radius:8px;margin-bottom:10px}
-.row{display:flex;gap:10px}
-#cCancel{flex:1;background:#333;border:0;color:#fff;padding:10px;border-radius:8px}
-#cSave{flex:1;background:#9d00ff;border:0;color:#fff;padding:10px;border-radius:8px;font-weight:700}
-#chat{position:fixed;inset:0;background:#0a0a0f;display:flex;flex-direction:column}
-.chead{background:#120a1f;padding:12px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #9d00ff}
-#msgs{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:8px}
-.msg{max-width:80%;padding:10px 12px;border-radius:12px}
-.msg.u{background:#9d00ff;align-self:flex-end}
-.msg.b{background:#1f1733;align-self:flex-start}
-.cfoot{display:flex;gap:8px;padding:12px;border-top:1px solid #222}
-.cfoot input{flex:1}
-#btnSend{background:#9d00ff;border:0;color:#fff;padding:10px 14px;border-radius:8px}
-
-/* === CORRECCIÓN TAMAÑO TÍTULO PRINCIPAL === */
-header h1 {
-  font-size: 32px !important;
-  line-height: 1.2 !important;
-  margin: 6px 0 !important;
-}
-header p {
-  font-size: 15px !important;
-  margin: 4px 0 8px 0 !important;
-  opacity: 0.8 !important;
+:root {
+    --bg-main: #000000;
+    --bg-card: #0d0914;
+    --neon-purple: #9d00ff;
+    --text-white: #ffffff;
+    --border-color: #1f1733;
 }
 
-/* === AVATARES E IMÁGENES — TUS COLORES #9d00ff === */
-.avatar-img {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #9d00ff;
-  flex-shrink: 0;
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-main);
+    color: var(--text-white);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
-.avatar-emoji {
-  font-size: 28px;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(157, 0, 255, 0.15);
-  border-radius: 50%;
-  flex-shrink: 0;
+#app {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    padding-bottom: 70px;
 }
 
-/* Vista previa al crear */
-#avatar-preview {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 3px dashed #9d00ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px 0;
-  overflow: hidden;
-  background: rgba(157, 0, 255, 0.08);
+/* --- CONTROL QUIRÚRGICO DEL LOGO GIGANTE --- */
+#mainHeader {
+    text-align: center;
+    padding: 20px 10px 10px 10px;
 }
 
-.preview-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.logo-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
 }
 
-/* Tarjetas de personaje */
-.tarjeta-personaje {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  padding: 14px;
-  background: #1a132a;
-  border: 1px solid #2e1a5a;
-  border-radius: 12px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: transform 0.15s;
-}
-.tarjeta-personaje:active {
-  transform: scale(0.98);
-}
-.tarjeta-personaje .info {
-  flex: 1;
-}
-.tarjeta-personaje h3 {
-  margin: 0 0 4px 0;
-  font-size: 16px;
-  color: #fff;
-}
-.tarjeta-personaje p {
-  margin: 0;
-  font-size: 13px;
-  color: #c4a8ff;
+.logo-ring {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid var(--neon-purple);
+    box-shadow: 0 0 15px var(--neon-purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card);
 }
 
-/* Cabecera del chat */
-.cabecera-chat {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: linear-gradient(135deg, #9d00ff, #c44dff);
-  color: white;
-  border-bottom: 1px solid #9d00ff;
-}
-.cabecera-chat h2 {
-  margin: 0;
-  font-size: 17px;
+.logo-inner img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
 }
 
-/* Campo archivo */
-input[type="file"] {
-  font-size: 14px;
-  padding: 8px 0;
-  color: #d8b8ff;
+#mainHeader h1 {
+    font-size: 20px;
+    margin: 5px 0 2px 0;
+    letter-spacing: 1px;
+    font-weight: 800;
 }
 
+.byline {
+    margin: 0;
+    font-size: 11px;
+    color: var(--neon-purple);
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* --- PANEL CENTRAL RESPONSIVO --- */
+#pageContent {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+/* --- MENÚ DE NAVEGACIÓN INFERIOR DISTRIBUIDO --- */
+#bottomNav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #09060e;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #666666;
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    outline: none;
+    padding: 4px 0;
+}
+
+.nav-icon {
+    font-size: 18px;
+    margin-bottom: 2px;
+}
+
+.nav-label {
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.nav-btn.active {
+    color: var(--neon-purple);
+}
