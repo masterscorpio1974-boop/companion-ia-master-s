@@ -168,8 +168,9 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         targetBtn.classList.add('active');
         
         const page = targetBtn.getAttribute('data-page');
-        if (typeof mostrarPantalla === 'function') {
-            mostrarPantalla(page);
+        // Usamos tu función original del Build #22 para cambiar de pestaña
+        if (typeof mostrarPantallaId === 'function') {
+            mostrarPantallaId('pantalla-' + page);
         }
     });
 });
