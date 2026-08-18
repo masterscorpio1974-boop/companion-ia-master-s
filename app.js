@@ -121,32 +121,29 @@ document.addEventListener('submit', e => {
     renderMensajes();
     entrada.value = '';
     
-  async function enviarMensajeOllamaStream(promptUsuario) {
-    // Apuntamos al contenedor de texto que definimos en el HTML
+      // De la línea 124 en adelante (Lógica de Ollama Stream limpia)
     const cajaTexto = document.getElementById("globo-almma-text");
     cajaTexto.innerHTML = "Pensando... ▎";
 
     try {
-        // Conexión directa a tu servidor local corriendo en Termux
         const response = await fetch('http://127.0.0', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 model: 'almma-companion', 
-                prompt: promptUsuario,
-                stream: true // Activa el envío por fragmentos
+                prompt: texto, // Aquí toma el mensaje limpio de tu variable 'texto' (línea 116)
+                stream: true 
             })
         });
 
-        cajaTexto.innerHTML = ""; // Limpiamos el indicador de pensando
+        cajaTexto.innerHTML = ""; 
 
-        // Lector del flujo de datos (Stream)
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
 
         while (true) {
             const { done, value } = await reader.read();
-            if (done) break; // Terminó de responder el modelo
+            if (done) break; 
 
             const chunk = decoder.decode(value, { stream: true });
             const lines = chunk.split('\n');
@@ -154,7 +151,6 @@ document.addEventListener('submit', e => {
             for (const line of lines) {
                 if (line.trim() !== "") {
                     const parsed = JSON.parse(line);
-                    // Concatenamos las letras una por una en tiempo real
                     cajaTexto.innerHTML += parsed.response;
                 }
             }
@@ -164,19 +160,3 @@ document.addEventListener('submit', e => {
         console.error("Error de comunicación local:", error);
         cajaTexto.innerHTML = "Error al conectar con Ollama. Verifica que Termux esté activo.";
     }
-}
-  
-
-// ==================== GUARDADO ====================
-function guardarPersonajes() {
-  localStorage.setItem('personajes', JSON.stringify(personajes));
-}
-function guardarChat() {
-  localStorage.setItem(`chat-${chatActivo.id}`, JSON.stringify(mensajes));
-}
-
-// ==================== INICIO ====================
-document.addEventListener('DOMContentLoaded', () => {
-  renderInicio();
-});
-
