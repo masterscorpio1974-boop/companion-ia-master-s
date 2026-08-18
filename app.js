@@ -160,3 +160,16 @@ document.addEventListener('submit', e => {
         console.error("Error de comunicación local:", error);
         cajaTexto.innerHTML = "Error al conectar con Ollama. Verifica que Termux esté activo.";
     }
+// Activar los eventos táctiles para los botones del menú nuevo
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        const targetBtn = e.currentTarget;
+        targetBtn.classList.add('active');
+        
+        const page = targetBtn.getAttribute('data-page');
+        if (typeof mostrarPantalla === 'function') {
+            mostrarPantalla(page);
+        }
+    });
+});
