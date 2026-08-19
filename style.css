@@ -1,5 +1,4 @@
-# Generar style.css completo basado en las capturas del usuario + estilos de avatar
-style_css = r'''* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { background: #050508; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; height: 100%; overflow: hidden; }
 #app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; max-width: 480px; margin: 0 auto; position: relative; }
 
@@ -103,21 +102,8 @@ html, body { background: #050508; color: #e0e0e0; font-family: -apple-system, Bl
 .mt-2 { margin-top: 16px; }
 .small { font-size: 12px; color: #555; }
 
-/* ===== AVATAR CON IMAGEN ===== */
+/* AVATAR CON IMAGEN */
 .avatar-preview { width: 80px; height: 80px; border-radius: 50%; background: #1c1c22; border: 2px solid #7C3AED; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; margin-bottom: 12px; overflow: hidden; position: relative; }
 .avatar-preview img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-
-.char-avatar .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-.char-avatar .avatar-text { font-size: 24px; }
-
-.chat-avatar .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-.chat-avatar .avatar-text { font-size: 16px; font-weight: 700; }
-
-.cl-avatar .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-.cl-avatar .avatar-text { font-size: 18px; }
-'''
-
-with open('/mnt/agents/output/style.css', 'w') as f:
-    f.write(style_css)
-
-print("style.css generado")
+.avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+.avatar-text { font-size: inherit; }
