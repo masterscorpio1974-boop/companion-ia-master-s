@@ -1,3 +1,54 @@
+// 1. CONFIGURACIÓN E INICIALIZACIÓN (Esto va al inicio)
+let COMPANION_STORAGE = JSON.parse(localStorage.getItem("companion_storage")) || {
+    userName: "MasterScorpio", // Pon tu nombre de usuario aquí
+    characters: [],
+    // ... cualquier otro campo que viniera en la estructura original
+};
+
+// Configuración de tu endpoint local de Ollama (Termux corre en el puerto 11434 por defecto)
+const OLLAMA_API = "http://localhost:11434/api/generate"; 
+
+// Guardar la persistencia inicial
+function guardarStorage() {
+    localStorage.setItem("companion_storage", JSON.stringify(COMPANION_STORAGE));
+}
+
+
+// 2. TUS FUNCIONES DE LÓGICA (Mantén las que ya tenías)
+function actualizarContadores() {
+    // Tu código para actualizar los elementos en el HTML
+    // Ejemplo: document.getElementById('contador').innerText = ...
+}
+
+function actualizarBaseDatos(datos) {
+    // Tu código para guardar nuevos registros en COMPANION_STORAGE
+    guardarStorage(); // Recuerda guardar siempre después de modificar el objeto
+}
+
+
+// 3. LLAMADAS A OLLAMA (Tu función de petición)
+async function enviarMensajeAOllama(prompt) {
+    try {
+        const response = await fetch(OLLAMA_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                model: "almma-companion:latest", // O qwen2.5-coder-obliterate:3b
+                prompt: prompt,
+                stream: false
+            })
+        });
+        
+        const data = await response.json();
+        return data.response;
+    } catch (error) {
+        alert("Ollama inalcanzable. Verifica que el servicio esté corriendo en Termux.");
+        console.error(error);
+    } finally {
+        // Acciones de limpieza en la interfaz (limpiar inputs, spinners, etc.)
+    }
+}
+
 // ===== ESTADO GLOBAL =====
 const state = {
   personajes: [],
