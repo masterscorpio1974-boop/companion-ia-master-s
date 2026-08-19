@@ -1,1 +1,10 @@
-{"appId":"com.masters.companionia","appName":"Companion IA By Master S","webDir":"www","bundledWebRuntime":false}
+{
+  "appId": "com.masterscorpio.companionia",
+  "appName": "COMPANION IA",
+  "webDir": "www",
+  "server": {
+    "url": "http://192.168.1.X:8080",
+    "cleartext": true
+  }
+}
+
