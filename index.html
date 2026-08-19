@@ -1,52 +1,55 @@
-<!DOCTYPE html>
+# Generar index.html limpio y correcto
+index_html = '''<!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="color-scheme" content="dark">
-    <title>Companion IA</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Companion IA</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
-        <header id="mainHeader">
-            <div class="logo-wrap">
-                <div class="logo-ring">
-                    <div class="logo-inner">
-                        <!-- Tu logo androide neón original -->
-                        <img src="icon.png" alt="Companion IA">
-                    </div>
-                </div>
-            </div>
-            <h1>COMPANION IA</h1>
-            <p class="caps="byline">by MASTER S</p>
-        </header>
-          <!-- Tu barra de navegación de 5 botones original -->
-        <nav id="bottomNav">
-            <button class="nav-btn active" data-page="home">
-                <span class="nav-icon">🏠</span>
-                <span class="nav-label">Home</span>
-            </button>
-            <button class="nav-btn" data-page="buscar">
-                <span class="nav-icon">🔍</span>
-                <span class="nav-label">Buscar</span>
-            </button>
-            <button class="nav-btn" data-page="crear">
-                <span class="nav-icon">＋</span>
-                <span class="nav-label">Crear</span>
-            </button>
-            <button class="nav-btn" data-page="chats">
-                <span class="nav-icon">💬</span>
-                <span class="nav-label">Chats</span>
-            </button>
-            <button class="nav-btn" data-page="yo">
-                <span class="nav-icon">👤</span>
-                <span class="nav-label">Yo</span>
-            </button>
-        </nav>
+<div id="app">
+  <header id="mainHeader">
+    <div class="logo-wrap">
+      <div class="logo-ring">
+        <div class="logo-inner">
+          <img src="icon.png" alt="Companion IA">
+        </div>
+      </div>
+      <h1>COMPANION IA</h1>
+      <p class="byline">by MASTER S</p>
     </div>
-
-    <!-- ENLAZADO DIRECTO A TU ARCHIVO APP.JS ORIGINAL -->
-    <script src="app.js"></script>
+  </header>
+  <main id="pageContent"></main>
+  <nav id="bottomNav">
+    <button class="nav-btn active" data-page="home">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-btn" data-page="buscar">
+      <span class="nav-icon">🔍</span>
+      <span class="nav-label">Buscar</span>
+    </button>
+    <button class="nav-btn" data-page="crear">
+      <span class="nav-icon">➕</span>
+      <span class="nav-label">Crear</span>
+    </button>
+    <button class="nav-btn" data-page="chats">
+      <span class="nav-icon">💬</span>
+      <span class="nav-label">Chats</span>
+    </button>
+    <button class="nav-btn" data-page="yo">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">Yo</span>
+    </button>
+  </nav>
+</div>
+<script src="app.js"></script>
 </body>
-</html>
+</html>'''
+
+with open('/mnt/agents/output/index.html', 'w') as f:
+    f.write(index_html)
+
+print("index.html generado")
