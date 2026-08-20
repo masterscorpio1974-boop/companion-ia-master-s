@@ -5,35 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>COMPANION IA</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* --- EL REGRESO DEL HALO ANIMADO NEÓN --- */
-        .neon-logo-wrapper {
-            position: relative;
-            width: 140px;
-            height: 140px;
-            margin: 20px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        /* El círculo neón que prende, apaga y cambia de lugar girando */
-        .neon-halo {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            box-shadow: 0 0 20px #bc00dd, inset 0 0 15px #bc00dd;
-            border: 3px solid transparent;
-            border-top: 3px solid #bc00dd; /* El halo brillante */
-            animation: haloGiro 4s linear infinite, haloPulso 2s ease-in-out infinite alternate;
-            z-index: 1;
-        }
-        .avatar-img {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            z-index: 2;
-            object-fit: cover;
+</head>
+<body>
+    <div id="app-wrapper">
+        <header class="app-header">
+            <div class="neon-logo-wrapper">
+                <div class="neon-halo"></div>
+                <img src="icon.png" class="avatar-img" onerror="this.src='https://placeholder.com';">
+            </div>
+            <h1 class="main-title">COMPANION IA</h1>
+            <span class="author-tag">by MASTER S</span>
+            <p class="live-tag">LIVE UPDATE TERMUX MODE</p>
+        </header>
+
+        <div id="dynamicSearchContainer" class="search-container">
+            <input type="text" id="searchBarInput" class="search-box" placeholder="Buscar personaje por nombre..." oninput="filtrarPersonajesLocal()">
+        </div>
+
+        <main class="main-content">
+            <div class="view-panel" id="panel-home">
+                <h2 class="section-title">Tus Personajes</h2>
+                <div id="characters-list"></div>
+                <div id="no-characters-fallback" class="fallback-msg">
+                    <p>Sin personajes</p>
+                    <small>Toca + Crear abajo para empezar</small>
+                </div>
+            </div>
+
+            <div class="view-panel" id="panel-crear" style="display:none;">
+                <h2 class="section-title" style="font-size: 18px;">Nuevo Personaje +18</h2>
+                <input type="text" id="char-name" class="form-input" placeholder="Nombre de la IA...">
+                <textarea id="char-prompt" class="form-textarea" style="height: 100px;" placeholder="Personalidad y rules de rol..."></textarea>
+                <input type="text" id="char-saludo" class="form-input" placeholder="Saludo inicial...">
+                <div class="modal-buttons">
+                    <button onclick="cambiarPanel('home')" class="btn-cancel">Cancelar</button>
+                    <button onclick="guardarNuevoPersonaje()" class="btn-save">Guardar</button>
+                </div>
+            </div>
+
+            <div class="view-panel" id="panel-chat" style="display:none;">
+                <div style="display: flex; align-items: center; background: #131129; padding: 10px; border-radius: 12px; border: 1px solid #bc00dd; margin-bottom: 12px;">
+                    <button onclick="cambiarPanel('home')" style="background: none; border: none; color: #bc00dd; font-size: 18px; font-weight: bold; padding-right:15px; cursor: pointer;">&larr;</button>
+                    <div>
+                        <h3 id="active-chat-name" style="color: white; margin: 0; font-size: 16px;">IA</h3>
+                        <small id="active-chat-status" style="color: #00ff66; font-size: 12px;">En línea</small>
+                    </div>
+                </div>
+                <div id="chat-messages-box" style="height: calc(100vh - 360px); overflow-y: auto; padding: 8px; background: #0d0c1d; border-radius: 8px; border: 1px solid rgba(168,85,247,0.2); box-sizing: border-box;"></div>
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                    <input type="text" id="chat-user-message" class="form-input" style="flex:1; margin:0;" placeholder="Escribe un mensaje..." onkeypress="if(event.key==='Enter') enviarMensajeAOllama()">
+                    <button onclick="enviarMensajeAOllama()" style="background:#bc00dd; border:none; color:white; width:46px; height:46px; border-radius:8px; cursor: pointer;">&#9654;</button>
+                </div>
+            </div>
+
+            <div class="view-panel" id="panel-yo" style="display:none;">
+                <h3 class="section-title" style="font-size: 18px;">&#128100; MI PERFIL</h3>
+                <input type="text" id="user-profile-name" class="form-input" value="Master S">
+                <button onclick="formatearBaseDeDatosCompleta()" style="background:#fde7e9; color:#a80000; border:1px solid #f3b1b3; padding:12px; border-radius:8px; font-weight:bold; width:100%; cursor: pointer;">Borrar todos los datos</button>
+            </div>
+        </main>
+
+        <footer class="app-nav-bar">
+            <button id="nav-home" class="nav-item active" onclick="cambiarPanel('home')"><span class="nav-icon">&#127968;</span>Home</button>
+            <button id="nav-buscar" class="nav-item" onclick="alternarBarraBusqueda()"><span class="nav-icon">&#128269;</span>Buscar</button>
+            <button id="nav-crear" class="nav-item" onclick="cambiarPanel('crear')"><span class="nav-icon">&#10133;</span>Crear</button>
+            <button id="nav-yo" class="nav-item" onclick="cambiarPanel('yo')"><span class="nav-icon">&#128100;</span>Yo</button>
+        </footer>
+    </div>
+    <script src="logic.js"></script>
+</body>
+</html>
             border: 2px solid #0d0c1d;
         }
         @keyframes haloGiro {
