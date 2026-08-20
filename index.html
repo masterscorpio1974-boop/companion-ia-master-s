@@ -4,24 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>COMPANION IA</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background-color: #0d0c1d !important; color: #ffffff !important; font-family: sans-serif; margin: 0; padding: 0; height: 100vh; overflow: hidden; } }
+        .app-wrapper { display: flex; flex-direction: column; height: 100vh; } }
+        .app-header { background: #0d0c1d; padding: 12px; text-align: center; border-bottom: 1px solid rgba(188, 0, 221, 0.3); } }
+        .main-title { color: #fff; font-size: 24px; margin: 0; font-weight: 800; letter-spacing: 1px; } }
+        .author-tag { color: #a855f7; font-size: 11px; font-weight: 600; display: block; margin-top: 2px; } }
+        .live-tag { color: #6c5ce7; font-size: 9px; font-family: monospace; margin: 2px 0 0 0; } }
+        .main-content { flex: 1; padding: 16px; overflow-y: auto; box-sizing: border-box; padding-bottom: 80px; } }
+        .view-panel { width: 100%; } }
+        .section-title { color: white; font-size: 22px; margin: 0 0 15px 0; } }
+        .neon-logo-wrapper { position: relative; width: 110px; height: 110px; margin: 10px auto; display: flex; align-items: center; justify-content: center; } }
+        .neon-halo { position: absolute; width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 20px #bc00dd, inset 0 0 12px #bc00dd; border: 2px solid transparent; border-top: 2px solid #bc00dd; animation: haloGiro 3s linear infinite, haloPulso 1.5s ease-in-out infinite alternate; z-index: 1; } }
+        .avatar-img { width: 85px; height: 85px; border-radius: 50%; z-index: 2; object-fit: cover; background: #131129; border: 2px solid #0d0c1d; } }
+        @keyframes haloGiro { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } } }
+        @keyframes haloPulso { 0% { opacity: 0.3; filter: drop-shadow(0 0 2px #bc00dd); } 100% { opacity: 1; filter: drop-shadow(0 0 12px #bc00dd); } } } }
+        .search-container { display: none; padding: 10px 16px; background: #0d0c1d; border-bottom: 2px solid #bc00dd; } }
+        .search-container.active { display: block; } }
+        .search-box { width: 100%; background: #1a1636; border: 1px solid #a855f7; border-radius: 8px; color: #fff; padding: 10px; font-size: 14px; outline: none; box-sizing: border-box; } }
+        .character-card { background: #131129; border: 1px solid #bc00dd; padding: 14px; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; color: white; cursor: pointer; } }
+        .fallback-msg { text-align: center; color: #a855f7; margin-top: 50px; } }
+        .form-input, .form-textarea { width: 100%; background: #0d0c1d; border: 1px solid #a855f7; padding: 12px; border-radius: 8px; color: white; margin-bottom: 14px; box-sizing: border-box; font-family: sans-serif; } }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 10px; } }
+        .modal-buttons button { flex: 1; padding: 12px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; } }
+        .btn-save { background: #bc00dd; color: white; } }
+        .btn-cancel { background: #323130; color: #e2e1e9; } }
+        .app-nav-bar { height: 65px; background: #131129; border-top: 2px solid #bc00dd; display: flex; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 9999; box-sizing: border-box; } }
+        .nav-item { flex: 1; background: none; border: none; color: #a855f7; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; cursor: pointer; gap: 4px; } }
+        .nav-item.active { color: #bc00dd; } }
+        .nav-icon { font-size: 20px; } }
+    </style>
 </head>
 <body>
     <div id="app-wrapper">
         <header class="app-header">
             <div class="neon-logo-wrapper">
                 <div class="neon-halo"></div>
-                <img src="icon.png" class="avatar-img" onerror="this.src='https://placeholder.com';">
+                <img src="icon.png" class="avatar-img" onerror="this.style.display='none';">
             </div>
             <h1 class="main-title">COMPANION IA</h1>
             <span class="author-tag">by MASTER S</span>
-            <p class="live-tag">LIVE UPDATE TERMUX MODE</p>
+            <p class="live-tag">OFFGRID PURE MODE</p>
         </header>
-
         <div id="dynamicSearchContainer" class="search-container">
             <input type="text" id="searchBarInput" class="search-box" placeholder="Buscar personaje por nombre..." oninput="filtrarPersonajesLocal()">
         </div>
-
         <main class="main-content">
             <div class="view-panel" id="panel-home">
                 <h2 class="section-title">Tus Personajes</h2>
@@ -31,7 +58,6 @@
                     <small>Toca + Crear abajo para empezar</small>
                 </div>
             </div>
-
             <div class="view-panel" id="panel-crear" style="display:none;">
                 <h2 class="section-title" style="font-size: 18px;">Nuevo Personaje +18</h2>
                 <input type="text" id="char-name" class="form-input" placeholder="Nombre de la IA...">
@@ -64,7 +90,6 @@
                 <button onclick="formatearBaseDeDatosCompleta()" style="background:#fde7e9; color:#a80000; border:1px solid #f3b1b3; padding:12px; border-radius:8px; font-weight:bold; width:100%; cursor: pointer;">Borrar todos los datos</button>
             </div>
         </main>
-
         <footer class="app-nav-bar">
             <button id="nav-home" class="nav-item active" onclick="cambiarPanel('home')"><span class="nav-icon">&#127968;</span>Home</button>
             <button id="nav-buscar" class="nav-item" onclick="alternarBarraBusqueda()"><span class="nav-icon">&#128269;</span>Buscar</button>
@@ -72,123 +97,113 @@
             <button id="nav-yo" class="nav-item" onclick="cambiarPanel('yo')"><span class="nav-icon">&#128100;</span>Yo</button>
         </footer>
     </div>
-    <script src="logic.js"></script>
+    <script>
+        let COMPANION_STORAGE = JSON.parse(localStorage.getItem('COMPANION_DB')) || {}
+            config: { userName: "Master S", ollamaUrl: "http://10.0.2.2:11434" }, }
+            characters: [],
+            history: {}
+        };
+        let personajeActivoId = null;
+        document.addEventListener('DOMContentLoaded', () => { renderizarListaPersonajes(); }); })
+        function cambiarPanel(nombreVista) {}
+            document.getElementById('panel-home').style.display = 'none';
+            document.getElementById('panel-crear').style.display = 'none';
+            document.getElementById('panel-chat').style.display = 'none';
+            document.getElementById('panel-yo').style.display = 'none';
+            document.querySelectorAll('.app-nav-bar button').forEach(btn => btn.classList.remove('active'));
+            const panel = document.getElementById('panel-' + nombreVista);
+            if (panel) panel.style.display = 'block';
+            const boton = document.getElementById('nav-' + nombreVista);
+            if (boton) boton.classList.add('active');
+            if (nombreVista !== 'buscar') document.getElementById('dynamicSearchContainer').classList.remove('active');
+        }
+        function alternarBarraBusqueda() {}
+            const contenedor = document.getElementById('dynamicSearchContainer');
+            const input = document.getElementById('searchBarInput');
+            if (contenedor.classList.contains('active')) {}
+                contenedor.classList.remove('active');
+                input.value = '';
+                filtrarPersonajesLocal();
+            } else {}
+                cambiarPanel('home');
+                contenedor.classList.add('active');
+                input.focus();
+            }
+        }
+        function filtrarPersonajesLocal() {}
+            const query = document.getElementById('searchBarInput').value.toLowerCase().trim();
+            document.querySelectorAll('.character-card').forEach(t => {})
+                const nombre = t.getAttribute('data-name').toLowerCase();
+                t.style.display = nombre.includes(query) ? 'flex' : 'none';
+            });
+        }
+        function guardarNuevoPersonaje() {}
+            const nameInp = document.getElementById('char-name').value.trim();
+            const promptInp = document.getElementById('char-prompt').value.trim();
+            const saludoInp = document.getElementById('char-saludo').value.trim();
+            if (!nameInp || !promptInp) { alert('Campos obligatorios vacíos.'); return; } }
+            const nuevo = { id: 'char_' + Date.now(), name: nameInp, prompt: promptInp, saludo: saludoInp || "SAM active." }; }
+            COMPANION_STORAGE.characters.push(nuevo);
+            COMPANION_STORAGE.history[nuevo.id] = [{ role: 'model', text: nuevo.saludo }]; }]
+            localStorage.setItem('COMPANION_DB', JSON.stringify(COMPANION_STORAGE));
+            renderizarListaPersonajes();
+            cambiarPanel('home');
+        }
+        function renderizarListaPersonajes() {}
+            const lista = document.getElementById('characters-list');
+            if (!lista) return; lista.innerHTML = '';
+            document.getElementById('no-characters-fallback').style.display = COMPANION_STORAGE.characters.length === 0 ? 'block' : 'none';
+            COMPANION_STORAGE.characters.forEach(char => {})
+                let card = document.createElement('div');
+                card.className = 'character-card';
+                card.setAttribute('data-name', char.name);
+                card.innerHTML = `<div style="font-size:20px; background:rgba(188,0,221,0.15); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;">&#129302;</div><div style="flex:1;"><h4 style="margin:0; color:white; font-size:15px;">${char.name}</h4><small style="color:#a855f7; font-size:11px;">Modo Pentesting</small></div><span style="color:#bc00dd;">&#9654;</span>`;
+                card.onclick = () => abrirSalaChat(char.id);
+                lista.appendChild(card);
+            });
+        }
+        function abrirSalaChat(charId) {}
+            personajeActivoId = charId;
+            const char = COMPANION_STORAGE.characters.find(c => c.id === charId);
+            document.getElementById('active-chat-name').innerText = char.name;
+            cambiarPanel('chat'); refrescarHistorialPantallaChat();
+        }
+        function refrescarHistorialPantallaChat() {}
+            const caja = document.getElementById('chat-messages-box'); caja.innerHTML = '';
+            (COMPANION_STORAGE.history[personajeActivoId] || []).forEach(msg => {})
+                let div = document.createElement('div');
+                div.style.cssText = msg.role === 'user' ? 
+                    "background:#bc00dd; color:white; padding:10px 14px; border-radius:14px 14px 0 14px; margin:6px 0; max-width:80%; margin-left:auto; text-align:right; font-size:14px; word-wrap:break-word;" :
+                    "background:#1a1636; color:#e2e1e9; padding:10px 14px; border-radius:14px 14px 14px 0; margin:6px 0; max-width:80%; border:1px solid #a855f7; font-size:14px; word-wrap:break-word;";
+                div.innerText = msg.text; caja.appendChild(div);
+            });
+            caja.scrollTop = caja.scrollHeight;
+        }
+        async function enviarMensajeAOllama() {}
+            const input = document.getElementById('chat-user-message'); const txt = input.value.trim(); if (!txt) return;
+            COMPANION_STORAGE.history[personajeActivoId].push({ role: 'user', text: txt }); })
+            input.value = ''; refrescarHistorialPantallaChat();
+            document.getElementById('active-chat-status').innerText = "Escribiendo...";
+            const char = COMPANION_STORAGE.characters.find(c => c.id === personajeActivoId);
+            try {}
+                const res = await fetch(`${COMPANION_STORAGE.config.ollamaUrl}/api/generate`, {})
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, }
+                    body: JSON.stringify({ model: "SAM", prompt: `System: ${char.prompt}\nUser: ${txt}\nResponse:`, stream: false }) })
+                });
+                const data = await res.json();
+                COMPANION_STORAGE.history[personajeActivoId].push({ role: 'model', text: data.response.trim() }); })
+                localStorage.setItem('COMPANION_DB', JSON.stringify(COMPANION_STORAGE));
+                refrescarHistorialPantallaChat();
+            } catch { alert("Ollama local inalcanzable."); } }
+            finally { document.getElementById('active-chat-status').innerText = "En línea"; } }
+        }
+        function formatearBaseDeDatosCompleta() {}
+            if (confirm('¿Borrar todos los datos?')) {}
+                COMPANION_STORAGE = { config: { userName: "Master S", ollamaUrl: "http://10.0.2.2:11434" }, characters: [], history: {} }; } }
+                localStorage.setItem('COMPANION_DB', JSON.stringify(COMPANION_STORAGE));
+                renderizarListaPersonajes(); cambiarPanel('home');
+            }
+        }
+    </script>
 </body>
 </html>
-            border: 2px solid #0d0c1d;
-        }
-        @keyframes haloGiro {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes haloPulso {
-            0% { opacity: 0.3; filter: drop-shadow(0 0 2px #bc00dd); }
-            100% { opacity: 1; filter: drop-shadow(0 0 15px #bc00dd); }
-        }
-
-        /* Control de la barra de búsqueda controlada por la lupa */
-        .search-container {
-            display: none;
-            padding: 12px 16px;
-            background: #0d0c1d;
-            border-bottom: 2px solid #a855f7;
-        }
-        .search-container.active { display: block; }
-        .search-box {
-            width: 100%; background: #1a1636; border: 1px solid #bc00dd;
-            border-radius: 8px; color: #fff; padding: 12px; font-size: 14px;
-            outline: none; box-sizing: border-box;
-        }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 15px; width: 100%; }
-        .modal-buttons button { flex: 1; padding: 12px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; }
-        .btn-save-neon { background: #bc00dd; color: white; }
-        .btn-close-dark { background: #323130; color: #e2e1e9; }
-    </style>
-</head>
-<body>
-
-    <div id="app-wrapper" data-modo="home">
-        
-        <!-- Encabezado con tu Logo Animado Dinámico -->
-        <header class="app-header" style="background: #0d0c1d; padding: 16px; text-align: center;">
-            <div class="neon-logo-wrapper">
-                <div class="neon-halo"></div>
-                <img src="./icon.png" class="avatar-img" onerror="this.src='https://placeholder.com';">
-            </div>
-            <h1 style="color: #fff; font-size: 26px; margin: 0; font-weight: 800; letter-spacing: 1px;">COMPANION IA</h1>
-            <p style="color: #a855f7; font-size: 12px; margin: 4px 0; font-weight: 600;">by MASTER S</p>
-            <p style="color: #6c5ce7; font-size: 10px; font-family: monospace;">LIVE UPDATE TERMUX MODE</p>
-        </header>
-
-        <div id="dynamicSearchContainer" class="search-container">
-            <input type="text" id="searchBarInput" class="search-box hidden" placeholder="Buscar personaje..." oninput="filtrarPersonajesLocal()">
-        </div>
-
-        <main class="main-content" style="padding: 16px; height: calc(100vh - 300px); overflow-y: auto; box-sizing: border-box;">
-            
-            <!-- Vista 1: Home -->
-            <div class="view-panel" id="panel-home">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="color: white; font-size: 22px; margin: 0;">Tus Personajes</h2>
-                    <button onclick="cambiarPanel('crear')" style="background: #bc00dd; color: white; border: none; padding: 10px 16px; border-radius: 12px; font-weight: bold;">+ Crear</button>
-                </div>
-                <div id="characters-list"></div>
-                <div id="no-characters-fallback" style="text-align: center; color: #a855f7; margin-top: 40px;">
-                    <p>Sin personajes</p><small>Toca + Crear para empezar</small>
-                </div>
-            </div>
-
-            <!-- Vista 2: Crear Personaje +18 -->
-            <div class="view-panel" id="panel-crear" style="display:none; background: #131129; border: 2px solid #bc00dd; border-radius: 16px; padding: 20px; box-sizing: border-box;">
-                <h2 style="color: white; font-size: 20px; margin-top: 0; margin-bottom: 15px;">Nuevo Personaje +18</h2>
-                
-                <label style="color: #a855f7; font-size: 12px; display: block; margin-bottom: 6px;">Nombre</label>
-                <input type="text" id="char-name" style="width:100%; background:#0d0c1d; border:1px solid #a855f7; padding:12px; border-radius:8px; color:white; margin-bottom:14px; box-sizing:border-box;">
-                
-                <label style="color: #a855f7; font-size: 12px; display: block; margin-bottom: 6px;">Personalidad (ej: coqueta, dominante, tímida... ADULTO)</label>
-                <textarea id="char-prompt" style="width:100%; background:#0d0c1d; border:1px solid #a855f7; padding:12px; border-radius:8px; color:white; height: 100px; margin-bottom:14px; box-sizing:border-box;"></textarea>
-                
-                <label style="color: #a855f7; font-size: 12px; display: block; margin-bottom: 6px;">Saludo inicial</label>
-                <input type="text" id="char-saludo" style="width:100%; background:#0d0c1d; border:1px solid #a855f7; padding:12px; border-radius:8px; color:white; margin-bottom:14px; box-sizing:border-box;">
-                
-                <div class="modal-buttons">
-                    <button onclick="cambiarPanel('home')" class="btn-close-dark">Cancelar</button>
-                    <button onclick="guardarNuevoPersonaje()" class="btn-save-neon">Guardar</button>
-                </div>
-            </div>
-
-            <!-- Vista 3: Sala de Chat -->
-            <div class="view-panel" id="panel-chat" style="display:none;">
-                <div style="display: flex; align-items: center; background: #131129; padding: 10px; border-radius: 12px; border: 1px solid #bc00dd; margin-bottom: 12px;">
-                    <button onclick="cambiarPanel('home')" style="background: none; border: none; color: #bc00dd; font-size: 18px; font-weight: bold; padding-right:15px;">←</button>
-                    <div>
-                        <h3 id="active-chat-name" style="color: white; margin: 0; font-size: 16px;">IA Companion</h3>
-                        <small id="active-chat-status" style="color: #00ff66; font-size: 12px;">Generado por IA</small>
-                    </div>
-                </div>
-                <div id="chat-messages-box" style="height: calc(100vh - 410px); overflow-y: auto; padding: 8px; background: #0d0c1d; border-radius: 8px; border: 1px solid rgba(168,85,247,0.2); box-sizing: border-box;"></div>
-                <div style="display: flex; gap: 8px; margin-top: 10px; box-sizing: border-box;">
-                    <input type="text" id="chat-user-message" style="flex:1; background:#131129; border:1px solid #a855f7; padding:12px; border-radius:8px; color:white;" placeholder="Escribe un mensaje..." onkeypress="if(event.key==='Enter') enviarMensajeAOllama()">
-                    <button onclick="enviarMensajeAOllama()" style="background:#bc00dd; border:none; color:white; width:46px; height:46px; border-radius:8px;">▶</button>
-                </div>
-            </div>
-
-            <!-- Vista 4: Panel Yo -->
-            <div class="view-panel" id="panel-yo" style="display:none; background: #131129; padding: 16px; border-radius: 12px; border: 1px solid rgba(168,85,247,0.3);">
-                <h3 style="color: white; margin: 0 0 12px 0;">👤 PERFIL</h3>
-                <input type="text" id="user-profile-name" style="width:100%; background:#0d0c1d; border:1px solid #a855f7; padding:10px; border-radius:6px; color:white; box-sizing:border-box; margin-bottom:12px;" value="Master S">
-                <button onclick="formatearBaseDeDatosCompleta()" style="background:#fde7e9; color:#a80000; border:1px solid #f3b1b3; padding:10px; border-radius:8px; font-weight:bold; width:100%;">Borrar todos los datos</button>
-                <div style="margin-top:15px; color:#fff; font-size:13px;">
-                    <p>Personajes: <strong id="stat-chars" style="color:#bc00dd;">0</strong></p>
-                    <p>Chats: <strong id="stat-chats" style="color:#bc00dd;">0</strong></p>
-                </div>
-            </div>
-
-        </main>
-
-        <!-- Menú de Navegación Fijo Inferior -->
-        <footer class="app-nav-bar" style="height: 65px; background: #131129; border-top: 1px solid #bc00dd; display: flex; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 9999;">
-            <button id="nav-home" style="flex:1; background:none; border:none; color:#a855f7; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:11px;" onclick="cambiarPanel('home')">🏠<br>Home</button>
-            <button id="nav-buscar" style="flex:1; background:none; border:none; color:#a855f7; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:11px;" onclick="alternarBarraBusqueda()">🔍<br>Buscar</button>
-            <button id="nav-crear" style="flex:1; background:none; border:none; color:#a855f7; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:11px;" onclick="cambiarPanel('crear')">➕<br>Crear</button>
-
