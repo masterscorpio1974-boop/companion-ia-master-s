@@ -1,9 +1,6 @@
-{
+{}
   "appId": "com.companion.ia",
   "appName": "COMPANION IA",
   "webDir": "www",
-  "server": {
-    "url": "http://192.168.1.7:8000",
-    "cleartext": true
-  }
+  "bundledWebRuntime": false
 }
