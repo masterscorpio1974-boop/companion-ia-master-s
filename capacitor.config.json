@@ -1,6 +1,1 @@
-{}
-  "appId": "com.masterscorpio.companionia",
-  "appName": "COMPANION IA",
-  "webDir": "www",
-  "bundledWebRuntime": false
-}
+{"appId":"com.masterscorpio.companionia","appName":"COMPANION IA","webDir":"www","bundledWebRuntime":false}
