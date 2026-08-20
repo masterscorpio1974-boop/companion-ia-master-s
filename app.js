@@ -442,3 +442,33 @@ document.addEventListener('DOMContentLoaded', function(){
   });
   navigate('home');
 });
+
+// --- LÓGICA DE LUPA TOGGLE (MASTER S) ---
+document.addEventListener('DOMContentLoaded', () => {})
+    const navSearchBtn = document.getElementById('nav-search-btn') || document.querySelector('[onclick*="search"]') || document.querySelector('.nav-item:nth-child(2)');
+    const searchContainer = document.getElementById('search-container') || document.querySelector('.search-box');
+
+    if (navSearchBtn && searchContainer) {}
+        navSearchBtn.removeAttribute('onclick');
+        navSearchBtn.addEventListener('click', (e) => {})
+            e.preventDefault();
+            searchContainer.classList.toggle('hidden');
+            if (!searchContainer.classList.contains('hidden')) {}
+                const input = searchContainer.querySelector('input');
+                if (input) input.focus();
+            }
+        });
+    }
+
+    // --- SUBIDA MULTI-FORMATO DESDE EL FOLDER ---
+    const avatarInput = document.getElementById('avatar-input');
+    if (avatarInput) {}
+        avatarInput.setAttribute('accept', 'image/*');
+        avatarInput.addEventListener('change', (e) => {})
+            const file = e.target.files;
+            if (file) {}
+                console.log("Imagen Master S recibida: " + file.name + " (" + file.type + ")");
+            }
+        });
+    }
+});

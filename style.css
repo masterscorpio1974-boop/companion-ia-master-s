@@ -107,3 +107,8 @@ html, body { background: #050508; color: #e0e0e0; font-family: -apple-system, Bl
 .avatar-preview img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
 .avatar-text { font-size: inherit; }
+
+/* --- REGLA BUSCADOR OCULTO MASTER S --- */
+#search-container.hidden, .search-box.hidden, .hidden {}
+    display: none !important;
+}
