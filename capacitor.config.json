@@ -1,1 +1,9 @@
-{"appId":"com.masterscorpio.companionia","appName":"COMPANION IA","webDir":"www","bundledWebRuntime":false}
+{
+  "appId": "com.masters.companionia",
+  "appName": "Companion IA",
+  "webDir": "www",
+  "server": {
+    "url": "https://scorpiomaster066-art.github.io/companion-ia-master-s/",
+    "cleartext": true
+  }
+}
