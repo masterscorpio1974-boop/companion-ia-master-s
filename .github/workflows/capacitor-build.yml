@@ -1,60 +1,70 @@
 name: Build Companion IA APK
 on:
+  push:
+    branches: [ main ] ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - name: 📥 Obtener código
+      - name: Obtener código
         uses: actions/checkout@v4
 
-      - name: 🟢 Configurar Node.js
+      - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: ☕ Configurar Java
+      - name: Configurar Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: 📱 Configurar Android SDK
+      - name: Configurar Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: 📦 Instalar dependencias
+      - name: Instalar dependencias
         run: |
           npm install
           npm install @capacitor/cli @capacitor/android --save
-      - name: 📁 Copiar archivos a carpeta www
+
+      - name: Copiar archivos a carpeta www
         run: |
           mkdir -p www
-          cp index.html app.js style.css icon.png -t www/
-      - name: 📲 Agregar plataforma Android
+          cp index.html logic.js style.css icon.png -t www/
+
+      - name: Agregar plataforma Android
         run: |
           rm -rf android
           npx cap add android
-      - name: 🔓 Permitir HTTP a Termux (cleartext)
+
+      - name: Permitir HTTP (cleartext)
         run: |
+          sed -i 's/<application/<application android:usesCleartextTraffic="true"/' android/app/src/main/res/values/strings.xml 2>/dev/null || true
           sed -i 's/<application/<application android:usesCleartextTraffic="true"/' android/app/src/main/AndroidManifest.xml
-      - name: 🗑️ Borrar iconos por defecto
+
+      - name: Borrar iconos por defecto
         run: |
           rm -rf android/app/src/main/res/mipmap-anydpi-v26 || true
           rm -f android/app/src/main/res/mipmap-*/ic_launcher.xml || true
           rm -f android/app/src/main/res/mipmap-*/ic_launcher_round.xml || true
-      - name: 🎨 Inyectar TU Logo Morado
+
+      - name: Inyectar TU Logo
         run: |
           for d in android/app/src/main/res/mipmap-*; do
-            cp icon.png ${d}/ic_launcher.png
-            cp icon.png ${d}/ic_launcher_round.png
+            cp icon.png $d/ic_launcher.png
+            cp icon.png $d/ic_launcher_round.png
           done
-      - name: 🔨 Compilar APK
+
+      - name: Compilar APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
-      - name: 📤 Subir APK listo
+
+      - name: Subir APK listo
         uses: actions/upload-artifact@v4
         with:
           name: Companion-IA-Master-S-APK
