@@ -1,14 +1,14 @@
 name: Build Companion IA APK
 on:
   push:
-    branches: [ main ] ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - name: Obtener código
+      - name: Obtener codigo
         uses: actions/checkout@v4
 
       - name: Configurar Node.js
@@ -42,7 +42,6 @@ jobs:
 
       - name: Permitir HTTP (cleartext)
         run: |
-          sed -i 's/<application/<application android:usesCleartextTraffic="true"/' android/app/src/main/res/values/strings.xml 2>/dev/null || true
           sed -i 's/<application/<application android:usesCleartextTraffic="true"/' android/app/src/main/AndroidManifest.xml
 
       - name: Borrar iconos por defecto
@@ -51,7 +50,7 @@ jobs:
           rm -f android/app/src/main/res/mipmap-*/ic_launcher.xml || true
           rm -f android/app/src/main/res/mipmap-*/ic_launcher_round.xml || true
 
-      - name: Inyectar TU Logo
+      - name: Inyectar tu logo
         run: |
           for d in android/app/src/main/res/mipmap-*; do
             cp icon.png $d/ic_launcher.png
