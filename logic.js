@@ -1,106 +1,157 @@
-let COMPANION_STORAGE = JSON.parse(localStorage.getItem('COMPANION_DB')) || {
-    config: { userName: "Master S", ollamaUrl: "http://10.0.2.2:11434" },
-    characters: [],
-    history: {}
+const CONFIG = {}
+    OLLAMA_URL: 'http://127.0.0.1:11434/api/generate',
+    MODELO: 'qwen2.5-coder-abliterated:3b',
+    USUARIO: 'Master S',
+    DB_CLAVE: 'COMPANIONION_DB'
 };
-let personajeActivoId = null;
-document.addEventListener('DOMContentLoaded', () => { renderizarListaPersonajes(); });
-function cambiarPanel(nombreVista) {
-    document.getElementById('panel-home').style.display = 'none';
-    document.getElementById('panel-crear').style.display = 'none';
-    document.getElementById('panel-chat').style.display = 'none';
-    document.getElementById('panel-yo').style.display = 'none';
-    document.querySelectorAll('.app-nav-bar button').forEach(btn => btn.classList.remove('active'));
-    const panel = document.getElementById('panel-' + nombreVista);
-    if (panel) panel.style.display = 'block';
-    const boton = document.getElementById('nav-' + nombreVista);
-    if (boton) boton.classList.add('active');
-    if (nombreVista !== 'buscar') document.getElementById('dynamicSearchContainer').classList.remove('active');
+
+function leerDB() {}
+    const guardado = localStorage.getItem(CONFIG.DB_CLAVE);
+    return guardado ? JSON.parse(guardado) : { personajes: [], historial: {} }; }
 }
-function alternarBarraBusqueda() {
-    const contenedor = document.getElementById('dynamicSearchContainer');
-    const input = document.getElementById('searchBarInput');
-    if (contenedor.classList.contains('active')) {
-        contenedor.classList.remove('active');
-        input.value = '';
-        filtrarPersonajesLocal();
-    } else {
-        cambiarPanel('home');
-        contenedor.classList.add('active');
-        input.focus();
+
+function guardarDB(db) {}
+    localStorage.setItem(CONFIG.DB_CLAVE, JSON.stringify(db));
+}
+
+function construirPromptSistema(personaje) {}
+    return ``
+PERSONALIDAD DE ${personaje.nombre.toUpperCase()}:
+${personaje.personalidad}
+
+INSTRUCCIONES:
+- TU ERES: ${personaje.nombre}
+- TU USUARIO ES: ${CONFIG.USUARIO}
+- Habla como tú mismo. Sé fiel a tu personalidad.
+- NO cambies tu nombre ni tu rol.
+- Responde en español de forma natural.
+- Recuerda lo que hablamos antes.
+    `.trim();`
+}
+
+function renderizarPersonajes(filtro = '') {}
+    const db = leerDB();
+    const lista = document.getElementById('listaPersonajes');
+    const filtrados = db.personajes.filter(p => )
+        p.nombre.toLowerCase().includes(filtro.toLowerCase())
+    );
+    if (filtrados.length === 0) {}
+        lista.innerHTML = `<div class="vacio"><div class="icono">👤</div><p>Sin personajes</p><p>Toca + Crear</p></div>`;
+        return;
     }
+    lista.innerHTML = filtrados.map(p => {})
+        const inicial = p.nombre.charAt(0).toUpperCase();
+        return `<div class="tarjeta" onclick="abrirChat('${encodeURIComponent(p.nombre)}')"><div class="circulo">${inicial}</div><h3>${p.nombre}</h3><p>${p.descripcion}</p></div>`;
+    }).join('');
 }
-function filtrarPersonajesLocal() {
-    const query = document.getElementById('searchBarInput').value.toLowerCase().trim();
-    document.querySelectorAll('.character-card').forEach(t => {
-        const nombre = t.getAttribute('data-name').toLowerCase();
-        t.style.display = nombre.includes(query) ? 'flex' : 'none';
-    });
+
+function cambiarPantalla(pantalla) {}
+    if (pantalla === 'crear') { mostrarFormularioCrear(); } }
+    else if (pantalla === 'chats') { alert('Próximamente'); } }
+    else if (pantalla === 'yo') { alert(`Usuario: ${CONFIG.USUARIO}`); } }
 }
-function guardarNuevoPersonaje() {
-    const nameInp = document.getElementById('char-name').value.trim();
-    const promptInp = document.getElementById('char-prompt').value.trim();
-    const saludoInp = document.getElementById('char-saludo').value.trim();
-    if (!nameInp || !promptInp) { alert('Campos obligatorios vacíos.'); return; }
-    const nuevo = { id: 'char_' + Date.now(), name: nameInp, prompt: promptInp, saludo: saludoInp || "SAM active." };
-    COMPANION_STORAGE.characters.push(nuevo);
-    COMPANION_STORAGE.history[nuevo.id] = [{ role: 'model', text: nuevo.saludo }];
-    localStorage.setItem('COMPANION_DB', JSON.stringify(COMPANION_STORAGE));
-    renderizarListaPersonajes();
-    cambiarPanel('home');
+
+function mostrarFormularioCrear() {}
+    const lista = document.getElementById('listaPersonajes');
+    lista.innerHTML = ``
+    <div class="formulario-crear">
+        <h3>Crear Personaje</h3>
+        <label>Nombre del personaje</label>
+        <input type="text" id="inp_nombre" placeholder="Ej: ALMMA">
+        <label>Descripción corta</label>
+        <input type="text" id="inp_desc" placeholder="Ej: Mi compañera">
+        <label>Personalidad y rol</label>
+        <textarea id="inp_perso" placeholder="Ej: Eres ALMMA, mi compañera leal..."></textarea>
+        <div style="display:flex;gap:10px;margin-top:15px;">
+            <button class="btn" onclick="guardarNuevoPersonaje()">GUARDAR</button>
+            <button class="btn btn-secundario" onclick="renderizarPersonajes()">Cancelar</button>
+        </div>
+    </div>`;`
 }
-function renderizarListaPersonajes() {
-    const lista = document.getElementById('characters-list');
-    if (!lista) return; lista.innerHTML = '';
-    document.getElementById('no-characters-fallback').style.display = COMPANION_STORAGE.characters.length === 0 ? 'block' : 'none';
-    COMPANION_STORAGE.characters.forEach(char => {
-        let card = document.createElement('div');
-        card.className = 'character-card';
-        card.setAttribute('data-name', char.name);
-        card.innerHTML = `<div style="font-size:20px; background:rgba(188,0,221,0.15); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;">&#129302;</div><div style="flex:1;"><h4 style="margin:0; color:white; font-size:15px;">${char.name}</h4><small style="color:#a855f7; font-size:11px;">Modo Pentesting</small></div><span style="color:#bc00dd;">&#9654;</span>`;
-        card.onclick = () => abrirSalaChat(char.id);
-        lista.appendChild(card);
-    });
+
+function guardarNuevoPersonaje() {}
+    const nombre = document.getElementById('inp_nombre').value.trim();
+    const descripcion = document.getElementById('inp_desc').value.trim();
+    const personalidad = document.getElementById('inp_perso').value.trim();
+    if (!nombre || !descripcion || !personalidad) { alert('Llena todos los campos'); return; } }
+    const db = leerDB();
+    db.personajes.push({nombre, descripcion, personalidad, fecha: Date.now()});
+    guardarDB(db);
+    alert(`Personaje "${nombre}" creado`);
+    renderizarPersonajes();
 }
-function abrirSalaChat(charId) {
-    personajeActivoId = charId;
-    const char = COMPANION_STORAGE.characters.find(c => c.id === charId);
-    document.getElementById('active-chat-name').innerText = char.name;
-    cambiarPanel('chat'); refrescarHistorialPantallaChat();
+
+function abrirChat(nombreCodificado) {}
+    const nombre = decodeURIComponent(nombreCodificado);
+    const db = leerDB();
+    const personaje = db.personajes.find(p => p.nombre === nombre);
+    if (!personaje) { alert('Personaje no encontrado'); return; } }
+    localStorage.setItem('PERSONAJE_ACTUAL', JSON.stringify(personaje));
+    mostrarVistaChat(personaje);
 }
-function refrescarHistorialPantallaChat() {
-    const caja = document.getElementById('chat-messages-box'); caja.innerHTML = '';
-    (COMPANION_STORAGE.history[personajeActivoId] || []).forEach(msg => {
-        let div = document.createElement('div');
-        div.style.cssText = msg.role === 'user' ? 
-            "background:#bc00dd; color:white; padding:10px 14px; border-radius:14px 14px 0 14px; margin:6px 0; max-width:80%; margin-left:auto; text-align:right; font-size:14px; word-wrap:break-word;" :
-            "background:#1a1636; color:#e2e1e9; padding:10px 14px; border-radius:14px 14px 14px 0; margin:6px 0; max-width:80%; border:1px solid #a855f7; font-size:14px; word-wrap:break-word;";
-        div.innerText = msg.text; caja.appendChild(div);
-    });
+
+function mostrarVistaChat(personaje) {}
+    document.querySelector('.header').innerHTML = ``
+        <a href="#" onclick="renderizarPersonajes(); location.reload(); return false;" style="color:#A855F7;text-decoration:none;">VOLVER</a>
+        <h2 style="margin-top:10px;">${personaje.nombre}</h2>
+        <p style="color:#9CA3AF;font-size:14px;">${personaje.descripcion}</p>`;`
+    document.querySelector('.buscador').innerHTML = '';
+    document.getElementById('listaPersonajes').innerHTML = ``
+        <div id="cajaMensajes" style="padding:15px;max-height:55vh;overflow-y:auto;"></div>
+        <div style="display:flex;gap:10px;padding:15px;">
+            <input type="text" id="mensajeEntrada" placeholder="Escribe tu mensaje..." style="flex:1;padding:12px;border-radius:12px;background:#1F2937;border:1px solid #374151;color:white;">
+            <button onclick="enviarMensaje('${encodeURIComponent(personaje.nombre)}')" style="padding:12px 18px;background:#A020F0;color:white;border:none;border-radius:12px;font-weight:bold;">ENVIAR</button>
+        </div>`;`
+}
+
+async function enviarMensaje(nombreCodificado) {}
+    const nombre = decodeURIComponent(nombreCodificado);
+    const texto = document.getElementById('mensajeEntrada').value.trim();
+    if (!texto) return;
+    const db = leerDB();
+    const personaje = db.personajes.find(p => p.nombre === nombre);
+    const caja = document.getElementById('cajaMensajes');
+    caja.innerHTML += `<div style="background:#A020F0;padding:10px 14px;border-radius:14px;margin:8px 0 8px 20%;">${CONFIG.USUARIO}: ${texto}</div>`;
+    document.getElementById('mensajeEntrada').value = '';
+    const idPensando = Date.now();
+    caja.innerHTML += `<div id="pensando-${idPensando}" style="background:#374151;padding:10px 14px;border-radius:14px;margin:8px 20px 8px 0;color:#9CA3AF;font-style:italic;">${personaje.nombre}: Pensando...</div>`;
+    caja.scrollTop = caja.scrollHeight;
+
+    const historial = db.historial[personaje.nombre] || [];
+    let contexto = construirPromptSistema(personaje) + "\n\nCONVERSACION:\n";
+    historial.forEach(m => { contexto += `${m.quien}: ${m.texto}\n`; }); })
+    contexto += `${CONFIG.USUARIO}: ${texto}\n${personaje.nombre}:`;
+
+    try {}
+        const res = await fetch(CONFIG.OLLAMA_URL, {})
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({model:CONFIG.MODELO, prompt:contexto, stream:false, options:{temperature:0.85}})
+        });
+        const datos = await res.json();
+        const resp = datos.response.trim();
+        document.getElementById(`pensando-${idPensando}`).remove();
+        caja.innerHTML += `<div style="background:#374151;padding:10px 14px;border-radius:14px;margin:8px 20px 8px 0;">${personaje.nombre}: ${resp.replace(/\n/g,'<br>')}</div>`;
+        historial.push({quien:CONFIG.USUARIO, texto}, {quien:personaje.nombre, texto:resp});
+        db.historial[personaje.nombre] = historial;
+        guardarDB(db);
+    } catch(err) {}
+        document.getElementById(`pensando-${idPensando}`).remove();
+        caja.innerHTML += `<div style="background:#7F1D1D;padding:10px 14px;border-radius:14px;margin:8px 20px 8px 0;color:#FCA5A5;">Error: ${err.message}<br>Revisa que Ollama esté corriendo</div>`;
+    }
     caja.scrollTop = caja.scrollHeight;
 }
-async function enviarMensajeAOllama() {
-    const input = document.getElementById('chat-user-message'); const txt = input.value.trim(); if (!txt) return;
-    COMPANION_STORAGE.history[personajeActivoId].push({ role: 'user', text: txt });
-    input.value = ''; refrescarHistorialPantallaChat();
-    document.getElementById('active-chat-status').innerText = "Escribiendo...";
-    const char = COMPANION_STORAGE.characters.find(c => c.id === personajeActivoId);
-    try {
-        const res = await fetch(`${COMPANION_STORAGE.config.ollamaUrl}/api/generate`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: "SAM", prompt: `System: ${char.prompt}\nUser: ${txt}\nResponse:`, stream: false })
-        });
-        const data = await res.json();
-        COMPANION_STORAGE.history[personajeActivoId].push({ role: 'model', text: data.response.trim() });
-        localStorage.setItem('COMPANION_DB', JSON.stringify(COMPANION_STORAGE));
-        refrescarHistorialPantallaChat();
-    } catch { alert("Ollama local inalcanzable."); }
-    finally { document.getElementById('active-chat-status').innerText = "En línea"; }
+
+async function verificarConexion() {}
+    const indicador = document.getElementById('estado');
+    try {}
+        const res = await fetch('http://127.0.0.1:11434/api/tags');
+        if (res.ok) { indicador.textContent='EN LÍNEA'; indicador.style.background='rgba(0,200,80,0.2)'; indicador.style.color='#4ADE80'; } }
+    } catch { indicador.textContent='SIN CONEXIÓN'; indicador.style.background='rgba(220,38,38,0.2)'; indicador.style.color='#FCA5A5'; } }
 }
-function formatearBaseDeDatosCompleta() {
-    if (confirm('¿Borrar todos los datos?')) {
-        COMPANION_STORAGE = { config: { userName: "Master S", ollamaUrl: "http://10.0.2.2:11434" }, characters: [], history: {} };
-        localStorage.setItem('COMPANION_DB', JSON.stringify(COMPANION_STORAGE));
-        renderizarListaPersonajes(); cambiarPanel('home');
-    }
-}
+
+document.addEventListener('DOMContentLoaded', () => {})
+    renderizarPersonajes();
+    verificarConexion();
+    document.getElementById('buscar').addEventListener('input', e => renderizarPersonajes(e.target.value));
+});
