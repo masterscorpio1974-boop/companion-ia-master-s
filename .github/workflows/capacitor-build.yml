@@ -1,7 +1,5 @@
 name: Build Companion IA APK
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -37,16 +35,19 @@ jobs:
 
       - name: Agregar plataforma Android
         run: |
-          rm -rf android
-          npx cap add android
+          if [ ! -d "android" ]; then
+            npx cap add android
+          else
+            npx cap update android
+          fi
 
-      - name: Permitir HTTP (cleartext)
+      - name: Permitir HTTP (cleartest)
         run: |
-          sed -i 's/<application/<application android:usesCleartextTraffic="true"/' android/app/src/main/AndroidManifest.xml
+          sed -i 's/<application\/>/<application android:usesCleartextTraffic="true"\/>/g' android/app/src/main/AndroidManifest.xml
 
       - name: Borrar iconos por defecto
         run: |
-          rm -rf android/app/src/main/res/mipmap-anydpi-v26 || true
+          rm -rf android/app/src/main/res/mipmap-*v26 || true
           rm -f android/app/src/main/res/mipmap-*/ic_launcher.xml || true
           rm -f android/app/src/main/res/mipmap-*/ic_launcher_round.xml || true
 
