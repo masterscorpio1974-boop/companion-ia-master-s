@@ -1,36 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: http://127.0.0.1:11434/">
-    <title>COMPANION IA</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: http://127.0.0.1:* http://localhost:*">
+  <link rel="stylesheet" href="style.css">
+  <title>COMPANION IA</title>
 </head>
 <body>
-    <div class="header">
-        <div class="logo-circle">S</div>
-        <h1>COMPANION IA</h1>
-        <p class="subtitulo">by MASTER S · <span id="estado" class="estado">● CONECTANDO...</span></p>
+
+  <div class="header">
+    <div class="logo-circle">S</div>
+    <h1>COMPANION IA</h1>
+    <p class="subtitulo">by MASTER S · <span id="estado" class="estado">● CONECTANDO...</span></p>
+  </div>
+
+  <div class="buscador">
+    <input type="text" id="buscar" placeholder="Buscar personaje...">
+  </div>
+
+  <h2>Tus Personajes</h2>
+  <div id="listaPersonajes" class="personajes">
+    <div class="vacio">
+      <div class="icono">👤</div>
+      <p>Sin personajes</p>
+      <p>Toca + Crear abajo</p>
     </div>
-    <div class="buscador">
-        <input type="text" id="buscar" placeholder="Buscar personaje...">
-    </div>
-    <h2>Tus Personajes</h2>
-    <div class="personajes" id="listaPersonajes">
-        <div class="vacio">
-            <div class="icono">👤</div>
-            <p>Sin personajes</p>
-            <p>Toca + Crear</p>
-        </div>
-    </div>
-    <nav class="nav">
-        <button class="nav-btn activo" onclick="cambiarPantalla('home')"><span>🏠</span> Home</button>
-        <button class="nav-btn" onclick="cambiarPantalla('buscar')"><span>🔍</span> Buscar</button>
-        <button class="nav-btn" onclick="cambiarPantalla('crear')"><span>➕</span> Crear</button>
-        <button class="nav-btn" onclick="cambiarPantalla('chats')"><span>💬</span> Chats</button>
-        <button class="nav-btn" onclick="cambiarPantalla('yo')"><span>👤</span> Yo</button>
-    </nav>
-<script src="logic.js"></script>
+  </div>
+
+  <footer class="app-nav-bar">
+    <button class="nav-item active" onclick="cambiarPanel('home')">
+      <span>🏠</span> Home
+    </button>
+    <button class="nav-item" onclick="cambiarPanel('buscar')">
+      <span>🔍</span> Buscar
+    </button>
+    <button class="nav-item" onclick="cambiarPanel('crear')">
+      <span>+</span> Crear
+    </button>
+    <button class="nav-item" onclick="cambiarPanel('chats')">
+      <span>💬</span> Chats
+    </button>
+    <button class="nav-item" onclick="cambiarPanel('yo')">
+      <span>👤</span> Yo
+    </button>
+  </footer>
+
+  <script src="app.js"></script>
+  <script src="logic.js"></script>
 </body>
 </html>
