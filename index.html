@@ -17,7 +17,7 @@
         <img src="icon.png" alt="Logo" class="logo-img">
       </div>
       <h1>COMPANION IA</h1>
-      <p class="subtitulo">by MASTER S · <span id="estado">● CONECTANDO...</span></p>
+      <p class="subtitulo">by MASTER S</p>
     </div>
     <h2>Tus Personajes</h2>
     <div id="listaPersonajes" class="personajes">
@@ -105,5 +105,13 @@
 
   <script src="app.js"></script>
   <script src="logic.js"></script>
+  <!-- PANTALLA CHAT -->
+<div id="panel-chat" class="panel" style="display:none;">
+  <h2>Chat con <span id="nombre-chat"></span></h2>
+  <div id="caja-mensajes" style="padding:16px;"></div>
+  <div style="position:fixed;bottom:80px;left:0;right:0;padding:10px;background:#111;">
+    <input type="text" id="entrada-mensaje" placeholder="Escribe tu mensaje..." style="width:calc(100% - 20px);padding:12px;border-radius:8px;border:none;background:#222;color:white;">
+  </div>
+</div>
 </body>
 </html>
