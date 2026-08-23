@@ -3,31 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: http://127.0.0.1:* http://localhost:*">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: http://127.0.0.1:*">
   <link rel="stylesheet" href="style.css">
   <title>COMPANION IA</title>
 </head>
 <body>
 
-  <div class="header">
-    <div class="logo-circle">S</div>
-    <h1>COMPANION IA</h1>
-    <p class="subtitulo">by MASTER S · <span id="estado" class="estado">● CONECTANDO...</span></p>
-  </div>
-
-  <div class="buscador">
-    <input type="text" id="buscar" placeholder="Buscar personaje...">
-  </div>
-
-  <h2>Tus Personajes</h2>
-  <div id="listaPersonajes" class="personajes">
-    <div class="vacio">
-      <div class="icono">👤</div>
-      <p>Sin personajes</p>
-      <p>Toca + Crear abajo</p>
+  <!-- PANTALLA PRINCIPAL -->
+  <div id="panel-home" class="panel">
+    <div class="header">
+      <div class="logo-wrapper">
+        <div class="halo"></div>
+        <img src="icon.png" alt="Logo" class="logo-img">
+      </div>
+      <h1>COMPANION IA</h1>
+      <p class="subtitulo">by MASTER S · <span id="estado">● CONECTANDO...</span></p>
+    </div>
+    <h2>Tus Personajes</h2>
+    <div id="listaPersonajes" class="personajes">
+      <div class="vacio">
+        <p>Sin personajes</p>
+        <p>Toca + Crear abajo</p>
+      </div>
     </div>
   </div>
 
+  <!-- PANTALLA BUSCAR -->
+  <div id="panel-buscar" class="panel" style="display:none;">
+    <h2>Buscar Personaje</h2>
+    <div class="campo-form">
+      <input type="text" id="buscar-input" placeholder="Escribe el nombre del personaje...">
+    </div>
+    <div id="resultados-buscar" class="personajes"></div>
+  </div>
+
+  <!-- PANTALLA CREAR -->
+  <div id="panel-crear" class="panel" style="display:none;">
+    <h2 class="titulo-crear">Crear Personaje</h2>
+    <div class="recuadro-imagen" onclick="document.getElementById('img-personaje').click()">
+      <span class="signo-mas">+</span>
+      <p>Haz clic para establecer la apariencia</p>
+      <input type="file" id="img-personaje" accept="image/*" style="display:none;" onchange="previsualizarImagen(event)">
+      <div id="vista-previa" class="vista-previa"></div>
+    </div>
+    <div class="campo-form">
+      <label>Nombre</label>
+      <input type="text" id="nombre-personaje" placeholder="Ingresa el nombre del personaje" maxlength="20">
+      <span id="contador-letras">0/20</span>
+    </div>
+    <div class="campo-form">
+      <label>Prompt / Personalidad</label>
+      <textarea id="prompt-personaje" placeholder="Describe cómo es el personaje, cómo habla, su personalidad..."></textarea>
+    </div>
+    <button class="btn-crear" onclick="guardarPersonaje()">Crear Personaje</button>
+  </div>
+
+  <!-- PANTALLA CHATS -->
+  <div id="panel-chats" class="panel" style="display:none;">
+    <h2>Conversaciones</h2>
+    <div id="lista-chats" class="personajes">
+      <div class="vacio">
+        <p>Sin conversaciones</p>
+        <p>Crea un personaje y empieza a hablar</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANTALLA YO -->
+  <div id="panel-yo" class="panel" style="display:none;">
+    <h2>Mi Perfil</h2>
+    <div class="campo-form">
+      <label>Estado de conexión</label>
+      <p id="estado-conexion">🔴 Desconectado</p>
+    </div>
+    <div class="campo-form">
+      <label>Servidor Ollama</label>
+      <input type="text" id="url-ollama" placeholder="http://127.0.0.1:11434">
+    </div>
+    <button class="btn" onclick="probarConexion()">Probar conexión</button>
+    <button class="btn btn-secundario" onclick="borrarTodo()">Borrar todos los datos</button>
+  </div>
+
+  <!-- BARRA DE NAVEGACIÓN -->
   <footer class="app-nav-bar">
     <button class="nav-item active" onclick="cambiarPanel('home')">
       <span>🏠</span> Home
