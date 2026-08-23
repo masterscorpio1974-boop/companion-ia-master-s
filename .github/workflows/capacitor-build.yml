@@ -31,7 +31,7 @@ jobs:
       - name: Copiar archivos a carpeta www
         run: |
          mkdir -p www
-         cp index.html app.js logic.js style.css icon.png -t www/
+         cp index.html app.js style.css icon.png -t www/
 
 
       - name: Agregar plataforma Android
