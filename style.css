@@ -21,7 +21,32 @@ body { background:#0A0A1F; color:#fff; font-family: sans-serif; padding-bottom:8
 input, textarea { width:100%; background:#1A1A35; border:1px solid #333; color:#fff; padding:12px; border-radius:10px; margin:8px 0; }
 .btn-primary { width:100%; background:#A020F0; border:none; padding:12px; border-radius:12px; color:#fff; font-weight:bold; margin-top:10px; }
 /* NAV - ARREGLADO PARA QUE NO SE TAPEN */
-.nav { position:fixed !important; bottom:0 !important; left:0; right:0; display:flex !important; justify-content:space-around !important; background:#0A0A1F !important; border-top:1px solid #A020F0 !important; height:72px !important; padding-bottom:env(safe-area-inset-bottom,18px) !important; padding-top:8px !important; z-index:9999 !important; }
-.nav-btn { background:transparent !important; border:none !important; color:#9CA3AF !important; display:flex !important; flex-direction:column !important; align-items:center !important; font-size:10px !important; }
-.nav-btn.active { color:#A020F0 !important; }
-.nav-btn span { font-size:22px !important; }
+.nav {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  display: flex !important;
+  justify-content: space-around !important;
+  background: #0A0A1F !important;
+  border-top: 1px solid #A020F0 !important;
+  height: 78px !important;
+  padding-bottom: env(safe-area-inset-bottom, 20px) !important;
+  padding-top: 10px !important;
+  z-index: 9999 !important;
+}
+.nav-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #9CA3AF !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  font-size: 10px !important;
+}
+.nav-btn.active {
+  color: #A020F0 !important;
+}
+.nav-btn span {
+  font-size: 22px !important;
+}
