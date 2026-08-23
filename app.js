@@ -309,3 +309,9 @@ if (pantalla === 'home') {
     estadoEl.textContent = '✅ CONECTADO';
   }
 }
+function switchTab(tab){
+  document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
+  document.getElementById('panel-'+tab).style.display='block';
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-'+tab).classList.add('active');
+}
