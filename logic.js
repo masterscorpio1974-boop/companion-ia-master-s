@@ -126,10 +126,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// === ABRIR CHAT ===
 function abrirChat(id) {
-  alert(`Aquí se abre el chat con el personaje ${id}`);
+  const db = leerDB();
+  const personaje = db.personajes.find(p => p.id === id);
+  if (personaje) {
+    alert(`Aquí se abre el chat con el personaje ${personaje.nombre}`);
+  } else {
+    alert("Personaje no encontrado");
+  }
 }
+
 
 // === RENDERIZAR CHATS ===
 function renderChats() {
