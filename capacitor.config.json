@@ -3,7 +3,8 @@
   "appName": "Companion IA by MASTER S",
   "webDir": "www",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "http",
+    "cleartext": true
   },
   "android": {
     "adjustMargins": true,
