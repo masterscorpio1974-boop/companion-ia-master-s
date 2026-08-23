@@ -1,6 +1,5 @@
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:#0A0A1F; color:#fff; font-family: sans-serif; padding-bottom:80px; }
-
+body { background:#0A0A1F; color:#fff; font-family:sans-serif; padding-bottom:95px; }
 /* HEADER CON TEXTO CIRCULAR */
 .header { text-align:center; padding:20px 15px 10px; }
 .logo-container { position:relative; width:150px; height:150px; margin:0 auto 5px; display:flex; align-items:center; justify-content:center; }
