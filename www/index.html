@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https: http: 'unsafe-inline' 'unsafe-eval'">
+<link rel="stylesheet" href="style.css">
+<title>COMPANION IA</title>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-container">
+    <svg class="texto-circular" viewBox="0 0 150 150">
+      <defs>
+        <path id="circulo" d="M 75, 75 m -60, 0 a 60,60 0 1,1 120,0 a 60,60 0 1,1 -120,0" />
+      </defs>
+      <text>
+        <textPath href="#circulo">• COMPANION • COMPANION • COMPANION • COMPANION •</textPath>
+      </text>
+    </svg>
+    <div class="logo-wrapper">
+      <div class="halo"></div>
+      <img src="icon.png" class="logo-img">
+    </div>
+  </div>
+  <p class="by-master">by MASTER S</p>
+  <div id="estado-home" class="estado">• SAM:latest ONLINE</div>
+</div>
+
+<!-- PANEL HOME -->
+<div id="panel-home" class="panel" style="display:block;">
+  <div class="lista-personajes" id="lista-home"></div>
+</div>
+
+<!-- PANEL BUSCAR -->
+<div id="panel-buscar" class="panel" style="display:none;">
+  <input type="text" id="input-buscar" placeholder="Buscar personaje..." oninput="filtrarPersonajes(this.value)">
+  <div id="lista-buscar"></div>
+</div>
+
+<!-- PANEL CREAR -->
+<div id="panel-crear" class="panel" style="display:none;">
+  <h3>Crear Personaje</h3>
+  <input type="text" id="nombre-personaje" placeholder="Nombre">
+  <textarea id="prompt-personaje" placeholder="Prompt / Personalidad"></textarea>
+  <button type="button" class="btn-primary" onclick="guardarPersonaje()">Guardar</button>
+</div>
+
+<!-- PANEL CHATS -->
+<div id="panel-chats" class="panel" style="display:none;">
+  <div id="lista-chats"></div>
+</div>
+
+<!-- PANEL YO -->
+<div id="panel-yo" class="panel" style="display:none;">
+  <h3>Mi Perfil</h3>
+  <p>MASTER S</p>
+</div>
+
+<!-- PANEL CHAT INDIVIDUAL -->
+<div id="panel-chat" class="panel" style="display:none;">
+  <div id="mensajes"></div>
+  <div class="input-area">
+    <input type="text" id="input-mensaje" placeholder="Escribe...">
+    <button type="button" onclick="enviarMensaje()">➤</button>
+  </div>
+</div>
+
+<!-- NAV CORREGIDO -->
+<footer class="nav">
+  <button id="btn-home" type="button" class="nav-btn active" onclick="cambiarPanel('home')"><span>🏠</span>Home</button>
+  <button id="btn-buscar" type="button" class="nav-btn" onclick="cambiarPanel('buscar')"><span>🔍</span>Buscar</button>
+  <button id="btn-crear" type="button" class="nav-btn" onclick="cambiarPanel('crear')"><span>➕</span>Crear</button>
+  <button id="btn-chats" type="button" class="nav-btn" onclick="cambiarPanel('chats')"><span>💬</span>Chats</button>
+  <button id="btn-yo" type="button" class="nav-btn" onclick="cambiarPanel('yo')"><span>👤</span>Yo</button>
+    </footer>
+    <script src="logic.js"></script>
+</body>
+</html>
+
