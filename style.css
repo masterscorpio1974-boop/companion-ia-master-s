@@ -22,17 +22,18 @@ input, textarea { width:100%; background:#1A1A35; border:1px solid #333; color:#
 /* NAV - ARREGLADO PARA QUE NO SE TAPEN */
 .nav {
   position: fixed !important;
-  bottom: 0 !important;
+  bottom: 12px !important;
   left: 0 !important;
   right: 0 !important;
   display: flex !important;
   justify-content: space-around !important;
   background: #0A0A1F !important;
   border-top: 1px solid #A020F0 !important;
-  height: 78px !important;
-  padding-bottom: env(safe-area-inset-bottom, 20px) !important;
-  padding-top: 10px !important;
+  height: 90px !important;
+  padding-bottom: 25px !important;
+  padding-top: 12px !important;
   z-index: 9999 !important;
+}
 }
 .nav-btn {
   background: transparent !important;
