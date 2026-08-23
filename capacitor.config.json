@@ -1,7 +1,7 @@
 {
   "appId": "com.masters.companionia",
   "appName": "Companion IA by MASTER S",
-  "webDir": "www",
+  "webDir": ".",
   "server": {
     "androidScheme": "https"
   },
