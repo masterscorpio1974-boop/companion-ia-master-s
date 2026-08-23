@@ -12,7 +12,7 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Configurar Java
         uses: actions/setup-java@v4
@@ -31,7 +31,7 @@ jobs:
       - name: Copiar archivos a carpeta www
         run: |
           mkdir -p www
-          cp index.html logic.js style.css icon.png -t www/
+          cp index.html app.js style.css icon.png -t www/
 
       - name: Agregar plataforma Android
         run: |
