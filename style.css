@@ -50,3 +50,14 @@ input, textarea { width:100%; background:#1A1A35; border:1px solid #333; color:#
 .nav-btn span {
   font-size: 22px !important;
 }
+/* ===== PANELES - OCULTAR TODOS POR DEFECTO ===== */
+.panel {
+  display: none !important;
+  padding: 15px;
+}
+
+/* ===== SOLO EL ACTIVO SE MUESTRA ===== */
+.panel.activo,
+#panel-home {
+  display: block !important;
+}
