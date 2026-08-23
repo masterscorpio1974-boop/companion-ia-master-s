@@ -309,9 +309,13 @@ if (pantalla === 'home') {
     estadoEl.textContent = '✅ CONECTADO';
   }
 }
-function switchTab(tab){
+function cambiarPanel(pantalla){
   document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
-  document.getElementById('panel-'+tab).style.display='block';
+  const panel = document.getElementById('panel-'+pantalla);
+  if(panel) panel.style.display='block';
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('btn-'+tab).classList.add('active');
+  const btn = document.getElementById('btn-'+pantalla);
+  if(btn) btn.classList.add('active');
 }
+// Alias por si algo llama switchTab
+function switchTab(tab){ cambiarPanel(tab); }
