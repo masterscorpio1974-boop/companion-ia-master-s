@@ -126,15 +126,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+ // === ABRIR CHAT ===
 function abrirChat(id) {
   const db = leerDB();
   const personaje = db.personajes.find(p => p.id === id);
+  
   if (personaje) {
-    alert(`Aquí se abre el chat con el personaje ${personaje.nombre}`);
+    localStorage.setItem('chatActivoId', id);
+    cambiarPanel('chat');
   } else {
     alert("Personaje no encontrado");
   }
 }
+
 
 
 // === RENDERIZAR CHATS ===
@@ -178,5 +182,12 @@ async function probarConexion() {
   } catch {
     estado.textContent = '🔴 Sin conexión';
     estado.style.color = '#F87171';
+  }
+}
+if (pantalla === 'home') {
+  const estadoGuardado = localStorage.getItem('CONECTADO_OK');
+  const estadoEl = document.getElementById('estado-conexion-home');
+  if (estadoGuardado === 'SI') {
+    estadoEl.textContent = '✅ CONECTADO';
   }
 }
