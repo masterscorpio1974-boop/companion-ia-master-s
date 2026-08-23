@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https: http: 'unsafe-inline' 'unsafe-eval'">
-<title>COMPANION IA</title>
 <link rel="stylesheet" href="style.css">
+<title>COMPANION IA</title>
 </head>
 <body>
 
@@ -25,7 +25,7 @@
     </div>
   </div>
   <p class="by-master">by MASTER S</p>
-  <div id="estado-home" class="estado">● SAM:latest ONLINE</div>
+  <div id="estado-home" class="estado">• SAM:latest ONLINE</div>
 </div>
 
 <!-- PANEL HOME -->
@@ -67,13 +67,13 @@
   </div>
 </div>
 
-<!-- NAV -->
+<!-- NAV CORREGIDO -->
 <footer class="nav">
-  <button type="button" class="nav-btn active" onclick="cambiarPanel('home')"><span>🏠</span>Home</button>
-  <button type="button" class="nav-btn" onclick="cambiarPanel('buscar')"><span>🔍</span>Buscar</button>
-  <button type="button" class="nav-btn" onclick="cambiarPanel('crear')"><span>➕</span>Crear</button>
-  <button type="button" class="nav-btn" onclick="cambiarPanel('chats')"><span>💬</span>Chats</button>
-  <button type="button" class="nav-btn" onclick="cambiarPanel('yo')"><span>👤</span>Yo</button>
+  <button id="btn-home" type="button" class="nav-btn active" onclick="cambiarPanel('home')"><span>🏠</span>Home</button>
+  <button id="btn-buscar" type="button" class="nav-btn" onclick="cambiarPanel('buscar')"><span>🔍</span>Buscar</button>
+  <button id="btn-crear" type="button" class="nav-btn" onclick="cambiarPanel('crear')"><span>➕</span>Crear</button>
+  <button id="btn-chats" type="button" class="nav-btn" onclick="cambiarPanel('chats')"><span>💬</span>Chats</button>
+  <button id="btn-yo" type="button" class="nav-btn" onclick="cambiarPanel('yo')"><span>👤</span>Yo</button>
 </footer>
 
 <script src="app.js"></script>
