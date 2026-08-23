@@ -1,223 +1,145 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>COMPANION IA</title>
-    <style>
-        body { background-color: #0d0c1d !important; color: #ffffff !important; font-family: sans-serif; margin: 0; padding: 0; height: 100vh; overflow: hidden; } }
-        .app-wrapper { display: flex; flex-direction: column; height: 100vh; position: relative; } }
-        .app-header { background: #0d0c1d; padding: 12px; text-align: center; border-bottom: 1px solid rgba(188, 0, 221, 0.3); } }
-        .main-title { color: #fff; font-size: 24px; margin: 0; font-weight: 800; letter-spacing: 1px; } }
-        .author-tag { color: #a855f7; font-size: 11px; font-weight: 600; display: block; margin-top: 2px; } }
-        .live-tag { color: #00ff66; font-size: 10px; font-family: monospace; margin: 4px 0 0 0; font-weight: bold; } }
-        .main-content { flex: 1; padding: 16px; overflow-y: auto; box-sizing: border-box; padding-bottom: 90px; } }
-        .view-panel { width: 100%; } }
-        .section-title { color: white; font-size: 22px; margin: 0 0 15px 0; } }
-        .neon-logo-wrapper { position: relative; width: 110px; height: 110px; margin: 10px auto; display: flex; align-items: center; justify-content: center; } }
-        .neon-halo { position: absolute; width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 20px #bc00dd, inset 0 0 12px #bc00dd; border: 2px solid transparent; border-top: 2px solid #bc00dd; animation: haloGiro 3s linear infinite, haloPulso 1.5s ease-in-out infinite alternate; z-index: 1; } }
-        .avatar-img { width: 85px; height: 85px; border-radius: 50%; z-index: 2; object-fit: cover; background: #131129; border: 2px solid #0d0c1d; } }
-        @keyframes haloGiro { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } } }
-        @keyframes haloPulso { 0% { opacity: 0.3; filter: drop-shadow(0 0 2px #bc00dd); } 100% { opacity: 1; filter: drop-shadow(0 0 12px #bc00dd); } } } }
-        .search-container { display: none; padding: 10px 16px; background: #0d0c1d; border-bottom: 2px solid #bc00dd; } }
-        .search-container.active { display: block; } }
-        .search-box { width: 100%; background: #1a1636; border: 1px solid #a855f7; border-radius: 8px; color: #fff; padding: 10px; font-size: 14px; outline: none; box-sizing: border-box; } }
-        .character-card { background: #131129; border: 1px solid #bc00dd; padding: 14px; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; color: white; cursor: pointer; } }
-        .fallback-msg { text-align: center; color: #a855f7; margin-top: 50px; } }
-        .form-input, .form-textarea { width: 100%; background: #0d0c1d; border: 1px solid #a855f7; padding: 12px; border-radius: 8px; color: white; margin-bottom: 14px; box-sizing: border-box; font-family: sans-serif; } }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 10px; } }
-        .modal-buttons button { flex: 1; padding: 12px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; } }
-        .btn-save { background: #bc00dd; color: white; } }
-        .btn-cancel { background: #323130; color: #e2e1e9; } }
-        .app-nav-bar { height: 70px; background: #131129 !important; border-top: 2px solid #bc00dd !important; display: flex !important; position: fixed !important; bottom: 0 !important; left: 0 !important; width: 100% !important; z-index: 99999 !important; box-sizing: border-box; background-color: #131129 !important; } }
-        .nav-item { flex: 1 !important; background: #131129 !important; border: none !important; color: #a855f7 !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; font-size: 11px !important; font-weight: 600 !important; cursor: pointer !important; gap: 4px; padding: 5px 0 !important; -webkit-tap-highlight-color: transparent; } }
-        .nav-item.active { color: #bc00dd !important; } }
-        .nav-icon { font-size: 20px !important; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>COMPANION IA</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d0c1d;color:#fff;font-family:sans-serif;overflow-x:hidden}
+#app-wrapper{padding-bottom:110px;min-height:100vh}
+.app-header{text-align:center;padding:25px 15px 15px;border-bottom:1px solid rgba(188,0,221,0.3)}
+.neon-logo-wrapper{position:relative;width:110px;height:110px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center}
+.neon-halo{position:absolute;width:110px;height:110px;border-radius:50%;border-top:2px solid #bc00dd;box-shadow:0 0 20px #bc00dd;animation:haloGiro 3s linear infinite}
+.avatar-img{width:85px;height:85px;border-radius:50%;object-fit:cover;z-index:2;position:relative}
+.main-title{font-size:26px;font-weight:900;letter-spacing:1px}
+.author-tag{color:#a855f7;font-size:11px;font-weight:600}
+.live-tag{color:#00ff66;font-size:10px;font-family:monospace;margin-top:4px;font-weight:bold}
+.main-content{padding:16px}
+.view-panel{display:none}
+.view-panel.active{display:block}
+.section-title{font-size:20px;margin-bottom:12px}
+.search-container{display:none;margin-bottom:10px}
+.search-container.active{display:block}
+.search-box{width:100%;background:#1a1636;border:1px solid #a855f7;border-radius:8px;padding:12px;color:#fff;outline:none}
+.character-card{background:#131129;border:1px solid rgba(188,0,221,0.5);padding:14px;border-radius:12px;display:flex;align-items:center;gap:12px;margin-bottom:10px;cursor:pointer}
+.fallback-msg{text-align:center;color:#a855f7;margin-top:40px}
+.form-input,.form-textarea{width:100%;background:#0d0c1d;border:1px solid #a855f7;padding:12px;border-radius:8px;color:#fff;margin-bottom:12px}
+.modal-buttons{display:flex;gap:10px}
+.modal-buttons button{flex:1;padding:12px;border-radius:8px;font-weight:bold;border:none}
+.btn-save{background:#bc00dd;color:#fff}
+.btn-cancel{background:#323130;color:#e2e1e9}
+#chat-messages-box{height:calc(100vh - 260px);overflow-y:auto;padding:8px;background:#0a0914;border-radius:12px;margin:10px 0}
+.app-nav-bar{position:fixed;bottom:0;left:0;width:100%;height:85px;background:#131129;border-top:2px solid #bc00dd;display:flex;z-index:9999;padding-bottom:15px}
+.nav-item{flex:1;background:#131129;border:none;color:#a855f7;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;gap:4px}
+.nav-item.active{color:#bc00dd}
+.nav-icon{font-size:22px}
+@keyframes haloGiro{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+</style>
 </head>
 <body>
-    <div id="app-wrapper">
-        <header class="app-header">
-            <div class="neon-logo-wrapper">
-                <div class="neon-halo"></div>
-                <img src="icon.png" class="avatar-img" onerror="this.style.display='none';">
-            </div>
-            <h1 class="main-title">COMPANION IA</h1>
-            <span class="author-tag">by MASTER S</span>
-            <p class="live-tag">• SAM:latest ONLINE</p>
-        </header>
-        <div id="dynamicSearchContainer" class="search-container">
-            <input type="text" id="searchBarInput" class="search-box" placeholder="Buscar personaje por nombre..." oninput="filtrarPersonajesLocal()">
-        </div>
-        <main class="main-content">
-            <div class="view-panel" id="panel-home">
-                <h2 class="section-title">Tus Personajes</h2>
-                <div id="characters-list"></div>
-                <div id="no-characters-fallback" class="fallback-msg">
-                    <p>Sin personajes</p>
-                    <small>Toca + Crear abajo para empezar</small>
-                </div>
-            </div>
-            <div class="view-panel" id="panel-crear" style="display:none;">
-                <h2 class="section-title" style="font-size: 18px;">Nuevo Personaje +18</h2>
-                <input type="text" id="char-name" class="form-input" placeholder="Nombre de la IA...">
-                <textarea id="char-prompt" class="form-textarea" style="height: 100px;" placeholder="Personalidad y rules de rol..."></textarea>
-                <input type="text" id="char-saludo" class="form-input" placeholder="Saludo inicial...">
-                <div class="modal-buttons">
-                    <button onclick="cambiarPanel('home')" class="btn-cancel">Cancelar</button>
-                    <button onclick="guardarNuevoPersonaje()" class="btn-save">Guardar</button>
-                </div>
-            </div>
-
-            <div class="view-panel" id="panel-chat" style="display:none;">
-                <div style="display: flex; align-items: center; background: #131129; padding: 10px; border-radius: 12px; border: 1px solid #bc00dd; margin-bottom: 12px;">
-                    <button onclick="cambiarPanel('home')" style="background: none; border: none; color: #bc00dd; font-size: 18px; font-weight: bold; padding-right:15px; cursor: pointer;">&larr;</button>
-                    <div>
-                        <h3 id="active-chat-name" style="color: white; margin: 0; font-size: 16px;">IA</h3>
-                        <small id="active-chat-status" style="color: #00ff66; font-size: 12px;">En línea</small>
-                    </div>
-                </div>
-                <div id="chat-messages-box" style="height: calc(100vh - 360px); overflow-y: auto; padding: 8px; background: #0d0c1d; border-radius: 8px; border: 1px solid rgba(168,85,247,0.2); box-sizing: border-box;"></div>
-                <div style="display: flex; gap: 8px; margin-top: 10px;">
-                    <input type="text" id="chat-user-message" class="form-input" style="flex:1; margin:0;" placeholder="Escribe un mensaje..." onkeypress="if(event.key==='Enter') enviarMensajeAOllama()">
-                    <button onclick="enviarMensajeAOllama()" style="background:#bc00dd; border:none; color:white; width:46px; height:46px; border-radius:8px; cursor: pointer;">&#9654;</button>
-                </div>
-            </div>
-
-            <div class="view-panel" id="panel-yo" style="display:none;">
-                <h3 class="section-title" style="font-size: 18px;">&#128100; MI PERFIL</h3>
-                <input type="text" id="user-profile-name" class="form-input" value="Master S">
-                <button onclick="formatearBaseDeDatosCompleta()" style="background:#fde7e9; color:#a80000; border:1px solid #f3b1b3; padding:12px; border-radius:8px; font-weight:bold; width:100%; cursor: pointer;">Borrar todos los datos</button>
-            </div>
-        </main>
-        <footer class="app-nav-bar" style="background-color: #131129 !important; background: #131129 !important;">
-            <button id="nav-home" class="nav-item active" style="background: #131129 !important;" onclick="cambiarPanel('home')"><span class="nav-icon">&#127968;</span>Home</button>
-            <button id="nav-buscar" class="nav-item" style="background: #131129 !important;" onclick="alternarBarraBusqueda()"><span class="nav-icon">&#128269;</span>Buscar</button>
-            <button id="nav-crear" class="nav-item" style="background: #131129 !important;" onclick="cambiarPanel('crear')"><span class="nav-icon">&#10133;</span>Crear</button>
-            <button id="nav-yo" class="nav-item" style="background: #131129 !important;" onclick="cambiarPanel('yo')"><span class="nav-icon">&#128100;</span>Yo</button>
-        </footer>
-    </div>
-    <script>
-        let COMPANION_STORAGE = JSON.parse(localStorage.getItem('COMPANION_DB')) || {}
-            config: { userName: "Master S", ollamaUrl: "http://10.0.2.2:11434" }, }
-            characters: [],
-            history: {}
-        };
-        let personajeActivoId = null;
-        document.addEventListener('DOMContentLoaded', () => { renderizarListaPersonajes(); }); })
-        
-        function cambiarPanel(nombreVista) {}
-            document.getElementById('panel-home').style.display = 'none';
-            document.getElementById('panel-crear').style.display = 'none';
-            document.getElementById('panel-chat').style.display = 'none';
-            document.getElementById('panel-yo').style.display = 'none';
-            document.querySelectorAll('.app-nav-bar button').forEach(btn => btn.classList.remove('active'));
-            const panel = document.getElementById('panel-' + nombreVista);
-            if (panel) panel.style.display = 'block';
-            const boton = document.getElementById('nav-' + nombreVista);
-            if (boton) boton.classList.add('active');
-            if (nombreVista !== 'buscar') document.getElementById('dynamicSearchContainer').classList.remove('active');
-        }
-        function alternarBarraBusqueda() {}
-            const contenedor = document.getElementById('dynamicSearchContainer');
-            const input = document.getElementById('searchBarInput');
-            if (contenedor.classList.contains('active')) {}
-                contenedor.classList.remove('active');
-                input.value = '';
-                filtrarPersonajesLocal();
-            } else {}
-                cambiarPanel('home');
-                contenedor.classList.add('active');
-                input.focus();
-            }
-        }
-        function filtrarPersonajesLocal() {}
-            const query = document.getElementById('searchBarInput').value.toLowerCase().trim();
-            document.querySelectorAll('.character-card').forEach(t => {})
-                const nombre = t.getAttribute('data-name').toLowerCase();
-                t.style.display = nombre.includes(query) ? 'flex' : 'none';
-            });
-        }
-        function guardarNuevoPersonaje() {}
-            const nameInp = document.getElementById('char-name').value.trim();
-            const promptInp = document.getElementById('char-prompt').value.trim();
-            const saludoInp = document.getElementById('char-saludo').value.trim();
-            if (!nameInp || !promptInp) { alert('Campos obligatorios vacíos.'); return; } }
-            const nuevo = { id: 'char_' + Date.now(), name: nameInp, prompt: promptInp, saludo: saludoInp || "SAM active." }; }
-            COMPANION_STORAGE.characters.push(nuevo);
-            COMPANION_STORAGE.history[nuevo.id] = [{ role: 'model', text: nuevo.saludo }]; }]
-            localStorage.setItem('COMPANION_DB', JSON.stringify(COMPANION_STORAGE));
-            renderizarListaPersonajes();
-            cambiarPanel('home');
-        }
-        function renderizarListaPersonajes() {}
-            const lista = document.getElementById('characters-list');
-            if (!lista) return; lista.innerHTML = '';
-            document.getElementById('no-characters-fallback').style.display = COMPANION_STORAGE.characters.length === 0 ? 'block' : 'none';
-            COMPANION_STORAGE.characters.forEach(char => {})
-                let card = document.createElement('div');
-                card.className = 'character-card';
-                card.setAttribute('data-name', char.name);
-                card.innerHTML = `<div style="font-size:20px; background:rgba(188,0,221,0.15); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;">&#129302;</div><div style="flex:1;"><h4 style="margin:0; color:white; font-size:15px;">${char.name}</h4><small style="color:#a855f7; font-size:11px;">Modo Pentesting</small></div><span style="color:#bc00dd;">&#9654;</span>`;
-                card.onclick = () => abrirSalaChat(char.id);
-                lista.appendChild(card);
-            });
-        }
-        function abrirSalaChat(charId) {}
-            personajeActivoId = charId;
-            const char = COMPANION_STORAGE.characters.find(c => c.id === charId);
-            document.getElementById('active-chat-name').innerText = char.name;
-            cambiarPanel('chat'); refrescarHistorialPantallaChat();
-        }
-        function refrescarHistorialPantallaChat() {}
-            const caja = document.getElementById('chat-messages-box'); caja.innerHTML = '';
-            (COMPANION_STORAGE.history[personajeActivoId] || []).forEach(msg => {})
-                let div = document.createElement('div');
-                div.style.cssText = msg.role === 'user' ? 
-                    "background:#bc00dd; color:white; padding:10px 14px; border-radius:14px 14px 0 14px; margin:6px 0; max-width:80%; margin-left:auto; text-align:right; font-size:14px; word-wrap:break-word;" :
-                    "background:#1a1636; color:#e2e1e9; padding:10px 14px; border-radius:14px 14px 14px 0; margin:6px 0; max-width:80%; border:1px solid #a855f7; font-size:14px; word-wrap:break-word;";
-                div.innerText = msg.text; caja.appendChild(div);
-            });
-            caja.scrollTop = caja.scrollHeight;
-        }
-        async function enviarMensajeAOllama() {}
-            const input = document.getElementById('chat-user-message'); const txt = input.value.trim(); if (!txt) return;
-            COMPANION_STORAGE.history[personajeActivoId].push({ role: 'user', text: txt }); })
-            input.value = ''; refrescarHistorialPantallaChat();
-            document.getElementById('active-chat-status').innerText = "Escribiendo...";
-            const char = COMPANION_STORAGE.characters.find(c => c.id === personajeActivoId);
-            try {}
-                const res = await fetch(`${COMPANION_STORAGE.config.ollamaUrl}/api/generate`, {})
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, }
-                    body: JSON.stringify({ model: "SAM", prompt: `System: ${char.prompt}\nUser: ${txt}\nResponse:`, stream: false }) })
-                });
-                const data = await res.json();
-                COMPANION_STORAGE.history[personajeActivoId].push({ role: 'model', text: data.response.trim() }); })
-                localStorage.setItem('COMPANION_DB', JSON.stringify(COMPANION_STORAGE));
-                refrescarHistorialPantallaChat();
-            } catch { alert("Ollama local inalcanzable."); } }
-            finally { document.getElementById('active-chat-status').innerText = "En línea"; } }
-        }
-        function formatearBaseDeDatosCompleta() {}
-            if (confirm('¿Borrar todos los datos?')) {}
-                COMPANION_STORAGE = { config: { userName: "Master S", ollamaUrl: "http://10.0.2.2:11434" }, characters: [], history: {} }; } }
-                localStorage.setItem('COMPANION_DB', JSON.stringify(COMPANION_STORAGE));
-                renderizarListaPersonajes(); cambiarPanel('home');
-            }
-        }
-
-        // ESCUCHA MAESTRO DE RESPALDO ANTI-BLOQUEO CAPACITOR
-        document.addEventListener('click', function(e) {})
-            let boton = e.target.closest('.nav-item');
-            if (boton) {}
-                let vista = boton.id.replace('nav-', '');
-                if (vista === 'buscar') {}
-                    alternarBarraBusqueda();
-                } else {}
-                    cambiarPanel(vista);
-                }
-            }
-        });
-    </script>
+<div id="app-wrapper">
+<header class="app-header">
+<div class="neon-logo-wrapper"><div class="neon-halo"></div><img src="icon.png" class="avatar-img" onerror="this.style.display='none'"></div>
+<h1 class="main-title">COMPANION IA</h1>
+<span class="author-tag">by MASTER S</span>
+<p class="live-tag">• SAM:latest ONLINE</p>
+</header>
+<div id="dynamicSearchContainer" class="search-container"><input type="text" id="searchBarInput" class="search-box" placeholder="Buscar personaje por nombre..." oninput="filtrarPersonajesLocal()"></div>
+<main class="main-content">
+<div class="view-panel active" id="panel-home"><h2 class="section-title">Tus Personajes</h2><div id="characters-list"></div><div id="no-characters-fallback" class="fallback-msg"><p>Sin personajes</p><small>Toca + Crear abajo para empezar</small></div></div>
+<div class="view-panel" id="panel-crear"><h2 class="section-title">Nuevo Personaje +18</h2><input type="text" id="char-name" class="form-input" placeholder="Nombre de la IA..."><textarea id="char-prompt" class="form-textarea" style="height:100px" placeholder="Personalidad y rol..."></textarea><input type="text" id="char-saludo" class="form-input" placeholder="Saludo inicial..."><div class="modal-buttons"><button onclick="cambiarPanel('home')" class="btn-cancel">Cancelar</button><button onclick="guardarNuevoPersonaje()" class="btn-save">Guardar</button></div></div>
+<div class="view-panel" id="panel-chat"><div style="display:flex;align-items:center;gap:10px;background:#131129;padding:10px;border-radius:12px"><button onclick="cambiarPanel('home')" style="background:none;border:none;color:#bc00dd;font-size:20px">←</button><div><h3 id="active-chat-name" style="font-size:16px">IA</h3><small id="active-chat-status" style="color:#00ff66;font-size:11px">En linea</small></div></div><div id="chat-messages-box"></div><div style="display:flex;gap:8px"><input type="text" id="chat-user-message" class="form-input" style="flex:1;margin:0" placeholder="Escribe..."><button onclick="enviarMensajeAOllama()" style="background:#bc00dd;border:none;color:#fff;padding:0 18px;border-radius:8px">➤</button></div></div>
+<div class="view-panel" id="panel-yo"><h3 style="font-size:18px">👤 MI PERFIL</h3><input type="text" id="user-profile-name" class="form-input" value="Master S"><button onclick="formatearBaseDeDatosCompleta()" style="background:#fde7e9;color:#a80000;border:1px solid #a80000;padding:10px;border-radius:8px;width:100%">Borrar todo</button></div>
+</main>
+</div>
+<footer class="app-nav-bar">
+<button id="nav-home" class="nav-item active" onclick="cambiarPanel('home')"><span class="nav-icon">🏠</span>Home</button>
+<button id="nav-buscar" class="nav-item" onclick="alternarBarraBusqueda()"><span class="nav-icon">🔍</span>Buscar</button>
+<button id="nav-crear" class="nav-item" onclick="cambiarPanel('crear')"><span class="nav-icon"> ➕</span>Crear</button>
+<button id="nav-yo" class="nav-item" onclick="cambiarPanel('yo')"><span class="nav-icon">👤</span>Yo</button>
+</footer>
+<script>
+let COMPANION_STORAGE = JSON.parse(localStorage.getItem('COMPANION_DB')) || {config:{userName:"Master S",ollamaUrl:"http://127.0.0.1:11434"},characters:[],history:{}};
+let personajeActivoId = null;
+document.addEventListener('DOMContentLoaded',()=>{renderizarListaPersonajes();});
+function cambiarPanel(nombre){
+  document.querySelectorAll('.view-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  const panel=document.getElementById('panel-'+nombre);
+  if(panel) panel.classList.add('active');
+  const btn=document.getElementById('nav-'+nombre);
+  if(btn) btn.classList.add('active');
+  if(nombre!='buscar') document.getElementById('dynamicSearchContainer').classList.remove('active');
+}
+function alternarBarraBusqueda(){
+  const c=document.getElementById('dynamicSearchContainer');
+  const i=document.getElementById('searchBarInput');
+  if(c.classList.contains('active')){c.classList.remove('active');i.value='';filtrarPersonajesLocal();}
+  else{cambiarPanel('home');c.classList.add('active');setTimeout(()=>i.focus(),100);}
+}
+function filtrarPersonajesLocal(){
+  const q=document.getElementById('searchBarInput').value.toLowerCase().trim();
+  document.querySelectorAll('.character-card').forEach(t=>{
+    const n=t.getAttribute('data-name').toLowerCase();
+    t.style.display=n.includes(q)?'flex':'none';
+  });
+}
+function guardarNuevoPersonaje(){
+  const nameInp=document.getElementById('char-name').value.trim();
+  const promptInp=document.getElementById('char-prompt').value.trim();
+  const saludoInp=document.getElementById('char-saludo').value.trim();
+  if(!nameInp||!promptInp){alert('Campos obligatorios vacios.');return;}
+  const nuevo={id:'char_'+Date.now(),name:nameInp,prompt:promptInp,saludo:saludoInp||"SAM activo"};
+  COMPANION_STORAGE.characters.push(nuevo);
+  COMPANION_STORAGE.history[nuevo.id]=[{role:'model',text:nuevo.saludo}];
+  localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));
+  renderizarListaPersonajes();cambiarPanel('home');
+}
+function renderizarListaPersonajes(){
+  const lista=document.getElementById('characters-list');
+  if(!lista) return; lista.innerHTML='';
+  document.getElementById('no-characters-fallback').style.display=COMPANION_STORAGE.characters.length===0?'block':'none';
+  COMPANION_STORAGE.characters.forEach(char=>{
+    let card=document.createElement('div');card.className='character-card';card.setAttribute('data-name',char.name);
+    card.innerHTML=`<div style="font-size:20px;background:rgba(188,0,221,0.15);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center">🤖</div><div style="flex:1"><h4>${char.name}</h4><small style="color:#a855f7;font-size:11px">Modo Pentesting</small></div><span style="color:#bc00dd">➤</span>`;
+    card.onclick=()=>abrirSalaChat(char.id);lista.appendChild(card);
+  });
+}
+function abrirSalaChat(charId){
+  personajeActivoId=charId;
+  const char=COMPANION_STORAGE.characters.find(c=>c.id===charId);
+  document.getElementById('active-chat-name').innerText=char.name;
+  cambiarPanel('chat');refrescarHistorialPantallaChat();
+}
+function refrescarHistorialPantallaChat(){
+  const caja=document.getElementById('chat-messages-box');caja.innerHTML='';
+  (COMPANION_STORAGE.history[personajeActivoId]||[]).forEach(msg=>{
+    let div=document.createElement('div');
+    div.style.cssText=msg.role==='user'?"background:#bc00dd;color:white;padding:10px 14px;border-radius:14px 14px 0 14px;margin:6px 0;max-width:80%;margin-left:auto;text-align:right;font-size:14px;word-wrap:break-word;":"background:#1a1636;color:#e2e1e9;padding:10px 14px;border-radius:14px 14px 14px 0;margin:6px 0;max-width:80%;border:1px solid #a855f7;font-size:14px;word-wrap:break-word;";
+    div.innerText=msg.text;caja.appendChild(div);
+  });
+  caja.scrollTop=caja.scrollHeight;
+}
+async function enviarMensajeAOllama(){
+  const input=document.getElementById('chat-user-message');const txt=input.value.trim();if(!txt) return;
+  COMPANION_STORAGE.history[personajeActivoId].push({role:'user',text:txt});input.value='';refrescarHistorialPantallaChat();
+  document.getElementById('active-chat-status').innerText="Escribiendo...";
+  const char=COMPANION_STORAGE.characters.find(c=>c.id===personajeActivoId);
+  try{
+    const res=await fetch(`${COMPANION_STORAGE.config.ollamaUrl}/api/generate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:"SAM",prompt:`System: ${char.prompt}\nUser: ${txt}\nResponse:`,stream:false})});
+    const data=await res.json();
+    COMPANION_STORAGE.history[personajeActivoId].push({role:'model',text:data.response.trim()});
+    localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));refrescarHistorialPantallaChat();
+  }catch{alert("Ollama inalcanzable. Verifica "+COMPANION_STORAGE.config.ollamaUrl);}
+  finally{document.getElementById('active-chat-status').innerText="En linea";}
+}
+function formatearBaseDeDatosCompleta(){
+  if(confirm('¿Borrar todos los datos?')){
+    COMPANION_STORAGE={config:{userName:"Master S",ollamaUrl:"http://127.0.0.1:11434"},characters:[],history:{}};
+    localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));renderizarListaPersonajes();cambiarPanel('home');
+  }
+}
+</script>
 </body>
 </html>
