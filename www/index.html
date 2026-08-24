@@ -174,7 +174,7 @@ async function enviarMensajeAOllama(){
   document.getElementById('active-chat-status').innerText="Escribiendo...";
   const char=COMPANION_STORAGE.characters.find(c=>c.id===personajeActivoId);
   try{
-    const res=await fetch(`${COMPANION_STORAGE.config.ollamaUrl}/api/generate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:"SAM",prompt:`System: ${char.prompt}\nUser: ${txt}\nResponse:`,stream:false})});
+    const res=await fetch(`${COMPANION_STORAGE.config.ollamaUrl}/api/generate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:"SAM:latest",prompt:`System: ${char.prompt}\nUser: ${txt}\nResponse:`,stream:false})});
     const data=await res.json();
     COMPANION_STORAGE.history[personajeActivoId].push({role:'model',text:data.response.trim()});
     localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));refrescarHistorialPantallaChat();
