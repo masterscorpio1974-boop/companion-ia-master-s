@@ -70,7 +70,7 @@ body{background:#0d0c1d;color:#fff;font-family:sans-serif;overflow-x:hidden}
 <button id="nav-crear" class="nav-item" onclick="cambiarPanel('crear')"><span class="nav-icon">➕</span>Crear</button>
 <button id="nav-yo" class="nav-item" onclick="cambiarPanel('yo')"><span class="nav-icon">👤</span>Yo</button>
 </footer>
-
+ 
 <script>
 let COMPANION_STORAGE = JSON.parse(localStorage.getItem('COMPANION_DB')) || {config:{userName:"Master S",ollamaUrl:"http://192.168.1.19:11434"},characters:[],history:{}};
 let personajeActivoId = null;
@@ -199,11 +199,8 @@ async function enviarMensajeAOllama(){
     const res=await fetch(`${baseUrl}/api/generate`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:"llama3.1:8b",
-        prompt:`${char.prompt}\n\nHistorial: ${JSON.stringify(COMPANION_STORAGE.history[personajeActivoId].slice(-4))}\nUsuario: ${txt}\nResponde como ${char.name}:`,
-        stream:false
-      })
+      
+    body:JSON.stringify({model:"SAM-ADAPTATIVO:latest",prompt:`${char.prompt}\nEl usuario (profe) dice: ${txt}\nResponde como ${char.name} en max 2 frases cortas:`,stream:false})
     });
     if(!res.ok) throw new Error(`generate ${res.status}`);
     const data=await res.json();
