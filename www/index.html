@@ -24,14 +24,14 @@ body{background:#0d0c1d;color:#fff;font-family:sans-serif;overflow-x:hidden}
 .character-card{background:#131129;border:1px solid rgba(188,0,221,0.5);padding:14px;border-radius:12px;display:flex;align-items:center;gap:12px;margin-bottom:10px;cursor:pointer}
 .character-card img{width:40px;height:40px;border-radius:50%;object-fit:cover}
 .fallback-msg{text-align:center;color:#a855f7;margin-top:40px}
-.form-input,.form-textarea{width:100%;background:#0d0c1d;border:1px solid #a855f7;padding:12px;border-radius:8px;color:#fff;margin-bottom:12px}
+.form-input,.form-textarea{width:100%;background:#0d0c1d;border:1px solid #a855f7;padding:12px;border-radius:8px;color:#fff;margin-bottom:12px;outline:none}
 .modal-buttons{display:flex;gap:10px}
-.modal-buttons button{flex:1;padding:12px;border-radius:8px;font-weight:bold;border:none}
+.modal-buttons button{flex:1;padding:12px;border-radius:8px;font-weight:bold;border:none;cursor:pointer}
 .btn-save{background:#bc00dd;color:#fff}
-.btn-cancel{background:#323130;color:#e2e1e9}
+.btn-cancel{background:#323130;color:#2e1e9b}
 #chat-messages-box{height:calc(100vh - 260px);overflow-y:auto;padding:8px;background:#0a0914;border-radius:12px;margin:10px 0}
-.app-nav-bar{position:fixed;bottom:0;left:0;width:100%;height:85px;background:#131129;border-top:2px solid #bc00dd;display:flex;z-index:9999;padding-bottom:15px}
-.nav-item{flex:1;background:#131129;border:none;color:#a855f7;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;gap:4px}
+.app-nav-bar{position:fixed;bottom:0;left:0;width:100%;height:85px;background:#131129;border-top:2px solid #bc00dd;display:flex;z-index:99}
+.nav-item{flex:1;background:#131129;border:none;color:#a855f7;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
 .nav-item.active{color:#bc00dd}
 .nav-icon{font-size:20px}
 .img-preview{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid #bc00dd;display:none;margin-bottom:10px}
@@ -44,23 +44,25 @@ body{background:#0d0c1d;color:#fff;font-family:sans-serif;overflow-x:hidden}
 <div class="neon-logo-wrapper"><div class="neon-halo"></div><img src="icon.png" class="avatar-img" onerror="this.style.display='none'"></div>
 <h1 class="main-title">COMPANION IA</h1>
 <span class="author-tag">by MASTER S</span>
-<p class="live-tag">• ONLINE</p>
+<p class="live-tag" id="live-status">• ONLINE</p>
 </header>
-<div id="dynamicSearchContainer" class="search-container"><input type="text" id="searchBarInput" class="search-box" placeholder="Buscar..." oninput="filtrarPersonajesLocal()"></div>
+
+<div id="dynamicSearchContainer" class="search-container"><input type="text" id="searchBarInput" class="search-box" placeholder="Buscar personaje..." oninput="filtrarPersonajesLocal()"></div>
+
 <main class="main-content">
-<div class="view-panel active" id="panel-home"><h2 class="section-title">Tus Personajes</h2><div id="characters-list"></div><div id="no-characters-fallback" class="fallback-msg"><p>Sin personajes</p><small>Toca + Crear</small></div></div>
+<div class="view-panel active" id="panel-home"><h2 class="section-title">Tus Personajes</h2><div id="characters-list"></div><div id="no-characters-fallback" class="fallback-msg" style="display:none">No tienes personajes aún</div></div>
 <div class="view-panel" id="panel-chats"><h2 class="section-title">Chats</h2><div id="chats-list"></div></div>
 <div class="view-panel" id="panel-crear"><h2 class="section-title">Nuevo Personaje +18</h2>
 <input type="file" id="char-img-file" accept="image/*" style="display:none" onchange="previewImagen(event)">
-<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-<img id="char-img-preview" class="img-preview">
-<button onclick="document.getElementById('char-img-file').click()" style="background:#1a1636;border:1px dashed #a855f7;color:#a855f7;padding:10px;border-radius:8px">📁 Subir imagen</button>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><img id="char-img-preview" class="img-preview"><button onclick="document.getElementById('char-img-file').click()" style="background:#1a1636;border:1px dashed #a855f7;color:#a855f7;padding:8px 12px;border-radius:8px;cursor:pointer">📷 Foto</button></div>
+<input type="text" id="char-name" class="form-input" placeholder="Nombre..."><textarea id="char-prompt" class="form-textarea" placeholder="Prompt del personaje... (ej: Eres una profe sexy y juguetona)" rows="4"></textarea><textarea id="char-saludo" class="form-textarea" placeholder="Mensaje de saludo inicial..." rows="2"></textarea>
+<div class="modal-buttons"><button class="btn-save" onclick="guardarNuevoPersonaje()">Guardar</button><button class="btn-cancel" onclick="cambiarPanel('home')">Cancelar</button></div>
 </div>
-<input type="text" id="char-name" class="form-input" placeholder="Nombre..."><textarea id="char-prompt" class="form-textarea" style="height:100px" placeholder="Personalidad y rol..."></textarea><input type="text" id="char-saludo" class="form-input" placeholder="Saludo inicial..."><div class="modal-buttons"><button onclick="cambiarPanel('home')" class="btn-cancel">Cancelar</button><button onclick="guardarNuevoPersonaje()" class="btn-save">Guardar</button></div></div>
-<div class="view-panel" id="panel-chat"><div style="display:flex;align-items:center;gap:10px;background:#131129;padding:10px;border-radius:12px"><button onclick="cambiarPanel('chats')" style="background:none;border:none;color:#bc00dd;font-size:20px">←</button><div><h3 id="active-chat-name" style="font-size:16px">IA</h3><small id="active-chat-status" style="color:#00ff66;font-size:11px">En linea</small></div></div><div id="chat-messages-box"></div><div style="display:flex;gap:8px"><input type="text" id="chat-user-message" class="form-input" style="flex:1;margin:0" placeholder="Escribe..."><button onclick="enviarMensajeAOllama()" style="background:#bc00dd;border:none;color:#fff;padding:0 18px;border-radius:8px">➤</button></div></div>
-<div class="view-panel" id="panel-yo"><h3 style="font-size:18px;margin-bottom:12px">👤 MI PERFIL</h3><label style="font-size:12px;color:#a855f7">Tu nombre</label><input type="text" id="user-profile-name" class="form-input" value="Master S" oninput="guardarConfig()"><label style="font-size:12px;color:#a855f7">IP de Ollama (solo ip:puerto)</label><input type="text" id="ollama-url-input" class="form-input" value="http://192.168.1.19:11434" placeholder="http://192.168.1.19:11434" oninput="guardarConfig()"><button onclick="guardarConfig()" style="background:#1a1636;border:1px solid #00ff66;color:#00ff66;padding:10px;border-radius:8px;width:100%;margin-bottom:12px">💾 Guardar IP</button><p style="font-size:10px;color:#666;margin-bottom:12px">Usa 127.0.0.1 si Ollama está en el mismo cel. Usa 192.168.1.19 si es tu WiFi. No pongas /api/generate, yo lo agrego.</p><button onclick="formatearBaseDeDatosCompleta()" style="background:#fde7e9;color:#a80000;border:1px solid #a80000;padding:10px;border-radius:8px;width:100%">Borrar todo</button><p id="config-saved" style="color:#00ff66;font-size:11px;margin-top:8px;display:none">Guardado!</p></div>
+<div class="view-panel" id="panel-chat"><div style="display:flex;align-items:center;gap:10px;background:#131129;padding:10px;border-radius:10px;margin-bottom:10px"><button onclick="cambiarPanel('chats')" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer">←</button><h3 id="active-chat-name" style="flex:1">Chat</h3><small id="active-chat-status" style="color:#00ff66">En línea</small></div><div id="chat-messages-box"></div><div style="display:flex;gap:8px"><input type="text" id="chat-user-message" class="form-input" placeholder="Escribe..." style="margin-bottom:0" onkeypress="if(event.key==='Enter') enviarMensajeAOllama()"><button onclick="enviarMensajeAOllama()" style="background:#bc00dd;border:none;border-radius:8px;padding:0 18px;color:#fff;font-size:20px;cursor:pointer">➤</button></div></div>
+<div class="view-panel" id="panel-yo"><h3 style="font-size:18px;margin-bottom:12px">👤 MI PERFIL</h3><label style="font-size:12px;color:#a855f7">Tu nombre</label><input type="text" id="user-profile-name" class="form-input" placeholder="Master S"><label style="font-size:12px;color:#a855f7;margin-top:8px;display:block">IP de Ollama (solo ip:puerto)</label><input type="text" id="ollama-url-input" class="form-input" placeholder="http://192.168.1.19:11434"><div id="config-saved" style="display:none;color:#00ff66;font-size:12px;margin-bottom:8px">✅ Guardado</div><button class="btn-save" style="width:100%;padding:12px;border-radius:8px;border:2px solid #00ff66;background:transparent;color:#00ff66" onclick="guardarConfig()">💾 Guardar IP</button><p style="font-size:11px;color:#888;margin-top:12px">Usa 127.0.0.1 si Ollama está en el mismo cel. Usa 192.168.1.19 si es tu WiFi. No pongas /api/generate, yo lo agrego.</p><button onclick="formatearBaseDeDatosCompleta()" style="width:100%;margin-top:20px;padding:12px;border-radius:10px;border:none;background:#ffe1e1;color:#900;font-weight:bold;cursor:pointer">Borrar todo</button></div>
 </main>
 </div>
+
 <footer class="app-nav-bar">
 <button id="nav-home" class="nav-item active" onclick="cambiarPanel('home')"><span class="nav-icon">🏠</span>Home</button>
 <button id="nav-chats" class="nav-item" onclick="cambiarPanel('chats');renderizarChats()"><span class="nav-icon">💬</span>Chats</button>
@@ -68,27 +70,33 @@ body{background:#0d0c1d;color:#fff;font-family:sans-serif;overflow-x:hidden}
 <button id="nav-crear" class="nav-item" onclick="cambiarPanel('crear')"><span class="nav-icon">➕</span>Crear</button>
 <button id="nav-yo" class="nav-item" onclick="cambiarPanel('yo')"><span class="nav-icon">👤</span>Yo</button>
 </footer>
+
 <script>
 let COMPANION_STORAGE = JSON.parse(localStorage.getItem('COMPANION_DB')) || {config:{userName:"Master S",ollamaUrl:"http://192.168.1.19:11434"},characters:[],history:{}};
 let personajeActivoId = null;
 let tempImgBase64 = "";
+
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('user-profile-name').value=COMPANION_STORAGE.config.userName;
   document.getElementById('ollama-url-input').value=COMPANION_STORAGE.config.ollamaUrl;
   renderizarListaPersonajes();
 });
+
 function getBaseUrl(){
   let url = (COMPANION_STORAGE.config.ollamaUrl||"").trim();
   url = url.replace(/\/api\/generate.*$/,"").replace(/\/$/,"");
-  if(!url.startsWith("http")) url="http://"+url;
+  if(url &&!url.startsWith("http")) url="http://"+url;
+  if(!url) url="http://192.168.1.19:11434";
   return url;
 }
+
 function previewImagen(e){
   const file=e.target.files[0]; if(!file) return;
   const reader=new FileReader();
-  reader.onload=function(ev){ tempImgBase64=ev.target.result; const prev=document.getElementById('char-img-preview'); prev.src=tempImgBase64; prev.style.display='block'; };
+  reader.onload=function(ev){ tempImgBase64=ev.target.result; const prev=document.getElementById('char-img-preview'); prev.src=tempImgBase64; prev.style.display='block'; }
   reader.readAsDataURL(file);
 }
+
 function cambiarPanel(nombre){
   document.querySelectorAll('.view-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
@@ -98,30 +106,35 @@ function cambiarPanel(nombre){
   if(btn) btn.classList.add('active');
   if(nombre!='buscar') document.getElementById('dynamicSearchContainer').classList.remove('active');
 }
+
 function alternarBarraBusqueda(){
   const c=document.getElementById('dynamicSearchContainer'); const i=document.getElementById('searchBarInput');
   if(c.classList.contains('active')){c.classList.remove('active');i.value='';filtrarPersonajesLocal();}
   else{cambiarPanel('home');c.classList.add('active');setTimeout(()=>i.focus(),100);}
 }
+
 function filtrarPersonajesLocal(){
   const q=document.getElementById('searchBarInput').value.toLowerCase().trim();
-  document.querySelectorAll('.character-card').forEach(t=>{ const n=t.getAttribute('data-name').toLowerCase(); t.style.display=n.includes(q)?'flex':'none'; });
+  document.querySelectorAll('.character-card').forEach(t=>{ const n=t.getAttribute('data-name').toLowerCase(); t.style.display=n.includes(q)?'flex':'none'; })
 }
+
 function guardarConfig(){
   COMPANION_STORAGE.config.userName=document.getElementById('user-profile-name').value.trim()||"Master S";
   let raw=document.getElementById('ollama-url-input').value.trim();
   raw=raw.replace(/\/api\/generate.*$/,"").replace(/\/$/,"");
+  if(raw &&!raw.startsWith("http")) raw="http://"+raw;
   COMPANION_STORAGE.config.ollamaUrl=raw||"http://192.168.1.19:11434";
   document.getElementById('ollama-url-input').value=COMPANION_STORAGE.config.ollamaUrl;
   localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));
   const msg=document.getElementById('config-saved'); msg.style.display='block'; setTimeout(()=>msg.style.display='none',1500);
 }
+
 function guardarNuevoPersonaje(){
   const nameInp=document.getElementById('char-name').value.trim();
   const promptInp=document.getElementById('char-prompt').value.trim();
   const saludoInp=document.getElementById('char-saludo').value.trim();
-  if(!nameInp||!promptInp){alert('Campos obligatorios vacios.');return;}
-  const nuevo={id:'char_'+Date.now(),name:nameInp,prompt:promptInp,saludo:saludoInp||"Activo",img:tempImgBase64};
+  if(!nameInp||!promptInp){alert('Campos obligatorios vacios');return;}
+  const nuevo={id:'char_'+Date.now(),name:nameInp,prompt:promptInp,saludo:saludoInp||"Hola, soy "+nameInp,img:tempImgBase64};
   COMPANION_STORAGE.characters.push(nuevo);
   COMPANION_STORAGE.history[nuevo.id]=[{role:'model',text:nuevo.saludo}];
   localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));
@@ -129,53 +142,86 @@ function guardarNuevoPersonaje(){
   document.getElementById('char-name').value=""; document.getElementById('char-prompt').value=""; document.getElementById('char-saludo').value="";
   renderizarListaPersonajes();cambiarPanel('home');
 }
+
 function renderizarListaPersonajes(){
   const lista=document.getElementById('characters-list'); if(!lista) return; lista.innerHTML='';
-  document.getElementById('no-characters-fallback').style.display=COMPANION_STORAGE.characters.length===0?'block':'none';
+  document.getElementById('no-characters-fallback').style.display=COMPANION_STORAGE.characters.length==0?'block':'none';
   COMPANION_STORAGE.characters.forEach(char=>{
     let card=document.createElement('div');card.className='character-card';card.setAttribute('data-name',char.name);
-    const imgTag=char.img?`<img src="${char.img}">`:`<div style="font-size:20px;background:rgba(188,0,221,0.15);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center">🤖</div>`;
-    card.innerHTML=`${imgTag}<div style="flex:1"><h4>${char.name}</h4><small style="color:#a855f7;font-size:11px">Modo Pentesting</small></div><span style="color:#bc00dd">➤</span>`;
+    const imgTag=char.img?`<img src="${char.img}">`:`<div style="font-size:20px;background:rgba(188,0,221,0.15);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center">👤</div>`;
+    card.innerHTML=`${imgTag}<div style="flex:1"><h4>${char.name}</h4><small style="color:#a855f7;font-size:11px">Modo Pentest</small></div>`;
     card.onclick=()=>abrirSalaChat(char.id);lista.appendChild(card);
   });
 }
+
 function renderizarChats(){
-  const lista=document.getElementById('chats-list'); lista.innerHTML='';
+  const lista=document.getElementById('chats-list'); if(!lista) return; lista.innerHTML='';
   COMPANION_STORAGE.characters.forEach(char=>{
     const hist=COMPANION_STORAGE.history[char.id]||[]; if(hist.length<=1) return;
-    const last=hist[hist.length-1]?.text||"";
+    const last=hist[hist.length-1].text||"";
     let card=document.createElement('div');card.className='character-card';card.setAttribute('data-name',char.name);
-    const imgTag=char.img?`<img src="${char.img}">`:`<div style="font-size:20px;background:rgba(188,0,221,0.15);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center">💬</div>`;
-    card.innerHTML=`${imgTag}<div style="flex:1"><h4>${char.name}</h4><small style="color:#888;font-size:11px">${last.substring(0,30)}...</small></div>`;
+    const imgTag=char.img?`<img src="${char.img}">`:`<div style="font-size:20px;background:rgba(188,0,221,0.15);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center">👤</div>`;
+    card.innerHTML=`${imgTag}<div style="flex:1"><h4>${char.name}</h4><small style="color:#888;font-size:11px">${last.substring(0,40)}</small></div>`;
     card.onclick=()=>abrirSalaChat(char.id);lista.appendChild(card);
   });
-  if(lista.innerHTML==="") lista.innerHTML='<p style="text-align:center;color:#a855f7;margin-top:30px">Sin chats aún<br><small>Chatea con un personaje</small></p>';
+  if(lista.innerHTML==="") lista.innerHTML=`<p style="text-align:center;color:#a855f7;margin-top:30px">Sin chats aún<br><small style="color:#666">Crea un personaje y habla</small></p>`;
 }
-function abrirSalaChat(charId){ personajeActivoId=charId; const char=COMPANION_STORAGE.characters.find(c=>c.id===charId); document.getElementById('active-chat-name').innerText=char.name; cambiarPanel('chat');refrescarHistorialPantallaChat(); }
+
+function abrirSalaChat(charId){
+  personajeActivoId=charId;
+  const char=COMPANION_STORAGE.characters.find(c=>c.id==charId);
+  if(!char) return;
+  document.getElementById('active-chat-name').innerText=char.name;
+  cambiarPanel('chat');
+  refrescarHistorialPantallaChat();
+}
+
 function refrescarHistorialPantallaChat(){
   const caja=document.getElementById('chat-messages-box');caja.innerHTML='';
   (COMPANION_STORAGE.history[personajeActivoId]||[]).forEach(msg=>{
     let div=document.createElement('div');
-    div.style.cssText=msg.role==='user'?"background:#bc00dd;color:white;padding:10px 14px;border-radius:14px 14px 0 14px;margin:6px 0;max-width:80%;margin-left:auto;text-align:right;font-size:14px;word-wrap:break-word;":"background:#1a1636;color:#e2e1e9;padding:10px 14px;border-radius:14px 14px 14px 0;margin:6px 0;max-width:80%;border:1px solid #a855f7;font-size:14px;word-wrap:break-word;";
+    div.style.cssText=msg.role==='user'?"background:#bc00dd;color:white;padding:10px 14px;border-radius:14px 14px 0 14px;margin:8px 0 8px auto;max-width:80%;text-align:right":"background:#1e1b38;color:#ddd;padding:10px 14px;border-radius:14px 14px 14px 0;margin:8px auto 8px 0;max-width:80%";
     div.innerText=msg.text;caja.appendChild(div);
   }); caja.scrollTop=caja.scrollHeight;
 }
+
 async function enviarMensajeAOllama(){
   const input=document.getElementById('chat-user-message');const txt=input.value.trim();if(!txt) return;
   COMPANION_STORAGE.history[personajeActivoId].push({role:'user',text:txt});input.value='';refrescarHistorialPantallaChat();
-  document.getElementById('active-chat-status').innerText="Escribiendo...";
-  const char=COMPANION_STORAGE.characters.find(c=>c.id===personajeActivoId);
+  document.getElementById('active-chat-status').innerText='Escribiendo...';
+  const char=COMPANION_STORAGE.characters.find(c=>c.id==personajeActivoId);
   const baseUrl=getBaseUrl();
   try{
-    const res=await fetch(`${baseUrl}/api/generate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:"SAM-ADAPTATIVO:latest",prompt:`System: ${char.prompt}\nUser: ${txt}\nResponse:`,stream:false})});
+    // FIX: primero prueba conexión para dar error claro
+    const ping = await fetch(`${baseUrl}/api/tags`,{method:'GET'});
+    if(!ping.ok) throw new Error(`HTTP ${ping.status} - Revisa firewall`);
+
+    const res=await fetch(`${baseUrl}/api/generate`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:"llama3.1:8b",
+        prompt:`${char.prompt}\n\nHistorial: ${JSON.stringify(COMPANION_STORAGE.history[personajeActivoId].slice(-4))}\nUsuario: ${txt}\nResponde como ${char.name}:`,
+        stream:false
+      })
+    });
+    if(!res.ok) throw new Error(`generate ${res.status}`);
     const data=await res.json();
     COMPANION_STORAGE.history[personajeActivoId].push({role:'model',text:(data.response||"").trim()});
     localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));refrescarHistorialPantallaChat();
-  }catch(e){alert("Ollama inalcanzable. Verifica "+baseUrl+" -> "+e.message);}
-  finally{document.getElementById('active-chat-status').innerText="En linea";}
+  }catch(e){
+    alert(`Ollama inalcanzable. Verifica ${baseUrl} -> ${e.message}\n\nSOLUCIÓN:\n1. En tu PC/Termux:\n export OLLAMA_HOST=0.0.0.0:11434\n export OLLAMA_ORIGINS="*"\n ollama serve\n2. Si estás en Windows abre puerto 11434 en Firewall\n3. Si es mismo cel usa http://127.0.0.1:11434`);
+  }finally{
+    document.getElementById('active-chat-status').innerText='En línea';
+  }
 }
+
 function formatearBaseDeDatosCompleta(){
-  if(confirm('¿Borrar todos los datos?')){ COMPANION_STORAGE={config:{userName:"Master S",ollamaUrl:"http://192.168.1.19:11434"},characters:[],history:{}}; localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));renderizarListaPersonajes();cambiarPanel('home'); }
+  if(confirm('¿Borrar todos los datos?')){
+    COMPANION_STORAGE={config:{userName:"Master S",ollamaUrl:"http://192.168.1.19:11434"},characters:[],history:{}};
+    localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));
+    location.reload();
+  }
 }
 </script>
 </body>
