@@ -14,7 +14,7 @@ body{background:#0d0c1d;color:#fff;font-family:sans-serif;overflow-x:hidden}
 .avatar-img{width:85px;height:85px;border-radius:50%;object-fit:cover;z-index:2;position:relative}
 .main-title{font-size:26px;font-weight:900}
 .author-tag{color:#a855f7;font-size:11px;font-weight:600}
-.live-tag{color:#00ff66;font-size:10px;font-family:monospace;margin-top:4px;font-weight:bold}
+.live-tag{font-size:11px;font-family:monospace;margin-top:4px;font-weight:bold;transition:all 0.3s}
 .main-content{padding:16px}
 .view-panel{display:none}.view-panel.active{display:block}
 .search-container{display:none;margin-bottom:10px}.search-container.active{display:block}
@@ -26,7 +26,7 @@ body{background:#0d0c1d;color:#fff;font-family:sans-serif;overflow-x:hidden}
 .modal-buttons{display:flex;gap:10px}.modal-buttons button{flex:1;padding:12px;border-radius:8px;font-weight:bold;border:none;cursor:pointer}
 .btn-save{background:#bc00dd;color:#fff}.btn-cancel{background:#323130;color:#2e1e9b}
 #chat-messages-box{height:calc(100vh - 260px);overflow-y:auto;padding:8px;background:#0a0914;border-radius:12px;margin:10px 0}
-.app-nav-bar{position:fixed;bottom:0;left:0;width:100%;height:85px;background:#131129;border-top:2px solid #bc00dd;display:flex;z-index:99}
+.app-nav-bar{position:fixed;bottom:0;left:0;width:100%;height:85px;background:#131129;border-top:2px solid #bc00dd;display:flex;z-index:999}
 .nav-item{flex:1;background:#131129;border:none;color:#a855f7;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
 .nav-item.active{color:#bc00dd}.nav-icon{font-size:20px}
 .img-preview{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid #bc00dd;display:none;margin-bottom:10px}
@@ -39,37 +39,39 @@ body{background:#0d0c1d;color:#fff;font-family:sans-serif;overflow-x:hidden}
 <div class="neon-logo-wrapper"><div class="neon-halo"></div><img src="icon.png" class="avatar-img" onerror="this.style.display='none'"></div>
 <h1 class="main-title">COMPANION IA</h1>
 <span class="author-tag">by MASTER S</span>
-<p class="live-tag" id="live-status">• OFFGRID • SAM-ADAPTATIVO</p>
+<p class="live-tag" id="live-status" style="color:#ff0040">• CHECANDO...</p>
 </header>
 <div id="dynamicSearchContainer" class="search-container"><input type="text" id="searchBarInput" class="search-box" placeholder="Buscar personaje..." oninput="filtrarPersonajesLocal()"></div>
 <main class="main-content">
 <div class="view-panel active" id="panel-home"><h2>Tus Personajes</h2><div id="characters-list"></div><div id="no-characters-fallback" class="fallback-msg" style="display:none">No tienes personajes aún</div></div>
 <div class="view-panel" id="panel-chats"><h2>Chats</h2><div id="chats-list"></div></div>
-<div class="view-panel" id="panel-crear"><h2>Nuevo Personaje </h2>
+<div class="view-panel" id="panel-crear"><h2>Nuevo Personaje</h2>
 <input type="file" id="char-img-file" accept="image/*" style="display:none" onchange="previewImagen(event)">
-<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><img id="char-img-preview" class="img-preview"><button onclick="document.getElementById('char-img-file').click()" style="background:#1a1636;border:1px dashed #a855f7;color:#a855f7;padding:8px 12px;border-radius:8px;cursor:pointer">📷 Foto</button></div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><img id="char-img-preview" class="img-preview"><button type="button" onclick="document.getElementById('char-img-file').click()" style="background:#1a1636;border:1px dashed #a855f7;color:#a855f7;padding:8px 12px;border-radius:8px;cursor:pointer">📷 Foto</button></div>
 <input type="text" id="char-name" class="form-input" placeholder="Nombre..."><textarea id="char-prompt" class="form-textarea" placeholder="Prompt del personaje..." rows="4"></textarea><textarea id="char-saludo" class="form-textarea" placeholder="Mensaje de saludo inicial..." rows="2"></textarea>
-<div class="modal-buttons"><button class="btn-save" onclick="guardarNuevoPersonaje()">Guardar</button><button class="btn-cancel" onclick="cambiarPanel('home')">Cancelar</button></div>
+<div class="modal-buttons"><button type="button" class="btn-save" onclick="guardarNuevoPersonaje()">Guardar</button><button type="button" class="btn-cancel" onclick="cambiarPanel('home')">Cancelar</button></div>
 </div>
-<div class="view-panel" id="panel-chat"><div style="display:flex;align-items:center;gap:10px;background:#131129;padding:10px;border-radius:10px;margin-bottom:10px"><button onclick="cambiarPanel('chats')" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer">←</button><h3 id="active-chat-name" style="flex:1">Chat</h3><small id="active-chat-status" style="color:#00ff66">En línea</small></div><div id="chat-messages-box"></div><div style="display:flex;gap:8px"><input type="text" id="chat-user-message" class="form-input" placeholder="Escribe..." style="margin-bottom:0" onkeypress="if(event.key==='Enter') enviarMensajeAOllama()"><button onclick="enviarMensajeAOllama()" style="background:#bc00dd;border:none;border-radius:8px;padding:0 18px;color:#fff;font-size:20px;cursor:pointer">➤</button></div></div>
-<div class="view-panel" id="panel-yo"><h3>👤 MI PERFIL - OFFGRID</h3><label style="font-size:12px;color:#a855f7">Tu nombre</label><input type="text" id="user-profile-name" class="form-input" placeholder="Master S"><label style="font-size:12px;color:#a855f7;margin-top:8px;display:block">IP Ollama</label><input type="text" id="ollama-url-input" class="form-input" placeholder="http://127.0.0.1:11434"><div id="config-saved" style="display:none;color:#00ff66;font-size:12px;margin-bottom:8px">✅ Guardado SAM-ADAPTATIVO</div><button class="btn-save" style="width:100%;padding:12px;border-radius:8px;border:2px solid #00ff66;background:transparent;color:#00ff66" onclick="guardarConfig()">💾 Guardar IP OFFGRID</button><p style="font-size:11px;color:#888;margin-top:12px">Modelo: SAM-ADAPTATIVO:latest<br>IP: http://127.0.0.1:11434</p><button onclick="formatearBaseDeDatosCompleta()" style="width:100%;margin-top:20px;padding:12px;border-radius:10px;border:none;background:#ffe1e1;color:#900;font-weight:bold;cursor:pointer">Borrar todo</button></div>
+<div class="view-panel" id="panel-chat"><div style="display:flex;align-items:center;gap:10px;background:#131129;padding:10px;border-radius:10px;margin-bottom:10px"><button type="button" onclick="cambiarPanel('chats')" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer">←</button><h3 id="active-chat-name" style="flex:1">Chat</h3><small id="active-chat-status" style="color:#00ff66">En línea</small></div><div id="chat-messages-box"></div><div style="display:flex;gap:8px"><input type="text" id="chat-user-message" class="form-input" placeholder="Escribe..." style="margin-bottom:0" onkeypress="if(event.key==='Enter') enviarMensajeAOllama()"><button type="button" onclick="enviarMensajeAOllama()" style="background:#bc00dd;border:none;border-radius:8px;padding:0 18px;color:#fff;font-size:20px;cursor:pointer">➤</button></div></div>
+<div class="view-panel" id="panel-yo"><h3>👤 MI PERFIL - OFFGRID REAL</h3><label style="font-size:12px;color:#a855f7">Tu nombre</label><input type="text" id="user-profile-name" class="form-input" placeholder="Master S"><label style="font-size:12px;color:#a855f7;margin-top:8px;display:block">IP Ollama (OFFGRID)</label><input type="text" id="ollama-url-input" class="form-input" placeholder="http://127.0.0.1:11434"><div id="config-saved" style="display:none;color:#00ff66;font-size:12px;margin-bottom:8px">✅ Guardado SAM-ADAPTATIVO</div><button type="button" class="btn-save" style="width:100%;padding:12px;border-radius:8px;border:2px solid #00ff66;background:transparent;color:#00ff66" onclick="guardarConfig()">💾 Guardar IP OFFGRID</button><p style="font-size:11px;color:#888;margin-top:12px">Modelo: SAM-ADAPTATIVO:latest<br>IP: 127.0.0.1 (funciona sin wifi)</p><button type="button" onclick="formatearBaseDeDatosCompleta()" style="width:100%;margin-top:20px;padding:12px;border-radius:10px;border:none;background:#ffe1e1;color:#900;font-weight:bold;cursor:pointer">Borrar todo</button></div>
 </main>
 </div>
 <footer class="app-nav-bar">
-<button id="nav-home" class="nav-item active" onclick="cambiarPanel('home')"><span class="nav-icon">🏠</span>Home</button>
-<button id="nav-chats" class="nav-item" onclick="cambiarPanel('chats');renderizarChats()"><span class="nav-icon">💬</span>Chats</button>
-<button id="nav-buscar" class="nav-item" onclick="alternarBarraBusqueda()"><span class="nav-icon">🔍</span>Buscar</button>
-<button id="nav-crear" class="nav-item" onclick="cambiarPanel('crear')"><span class="nav-icon">➕</span>Crear</button>
-<button id="nav-yo" class="nav-item" onclick="cambiarPanel('yo')"><span class="nav-icon">👤</span>Yo</button>
+<button type="button" id="nav-home" class="nav-item active" onclick="cambiarPanel('home')"><span class="nav-icon">🏠</span>Home</button>
+<button type="button" id="nav-chats" class="nav-item" onclick="cambiarPanel('chats');renderizarChats()"><span class="nav-icon">💬</span>Chats</button>
+<button type="button" id="nav-buscar" class="nav-item" onclick="alternarBarraBusqueda()"><span class="nav-icon">🔍</span>Buscar</button>
+<button type="button" id="nav-crear" class="nav-item" onclick="cambiarPanel('crear')"><span class="nav-icon">➕</span>Crear</button>
+<button type="button" id="nav-yo" class="nav-item" onclick="cambiarPanel('yo')"><span class="nav-icon">👤</span>Yo</button>
 </footer>
 <script>
-let COMPANION_STORAGE = JSON.parse(localStorage.getItem('COMPANION_DB')) || {config:{userName:"Master S",ollamaUrl:"http://127.0.0.1:11434"},characters:[],history:{}});
+let COMPANION_STORAGE = JSON.parse(localStorage.getItem('COMPANION_DB')) || {config:{userName:"Master S",ollamaUrl:"http://127.0.0.1:11434"},characters:[],history:{}};
 let personajeActivoId = null;
 let tempImgBase64 = "";
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('user-profile-name').value=COMPANION_STORAGE.config.userName;
   document.getElementById('ollama-url-input').value=COMPANION_STORAGE.config.ollamaUrl;
   renderizarListaPersonajes();
+  checarConexionReal();
+  setInterval(checarConexionReal, 3000);
 });
 function getBaseUrl(){
   let url=(COMPANION_STORAGE.config.ollamaUrl||"").trim();
@@ -77,6 +79,23 @@ function getBaseUrl(){
   if(url &&!url.startsWith("http")) url="http://"+url;
   if(!url) url="http://127.0.0.1:11434";
   return url;
+}
+async function checarConexionReal(){
+  const el=document.getElementById('live-status');
+  const base=getBaseUrl();
+  try{
+    const ctrl=new AbortController();
+    const t=setTimeout(()=>ctrl.abort(),1500);
+    const r=await fetch(base+'/api/tags',{method:'GET',signal:ctrl.signal});
+    clearTimeout(t);
+    if(r.ok){
+      el.innerHTML='• OFFGRID • SAM-ADAPTATIVO CONECTADO';
+      el.style.color='#00ff66';
+    } else throw new Error();
+  }catch(e){
+    el.innerHTML='• OFFLINE • PRENDE TERMUX';
+    el.style.color='#ff0040';
+  }
 }
 function previewImagen(e){
   const file=e.target.files[0];
@@ -111,6 +130,7 @@ function guardarConfig(){
   document.getElementById('ollama-url-input').value=raw;
   localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));
   const msg=document.getElementById('config-saved'); msg.style.display='block'; setTimeout(()=>msg.style.display='none',1500);
+  checarConexionReal();
 }
 function guardarNuevoPersonaje(){
   const nameInp=document.getElementById('char-name').value.trim();
@@ -171,7 +191,7 @@ async function enviarMensajeAOllama(){
     COMPANION_STORAGE.history[personajeActivoId].push({role:'model',text:(data.response||"").trim()});
     localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));refrescarHistorialPantallaChat();
   }catch(e){
-    alert(`OFFGRID Falló: No pude conectar a ${baseUrl}\nEn Termux verifica que sigue:\n ollama serve\nError: ${e.message}`);
+    alert(`OFFGRID Falló: No pude conectar a ${baseUrl}\nEn Termux verifica:\n ollama serve\nError: ${e.message}`);
   }finally{document.getElementById('active-chat-status').innerText='En línea';}
 }
 function formatearBaseDeDatosCompleta(){if(confirm('¿Borrar todo?')){COMPANION_STORAGE={config:{userName:"Master S",ollamaUrl:"http://127.0.0.1:11434"},characters:[],history:{}};localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));location.reload();}}
