@@ -1,63 +1,164 @@
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:#0A0A1F; color:#fff; font-family:sans-serif; padding-bottom:95px; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ✅ SOPORTE DE PANTALLA SEGURA — CORRECTO */
+html {
+  viewport-fit: cover;
+  -webkit-text-size-adjust: 100%;
+}
+
+body { 
+  background: #0A0A1F; 
+  color: #fff; 
+  font-family: sans-serif; 
+  /* ✅ Espacio inferior que respeta barras del sistema */
+  padding-bottom: calc(95px + env(safe-area-inset-bottom, 0px)); 
+}
+
 /* HEADER CON TEXTO CIRCULAR */
-.header { text-align:center; padding:20px 15px 10px; }
-.logo-container { position:relative; width:150px; height:150px; margin:0 auto 5px; display:flex; align-items:center; justify-content:center; }
-.texto-circular { position:absolute; width:150px; height:150px; top:0; left:0; z-index:1; animation:girar 15s linear infinite; }
-.texto-circular text { fill:#C084FC; font-size:10px; font-weight:800; letter-spacing:2.8px; }
-.logo-wrapper { position:relative; width:95px; height:95px; z-index:2; }
-.logo-img { width:85px !important; height:85px !important; border-radius:50%; object-fit:cover; border:2px solid #A020F0; position:relative; z-index:3; box-shadow:0 0 15px rgba(160,32,240,.8); }
-.halo { position:absolute; width:102px; height:102px; border-radius:50%; top:-8px; left:-8px; z-index:1; background:conic-gradient(from 0deg, transparent 0%, transparent 55%, #A020F0 70%, #E879F9 85%, transparent 100%); animation:girar 2s linear infinite, prender 1.2s ease-in-out infinite alternate; filter:drop-shadow(0 0 10px #A020F0); }
-.halo::before { content:''; position:absolute; inset:7px; background:#0A0A1F; border-radius:50%; z-index:2; }
-.by-master { color:#A855F7; font-size:11px; letter-spacing:1.2px; margin-top:2px; }
-.estado { color:#22C55E; font-size:11px; margin-top:6px; }
+.header { text-align: center; padding: 20px 15px 10px; }
 
-@keyframes girar { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
-@keyframes prender { 0%{opacity:.6;} 100%{opacity:1; filter:drop-shadow(0 0 18px #E879F9);} }
+.logo-container { 
+  position: relative; 
+  width: 150px; 
+  height: 150px; 
+  margin: 0 auto 5px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+}
 
-/* PANELS */
-.panel { padding:15px; }
-input, textarea { width:100%; background:#1A1A35; border:1px solid #333; color:#fff; padding:12px; border-radius:10px; margin:8px 0; }
-.btn-primary { width:100%; background:#A020F0; border:none; padding:12px; border-radius:12px; color:#fff; font-weight:bold; margin-top:10px; }
-/* NAV - ARREGLADO PARA QUE NO SE TAPEN */
-.nav {
-  position: fixed !important;
-  bottom: 0 !important;           /* ✅ Pegado al borde inferior, sin hueco */
-  left: 0 !important;
-  right: 0 !important;
-  display: flex !important;
-  justify-content: space-around !important;
-  background: #131129 !important; /* ✅ Coincide con tu fondo morado oscuro del index */
-  border-top: 2px solid #bc00dd !important; /* ✅ Línea morada visible */
-  height: 72px !important;         /* ✅ Más compacto, menos tamaño */
-  padding-bottom: 6px !important;  /* ✅ Poco relleno abajo */
-  padding-top: 6px !important;     /* ✅ Centrado vertical */
-  z-index: 9999 !important;
+.texto-circular { 
+  position: absolute; 
+  width: 150px; 
+  height: 150px; 
+  top: 0; 
+  left: 0; 
+  z-index: 1; 
+  animation: girar 15s linear infinite; 
 }
+
+.logo-wrapper { 
+  position: relative; 
+  width: 95px; 
+  height: 95px; 
+  z-index: 2; 
 }
-.nav-btn {
-  background: transparent !important;
-  border: none !important;
-  color: #9CA3AF !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  font-size: 10px !important;
+
+.logo-img { 
+  width: 85px !important; 
+  height: 85px !important; 
+  border-radius: 50%; 
+  object-fit: cover; 
+  border: 2px solid #A020F0; 
+  position: absolute; 
+  width: 102px; 
+  height: 102px; 
+  border-radius: 50%; 
+  top: -8px; 
+  left: -8px; 
+  z-index: 1; 
+  background: conic-gradient(from 0deg, #0A0A1F, #BC00DD, #0A0A1F); 
 }
-.nav-btn.active {
-  color: #A020F0 !important;
+
+.halo::before { 
+  content: ''; 
+  position: absolute; 
+  inset: 7px; 
+  background: #0A0A1F; 
+  border-radius: 50%; 
+  z-index: 2; 
 }
-.nav-btn span {
-  font-size: 22px !important;
+
+.by-master { 
+  color: #A855F7; 
+  font-size: 11px; 
+  letter-spacing: 1.2px; 
+  margin-top: -2px; 
 }
-/* ===== PANELES - OCULTAR TODOS POR DEFECTO ===== */
-.panel {
-  display: none !important;
-  padding: 15px;
+
+.estado { 
+  color: #22C55E; 
+  font-size: 11px; 
+  margin-top: 6px; 
+}
+
+@keyframes girar { 
+  0% { transform: rotate(0deg); } 
+  100% { transform: rotate(360deg); } 
+}
+
+@keyframes prender { 
+  0% { opacity: .6; } 
+  100% { opacity: 1; filter: drop-shadow(0 0 18px #E879F9); } 
+}
+
+/* PANELES */
+.panel { 
+  padding: 15px; 
+}
+
+input, textarea { 
+  width: 100%; 
+  background: #1A1A35; 
+  border: 1px solid #333; 
+  color: #fff; 
+  padding: 12px; 
+  border-radius: 10px; 
+  margin: 8px 0; 
+}
+
+.btn-primary { 
+  width: 100%; 
+  background: #A020F0; 
+  border: none; 
+  padding: 12px; 
+  border-radius: 12px; 
+  color: #fff; 
+  font-weight: bold; 
+}
+
+/* ✅ NAVEGACIÓN — ARREGLADA PARA NUNCA TAPAR */
+.nav { 
+  position: fixed !important; 
+  bottom: 0 !important; 
+  left: 0 !important; 
+  right: 0 !important; 
+  display: flex !important; 
+  justify-content: space-around !important; 
+  background: #131129 !important; 
+  border-top: 2px solid #bc00dd !important; 
+  height: 72px !important; 
+  /* ✅ Relleno inferior que respeta barra del sistema */
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px)) !important; 
+  padding-top: 6px !important; 
+  z-index: 9999 !important; 
+}
+
+.nav-btn { 
+  background: transparent !important; 
+  border: none !important; 
+  color: #9CA3AF !important; 
+  display: flex !important; 
+  flex-direction: column !important; 
+  align-items: center !important; 
+  font-size: 10px !important; 
+}
+
+.nav-btn.active { 
+  color: #A020F0 !important; 
+}
+
+.nav-btn span { 
+  font-size: 22px !important; 
+}
+
+/* ===== PANELES — OCULTAR TODOS POR DEFECTO ===== */
+.panel { 
+  display: none !important; 
+  padding: 15px; 
 }
 
 /* ===== SOLO EL ACTIVO SE MUESTRA ===== */
-.panel.activo,
-#panel-home {
-  display: block !important;
+.panel.active { 
+  display: block !important; 
 }
