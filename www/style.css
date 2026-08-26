@@ -22,16 +22,16 @@ input, textarea { width:100%; background:#1A1A35; border:1px solid #333; color:#
 /* NAV - ARREGLADO PARA QUE NO SE TAPEN */
 .nav {
   position: fixed !important;
-  bottom: 12px !important;
+  bottom: 0 !important;           /* ✅ Pegado al borde inferior, sin hueco */
   left: 0 !important;
   right: 0 !important;
   display: flex !important;
   justify-content: space-around !important;
-  background: #0A0A1F !important;
-  border-top: 1px solid #A020F0 !important;
-  height: 90px !important;
-  padding-bottom: 25px !important;
-  padding-top: 12px !important;
+  background: #131129 !important; /* ✅ Coincide con tu fondo morado oscuro del index */
+  border-top: 2px solid #bc00dd !important; /* ✅ Línea morada visible */
+  height: 72px !important;         /* ✅ Más compacto, menos tamaño */
+  padding-bottom: 6px !important;  /* ✅ Poco relleno abajo */
+  padding-top: 6px !important;     /* ✅ Centrado vertical */
   z-index: 9999 !important;
 }
 }
