@@ -1,32 +1,41 @@
 name: Build Companion IA APK
 on:
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
       - name: Obtener codigo
         uses: actions/checkout@v4
+
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
       - name: Configurar Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
+
       - name: Configurar Android SDK
         uses: android-actions/setup-android@v3
+
       - name: Instalar dependencias
         run: |
           npm install
           npm install @capacitor/cli @capacitor/android --save
-      - name: Verificar carpeta www
+
+      - name: Verificar www y borrar logic.js si quedó
         run: |
           mkdir -p www
+          rm -f www/logic.js
+          echo "--- www actual ---"
           ls -lh www/
           cat capacitor.config.json
+
       - name: Agregar plataforma Android
         run: |
           if [ ! -d "android" ]; then
@@ -34,26 +43,36 @@ jobs:
           else
             npx cap update android
           fi
-      - name: Permitir HTTP (cleartext)
+
+      - name: Permitir HTTP para Ollama
         run: |
-          sed -i 's/<application\/>/<application android:usesCleartextTraffic="true"\/>/g' android/app/src/main/AndroidManifest.xml || true
+          sed -i 's/<application/<application android:usesCleartextTraffic="true"/g' android/app/src/main/AndroidManifest.xml || true
+
       - name: Borrar iconos por defecto
         run: |
           rm -rf android/app/src/main/res/mipmap-*v26 || true
           rm -f android/app/src/main/res/mipmap-*/ic_launcher.xml || true
           rm -f android/app/src/main/res/mipmap-*/ic_launcher_round.xml || true
+
       - name: Inyectar tu logo
         run: |
           for d in android/app/src/main/res/mipmap-*; do
             cp www/icon.png $d/ic_launcher.png || true
             cp www/icon.png $d/ic_launcher_round.png || true
           done
+
+      - name: Sync www a android/app
+        run: |
+          npx cap copy android
+          npx cap sync android
+
       - name: Compilar APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
-      - name: Subir APK listo
+
+      - name: Subir APK
         uses: actions/upload-artifact@v4
         with:
           name: Companion-IA-Master-S-APK
