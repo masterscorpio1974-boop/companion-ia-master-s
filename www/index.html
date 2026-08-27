@@ -67,7 +67,24 @@ let personajeActivoId = null;
 let tempImgBase64 = "";
 document.addEventListener('DOMContentLoaded',()=>{document.getElementById('user-profile-name').value=COMPANION_STORAGE.config.userName;document.getElementById('ollama-url-input').value=COMPANION_STORAGE.config.ollamaUrl;renderizarListaPersonajes();checarConexionReal();setInterval(checarConexionReal,3000);});
 function getBaseUrl(){let url=(COMPANION_STORAGE.config.ollamaUrl||"").trim();url=url.replace(/\/api\/generate.*$/,"").replace(/\/$/,"");if(url&&!url.startsWith("http"))url="http://"+url;if(!url)url="http://127.0.0.1:11434";return url;}
-async function checarConexionReal(){const el=document.getElementById('live-status');const base=getBaseUrl();try{const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),1500);const r=await fetch(base+'/api/tags',{method:'GET',signal:ctrl.signal});clearTimeout(t);if(r.ok){el.innerHTML='• OFFGRID • CONECTADO';el.style.color='#00ff66';}else throw new Error();}catch(e){el.innerHTML='• OFFLINE • PRENDE TERMUX';el.style.color='#ff0040';}}
+  async function checarConexionReal(){
+  const el=document.getElementById('live-status');
+  const base=getBaseUrl();
+  try{
+    const ctrl=new AbortController();
+    const t=setTimeout(()=>ctrl.abort(),4000); // ⏰ subimos a 4 segundos
+    const r=await fetch(`${base}/api/tags`,{method:'GET',signal:ctrl.signal});
+    clearTimeout(t);
+    if(r && r.ok){
+      el.innerHTML='✅ • OFFGRID • CONECTADO';
+      el.style.color='#00ff66';
+    }else throw new Error('Respuesta mala');
+  }catch(e){
+    el.innerHTML='⚠️ • CONECTANDO... PRENDE/REVISA TERMUX';
+    el.style.color='#ffaa00';
+  }
+}
+
 function previewImagen(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(ev){tempImgBase64=ev.target.result;const prev=document.getElementById('char-img-preview');prev.src=tempImgBase64;prev.style.display='block';};reader.readAsDataURL(file);}
 function cambiarPanel(nombre){document.querySelectorAll('.view-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));const panel=document.getElementById('panel-'+nombre);if(panel)panel.classList.add('active');const btn=document.getElementById('nav-'+nombre);if(btn)btn.classList.add('active');}
 function guardarConfig(){COMPANION_STORAGE.config.userName=document.getElementById('user-profile-name').value.trim()||"Master S";let raw=document.getElementById('ollama-url-input').value.trim();raw=raw.replace(/\/api\/generate.*$/,"").replace(/\/$/,"");if(raw&&!raw.startsWith("http"))raw="http://"+raw;if(!raw)raw="http://127.0.0.1:11434";COMPANION_STORAGE.config.ollamaUrl=raw;document.getElementById('ollama-url-input').value=raw;localStorage.setItem('COMPANION_DB',JSON.stringify(COMPANION_STORAGE));const msg=document.getElementById('config-saved');msg.style.display='block';setTimeout(()=>msg.style.display='none',1500);checarConexionReal();}
